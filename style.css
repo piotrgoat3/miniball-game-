@@ -1,0 +1,27 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #282c34;
+    color: white;
+}
+
+#menu, #game, #settings {
+    margin-top: 50px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 18px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+canvas {
+    background-color: green;
+    border: 2px solid white;
+}
+
+#timer {
+    font-size: 24px;
+    margin-top: 10px;
+}

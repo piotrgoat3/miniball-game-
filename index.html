@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miniball Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="menu">
+        <h1>Miniball Game</h1>
+        <button onclick="startGame()">Szybki Mecz</button>
+        <button onclick="openSettings()">Ustawienia</button>
+        <button onclick="showPlayers()">Baza Zawodników</button>
+    </div>
+
+    <div id="game" style="display:none;">
+        <canvas id="gameCanvas"></canvas>
+        <div id="timer">03:00</div>
+    </div>
+
+    <div id="settings" style="display:none;">
+        <h2>Ustawienia</h2>
+        <label for="language">Język:</label>
+        <select id="language" onchange="changeLanguage()">
+            <option value="pl">Polski</option>
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+        </select>
+        <button onclick="backToMenu()">Wróć</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

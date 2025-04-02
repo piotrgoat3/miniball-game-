@@ -1,0 +1,11 @@
+function showPlayers() {
+    fetch("players.json")
+    .then(response => response.json())
+    .then(players => {
+        let playerList = "<h2>Baza Zawodników</h2>";
+        players.forEach(player => {
+            playerList += `<p>${player.name} (${player.team}) - Ocena: ${player.rating}</p>`;
+        });
+        document.getElementById("menu").innerHTML = playerList + `<button onclick="backToMenu()">Wróć</button>`;
+    });
+}
