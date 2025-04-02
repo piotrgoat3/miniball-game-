@@ -6,6 +6,43 @@ document.querySelector(".close-btn").addEventListener("click", function() {
     document.getElementById("settings-modal").style.display = "none";
 });
 
+// OBSŁUGA ZMIANY JĘZYKA
+const translations = {
+    pl: {
+        quickMatch: "Szybki Mecz",
+        settings: "Ustawienia",
+        chooseTeam: "Wybierz skład",
+        play: "Zagraj!",
+        score: "Wynik",
+        selectLanguage: "Wybierz język"
+    },
+    en: {
+        quickMatch: "Quick Match",
+        settings: "Settings",
+        chooseTeam: "Choose Team",
+        play: "Play!",
+        score: "Score",
+        selectLanguage: "Select Language"
+    },
+    es: {
+        quickMatch: "Partido Rápido",
+        settings: "Configuración",
+        chooseTeam: "Elige Equipo",
+        play: "¡Jugar!",
+        score: "Puntuación",
+        selectLanguage: "Selecciona Idioma"
+    }
+};
+
+document.getElementById("language-select").addEventListener("change", function() {
+    const lang = this.value;
+    document.getElementById("quick-match-btn").textContent = translations[lang].quickMatch;
+    document.getElementById("settings-btn").textContent = translations[lang].settings;
+    document.querySelector("#team-selection h2").textContent = translations[lang].chooseTeam;
+    document.querySelector("#team-selection button").textContent = translations[lang].play;
+    document.querySelector(".modal-content h2").textContent = translations[lang].selectLanguage;
+});
+
 // BOISKO I MECZ
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
