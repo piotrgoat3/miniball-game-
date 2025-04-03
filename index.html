@@ -8,11 +8,12 @@
 </head>
 <body>
 
-    <!-- Ekran startowy -->
+    <!-- MENU GŁÓWNE -->
     <button id="quick-match-btn">Szybki Mecz</button>
     <button id="settings-btn">Ustawienia</button>
-    
-    <!-- Okno ustawień -->
+    <button id="database-btn">Baza Zawodników</button>
+
+    <!-- OKNO USTAWIEŃ -->
     <div id="settings-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -25,22 +26,23 @@
         </div>
     </div>
 
-    <!-- Wybór drużyny -->
-    <div id="team-selection" class="hidden">
-        <h2>Wybierz skład</h2>
-        <select id="team-select">
-            <option value="Polska">Polska</option>
-            <option value="Argentyna">Argentyna</option>
-        </select>
-        <button onclick="startGame()">Zagraj!</button>
+    <!-- BAZA DANYCH -->
+    <div id="database-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Dodaj zawodnika</h2>
+            <input type="text" id="player-name" placeholder="Imię i nazwisko">
+            <input type="text" id="player-team" placeholder="Drużyna">
+            <button id="add-player-btn">Dodaj</button>
+        </div>
     </div>
 
-    <!-- Tablica wyników -->
+    <!-- TABLICA WYNIKÓW -->
     <div id="scoreboard">
         <span id="score">0 - 0</span>
     </div>
 
-    <!-- Boisko -->
+    <!-- BOISKO -->
     <canvas id="gameCanvas"></canvas>
 
     <script src="script.js"></script>
