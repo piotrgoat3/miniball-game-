@@ -1,4 +1,4 @@
-// Pobieranie elementów HTML
+// Pobieranie elementów
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const scoreBoard = document.getElementById("score");
@@ -10,13 +10,20 @@ canvas.height = 400;
 // Inicjalizacja wyniku
 let userScore = 0, aiScore = 0;
 
-// Inicjalizacja piłki
+// Bandery reklamowe (odbijanie piłki)
+const ads = [
+    { x: 40, y: 50, width: 10, height: 300 },  // Lewa banda
+    { x: 750, y: 50, width: 10, height: 300 } // Prawa banda
+];
+
+// Inicjalizacja piłki z lepszą fizyką
 const ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     radius: 10,
-    dx: 2,
-    dy: 2,
+    dx: 0,
+    dy: 0,
+    friction: 0.98, // Spowolnienie
     draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -28,12 +35,24 @@ const ball = {
         this.x += this.dx;
         this.y += this.dy;
 
+        // Tarcie - piłka zwalnia
+        this.dx *= this.friction;
+        this.dy *= this.friction;
+
+        // Odbicia od band
+        ads.forEach(band => {
+            if (this.x - this.radius < band.x + band.width && this.x + this.radius > band.x &&
+                this.y > band.y && this.y < band.y + band.height) {
+                this.dx *= -1;
+            }
+        });
+
         // Odbicia od ścian
         if (this.y - this.radius <= 0 || this.y + this.radius >= canvas.height) {
             this.dy *= -1;
         }
 
-        // Sprawdzenie czy piłka wpada do bramki
+        // Gole
         if (this.x < 50 && this.y > 150 && this.y < 250) {
             aiScore++;
             resetBall();
@@ -46,15 +65,15 @@ const ball = {
     }
 };
 
-// Funkcja resetująca piłkę po golu
+// Reset piłki po golu
 function resetBall() {
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
-    ball.dx = 2;
-    ball.dy = 2;
+    ball.dx = 0;
+    ball.dy = 0;
 }
 
-// Inicjalizacja graczy
+// **Zawodnicy**
 const userPlayers = [];
 const aiPlayers = [];
 
@@ -66,7 +85,7 @@ function createPlayers(team, isAI) {
         let x = startX + (i % 3) * 50;
         let y = 100 + Math.floor(i / 3) * 100;
 
-        let player = { x, y, radius: 15, team, color };
+        let player = { x, y, radius: 15, team, color, dx: 0, dy: 0, isDragging: false };
         if (isAI) {
             aiPlayers.push(player);
         } else {
@@ -89,21 +108,38 @@ function drawPlayers(players) {
     });
 }
 
-// Obsługa myszy - poruszanie zawodnikami
-canvas.addEventListener("mousemove", function(event) {
+// **System naciągania zawodników**
+let selectedPlayer = null;
+let startX, startY;
+
+canvas.addEventListener("mousedown", function(event) {
     let rect = canvas.getBoundingClientRect();
     let mouseX = event.clientX - rect.left;
     let mouseY = event.clientY - rect.top;
 
     userPlayers.forEach(player => {
-        if (Math.hypot(mouseX - player.x, mouseY - player.y) < player.radius + 5) {
-            player.x = mouseX;
-            player.y = mouseY;
+        if (Math.hypot(mouseX - player.x, mouseY - player.y) < player.radius) {
+            selectedPlayer = player;
+            startX = mouseX;
+            startY = mouseY;
         }
     });
 });
 
-// AI sterujące drużyną przeciwną
+canvas.addEventListener("mouseup", function(event) {
+    if (selectedPlayer) {
+        let rect = canvas.getBoundingClientRect();
+        let mouseX = event.clientX - rect.left;
+        let mouseY = event.clientY - rect.top;
+
+        selectedPlayer.dx = (startX - mouseX) / 10;
+        selectedPlayer.dy = (startY - mouseY) / 10;
+
+        selectedPlayer = null;
+    }
+});
+
+// **Ruch AI**
 function aiMove() {
     aiPlayers.forEach(player => {
         let directionX = ball.x > player.x ? 1 : -1;
@@ -114,12 +150,12 @@ function aiMove() {
     });
 }
 
-// Aktualizacja wyniku
+// **Aktualizacja wyniku**
 function updateScore() {
     scoreBoard.innerText = `${userScore} - ${aiScore}`;
 }
 
-// Główna pętla gry
+// **Główna pętla gry**
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -130,12 +166,21 @@ function gameLoop() {
     drawPlayers(userPlayers);
     drawPlayers(aiPlayers);
 
+    // Ruch zawodników
+    userPlayers.forEach(player => {
+        player.x += player.dx;
+        player.y += player.dy;
+
+        player.dx *= 0.9;
+        player.dy *= 0.9;
+    });
+
     aiMove();
 
     requestAnimationFrame(gameLoop);
 }
 
-// Rysowanie boiska
+// **Rysowanie boiska**
 function drawField() {
     ctx.fillStyle = "green";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -146,26 +191,33 @@ function drawField() {
 
     ctx.strokeRect(0, 150, 50, 100);
     ctx.strokeRect(750, 150, 50, 100);
+
+    // Rysowanie band
+    ads.forEach(band => {
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(band.x, band.y, band.width, band.height);
+    });
 }
 
-// Tłumaczenia interfejsu
+// **Tłumaczenia**
 const translations = {
-    pl: { start: "Start", settings: "Ustawienia", score: "Wynik" },
-    en: { start: "Start", settings: "Settings", score: "Score" },
-    es: { start: "Inicio", settings: "Configuración", score: "Puntuación" }
+    pl: { start: "Start", settings: "Ustawienia", score: "Wynik", database: "Baza Danych" },
+    en: { start: "Start", settings: "Settings", score: "Score", database: "Database" },
+    es: { start: "Inicio", settings: "Configuración", score: "Puntuación", database: "Base de Datos" }
 };
 
-// Zmiana języka
+// **Zmiana języka**
 function changeLanguage(lang) {
     document.getElementById("quick-match-btn").innerText = translations[lang].start;
     document.getElementById("settings-btn").innerText = translations[lang].settings;
     document.getElementById("scoreboard").innerText = translations[lang].score;
+    document.getElementById("database-tab").innerText = translations[lang].database;
 }
 
-// Obsługa zmiany języka
+// **Obsługa zmiany języka**
 langSelect.addEventListener("change", function() {
     changeLanguage(this.value);
 });
 
-// Rozpoczęcie gry
+// **Start gry**
 gameLoop();
