@@ -1,46 +1,35 @@
 body {
-    text-align: center;
-    background-color: lightgray;
     font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
 }
 
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    margin: 10px;
-    cursor: pointer;
-}
-
-.modal {
+.hidden {
     display: none;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
+}
+
+#menu, #team-selection, #player-management, #game {
+    margin: 20px auto;
     padding: 20px;
-    border: 2px solid black;
-    z-index: 1000;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 80%;
+    max-width: 600px;
 }
 
-.close-btn {
-    cursor: pointer;
-    font-size: 20px;
-    float: right;
-}
-
-#gameCanvas {
-    background-color: green;
-    border: 2px solid white;
+canvas {
+    background-color: #4CAF50;
     display: block;
-    margin: auto;
+    margin: 0 auto;
+    border: 5px solid #333;
 }
 
 #scoreboard {
     font-size: 24px;
-    color: white;
-    background: black;
-    padding: 10px;
-    width: 100px;
-    margin: 20px auto;
+    margin-bottom: 10px;
+}
+
+#controls {
+    margin-top: 10px;
 }
