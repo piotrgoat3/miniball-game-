@@ -1,111 +1,111 @@
-// Globalne zmienne
+// Globalne zmienne gry
 let canvas, ctx;
 let score = { left: 0, right: 0 };
 
-// Przykładowe obiekty w grze – niech "player" to niebieski zawodnik, a "ball" to biała piłka
+// Przykładowe obiekty: zawodnik oraz piłka
 let player = { x: 300, y: 250, radius: 20 };
-let ball = { x: 500, y: 250, radius: 10 };
+let ball = { x: 500, y: 250, radius: 10, dx: 2, dy: 1.5 };
 
-// Zmienna sterująca animacją
-let gameAnimating = true;
+// Sterowanie animacją
+let gameAnimating = false;
 
-document.addEventListener("DOMContentLoaded", () => {
-  canvas = document.getElementById("gameCanvas");
-  ctx = canvas.getContext("2d");
+// Funkcja do przełączania widoków (ekranów)
+function showScreen(id) {
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("gameScreen").classList.add("hidden");
+  document.getElementById(id).classList.remove("hidden");
+}
 
-  // Uruchom animację – w tym przykładzie stale rysujemy ekran startowy
-  requestAnimationFrame(gameLoop);
+// Rysujemy cały pitch – boisko z liniami, bramkami i banerami
+function drawField() {
+  // Rysujemy zewnętrzny obrys boiska
+  ctx.strokeStyle = "#fff";
+  ctx.lineWidth = 4;
+  ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
 
-  // Obsługa przycisków górnego menu
-  document.getElementById("btnPlayerDB").addEventListener("click", () => {
-    renderPlayerList();
-    toggleModal("playerDBModal", true);
-  });
+  // Rysujemy linię środkową (dzielącą boisko na dwie połowy)
+  ctx.beginPath();
+  ctx.moveTo(canvas.width / 2, 10);
+  ctx.lineTo(canvas.width / 2, canvas.height - 10);
+  ctx.stroke();
 
-  document.getElementById("btnLanguage").addEventListener("click", () => {
-    alert("Opcja wyboru języka – do implementacji");
-  });
+  // Rysujemy okrąg środkowy (center circle)
+  ctx.beginPath();
+  ctx.arc(canvas.width / 2, canvas.height / 2, 50, 0, Math.PI * 2);
+  ctx.stroke();
 
-  document.getElementById("btnSettings").addEventListener("click", () => {
-    alert("Opcja ustawień – do implementacji");
-  });
+  // Rysujemy bramki po lewej i prawej stronie
+  // Załóżmy, że bramka to prostokąt o szerokości 10px i wysokości 100px umieszczony na środku krawędzi
+  ctx.fillStyle = "white";
+  // Lewa bramka
+  ctx.fillRect(0, (canvas.height / 2) - 50, 10, 100);
+  // Prawa bramka
+  ctx.fillRect(canvas.width - 10, (canvas.height / 2) - 50, 10, 100);
 
-  // Obsługa zamykania modala
-  document.getElementById("closeModal").addEventListener("click", () => {
-    toggleModal("playerDBModal", false);
-  });
+  // Rysujemy bannery reklamowe (na górze i dole boiska)
+  ctx.fillStyle = "yellow";
+  // Górny banner
+  ctx.fillRect(10, 0, canvas.width - 20, 10);
+  // Dolny banner
+  ctx.fillRect(10, canvas.height - 10, canvas.width - 20, 10);
+}
 
-  // Obsługa formularza dodawania zawodnika
-  document.getElementById("addPlayerForm").addEventListener("submit", e => {
-    e.preventDefault();
-    const name = document.getElementById("playerName").value.trim();
-    const team = document.getElementById("playerTeam").value.trim();
-    const rating = parseInt(document.getElementById("playerRating").value.trim(), 10);
-    if (!name || !team || isNaN(rating)) {
-      alert("Proszę uzupełnić wszystkie pola.");
-      return;
-    }
-    let players = loadPlayers();
-    players.push({ name, team, rating });
-    savePlayers(players);
-    renderPlayerList();
-    document.getElementById("addPlayerForm").reset();
-  });
-});
-
-// Funkcja rysująca ekran – używana, aby animacja na stałe odświeżała wygląd startowy
-function gameLoop() {
-  if (!gameAnimating) return; // Na razie nie zatrzymujemy animacji
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Tło pola już mamy ustawione przez CSS, ale można dodać dodatkowe elementy
-  // Rysujemy biały obrys (piłkę)
+// Funkcja rysująca obiekty gry
+function drawGameObjects() {
+  // Rysujemy piłkę
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
   ctx.fillStyle = "white";
   ctx.fill();
   ctx.closePath();
 
-  // Rysujemy niebieskiego zawodnika
+  // Rysujemy zawodnika
   ctx.beginPath();
   ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
   ctx.fillStyle = "blue";
   ctx.fill();
   ctx.closePath();
+}
 
-  // Rysujemy czerwoną strzałkę wewnątrz niebieskiego okręgu (wersja uproszczona)
-  drawArrow(ctx, player.x, player.y, player.x + player.radius * 0.8, player.y);
+// Pętla gry – rysowanie boiska, obiektów i aktualizacja pozycji piłki
+function gameLoop() {
+  if (!gameAnimating) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  drawField();
+  drawGameObjects();
 
-  // Wynik odświeżamy w HTML – choć statycznie "0 - 0"
+  // Aktualizacja pozycji piłki (prosta fizyka)
+  ball.x += ball.dx;
+  ball.y += ball.dy;
+
+  // Odbijanie piłki od krawędzi boiska (uwzględniając obrys)
+  if (ball.x - ball.radius < 10 || ball.x + ball.radius > canvas.width - 10) {
+    ball.dx *= -1;
+  }
+  if (ball.y - ball.radius < 10 || ball.y + ball.radius > canvas.height - 10) {
+    ball.dy *= -1;
+  }
+
+  // Aktualizacja wyniku (na razie statyczne "0 - 0")
   document.getElementById("scoreboard").innerText = `${score.left} - ${score.right}`;
 
   requestAnimationFrame(gameLoop);
 }
 
-// Funkcja do rysowania strzałki
-function drawArrow(context, fromX, fromY, toX, toY) {
-  const headlen = 8; // długość grotka
-  const dx = toX - fromX;
-  const dy = toY - fromY;
-  const angle = Math.atan2(dy, dx);
-  context.beginPath();
-  context.moveTo(fromX, fromY);
-  context.lineTo(toX, toY);
-  context.strokeStyle = "red";
-  context.lineWidth = 2;
-  context.stroke();
-  context.beginPath();
-  context.moveTo(toX, toY);
-  context.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
-  context.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
-  context.lineTo(toX, toY);
-  context.fillStyle = "red";
-  context.fill();
+// Obsługa modal do bazy zawodników
+function toggleModal(modalId, show) {
+  const modal = document.getElementById(modalId);
+  if (show) {
+    modal.classList.remove("hidden");
+  } else {
+    modal.classList.add("hidden");
+  }
 }
 
-// -----------------------
-// Baza zawodników (localStorage)
-// -----------------------
+// ============================
+// Baza zawodników – localStorage
+// ============================
 function loadPlayers() {
   let players = localStorage.getItem("players");
   if (players) {
@@ -133,19 +133,66 @@ function renderPlayerList() {
     listContainer.innerHTML = "<p>Brak zawodników w bazie.</p>";
     return;
   }
-  players.forEach((player, index) => {
+  players.forEach((player) => {
     const p = document.createElement("p");
     p.innerText = `${player.name} (${player.team}) - Ocena: ${player.rating}`;
     listContainer.appendChild(p);
   });
 }
 
-// Funkcja do pokazywania/ukrywania modala
-function toggleModal(modalId, show) {
-  const modal = document.getElementById(modalId);
-  if (show) {
-    modal.classList.remove("hidden");
-  } else {
-    modal.classList.add("hidden");
-  }
-}
+// ============================
+// Inicjalizacja zdarzeń po załadowaniu strony
+// ============================
+document.addEventListener("DOMContentLoaded", () => {
+  // Przycisk startowy do rozpoczęcia meczu
+  document.getElementById("startMatchBtn").addEventListener("click", () => {
+    showScreen("gameScreen");
+    // Inicjujemy canvas i uruchamiamy pętlę gry
+    canvas = document.getElementById("gameCanvas");
+    ctx = canvas.getContext("2d");
+    gameAnimating = true;
+    requestAnimationFrame(gameLoop);
+  });
+
+  // Powrót do menu (z ekranu gry)
+  document.getElementById("backToStart").addEventListener("click", () => {
+    gameAnimating = false;
+    showScreen("startScreen");
+  });
+
+  // Przycisk do otwierania bazy zawodników
+  document.getElementById("btnPlayerDB").addEventListener("click", () => {
+    renderPlayerList();
+    toggleModal("playerDBModal", true);
+  });
+
+  // Przycisk zamykania bazy zawodników
+  document.getElementById("closePlayerDB").addEventListener("click", () => {
+    toggleModal("playerDBModal", false);
+  });
+
+  // Przykładowe przyciski dla Języka i Ustawień
+  document.getElementById("btnLanguage").addEventListener("click", () => {
+    alert("Opcja wyboru języka – do implementacji!");
+  });
+  document.getElementById("btnSettings").addEventListener("click", () => {
+    alert("Opcja ustawień – do implementacji!");
+  });
+
+  // Obsługa formularza dodawania zawodnika
+  document.getElementById("addPlayerForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const name = document.getElementById("playerName").value.trim();
+    const team = document.getElementById("playerTeam").value.trim();
+    const rating = parseInt(document.getElementById("playerRating").value.trim(), 10);
+    if (!name || !team || isNaN(rating)) {
+      alert("Proszę uzupełnić wszystkie pola.");
+      return;
+    }
+    let players = loadPlayers();
+    players.push({ name, team, rating });
+    savePlayers(players);
+    renderPlayerList();
+    document.getElementById("addPlayerForm").reset();
+  });
+});
