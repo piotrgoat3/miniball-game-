@@ -315,13 +315,89 @@
       }
 
       // ============================
-      // Obsługa wyboru języka – Modal i eventy
+      // Obsługa wyboru języka – Modal i aktualizacja tekstów
       // ============================
+      function updateLanguageContent(lang) {
+        const translations = {
+          pl: {
+            header: "MiniSoccer ⚽",
+            startMatchBtn: "SZYBKI MECZ",
+            btnPlayerDB: "Baza zawodników",
+            btnLanguage: "Język",
+            btnSettings: "Ustawienia",
+            backToStart: "Powrót do Menu",
+            playerDBModalHeader: "Baza zawodników",
+            addPlayerFormHeader: "Dodaj zawodnika",
+            playerNamePlaceholder: "Imię i nazwisko",
+            playerTeamPlaceholder: "Drużyna",
+            playerRatingPlaceholder: "Ocena",
+            addPlayerButton: "Dodaj",
+            closePlayerDB: "Zamknij",
+            languageModalHeader: "Wybór języka",
+            languageModalText: "Wybierz język interfejsu:",
+            closeLanguageModal: "Zamknij"
+          },
+          en: {
+            header: "MiniSoccer ⚽",
+            startMatchBtn: "Quick Match",
+            btnPlayerDB: "Player Database",
+            btnLanguage: "Language",
+            btnSettings: "Settings",
+            backToStart: "Back to Menu",
+            playerDBModalHeader: "Player Database",
+            addPlayerFormHeader: "Add Player",
+            playerNamePlaceholder: "Name",
+            playerTeamPlaceholder: "Team",
+            playerRatingPlaceholder: "Rating",
+            addPlayerButton: "Add",
+            closePlayerDB: "Close",
+            languageModalHeader: "Language Selection",
+            languageModalText: "Select the interface language:",
+            closeLanguageModal: "Close"
+          }
+        };
+
+        // Update Start Screen texts
+        document.querySelector("#startScreen h1").innerText = translations[lang].header;
+        document.getElementById("startMatchBtn").innerText = translations[lang].startMatchBtn;
+        document.getElementById("btnPlayerDB").innerText = translations[lang].btnPlayerDB;
+        document.getElementById("btnLanguage").innerText = translations[lang].btnLanguage;
+        document.getElementById("btnSettings").innerText = translations[lang].btnSettings;
+
+        // Update Game Screen texts
+        document.getElementById("backToStart").innerText = translations[lang].backToStart;
+
+        // Update Player DB Modal texts
+        let playerDBModalHeader = document.querySelector("#playerDBModal .modal-content h2");
+        if (playerDBModalHeader) { playerDBModalHeader.innerText = translations[lang].playerDBModalHeader; }
+        let addPlayerFormHeader = document.querySelector("#playerDBModal .modal-content h3");
+        if (addPlayerFormHeader) { addPlayerFormHeader.innerText = translations[lang].addPlayerFormHeader; }
+        document.getElementById("playerName").setAttribute("placeholder", translations[lang].playerNamePlaceholder);
+        document.getElementById("playerTeam").setAttribute("placeholder", translations[lang].playerTeamPlaceholder);
+        document.getElementById("playerRating").setAttribute("placeholder", translations[lang].playerRatingPlaceholder);
+        let playerAddButton = document.querySelector("#addPlayerForm button[type=submit]");
+        if (playerAddButton) { playerAddButton.innerText = translations[lang].addPlayerButton; }
+        document.getElementById("closePlayerDB").innerText = translations[lang].closePlayerDB;
+
+        // Update Language Modal texts
+        let languageModalHeader = document.querySelector("#languageModal .modal-content h2");
+        if (languageModalHeader) { languageModalHeader.innerText = translations[lang].languageModalHeader; }
+        let languageModalText = document.querySelector("#languageModal .modal-content p");
+        if (languageModalText) { languageModalText.innerText = translations[lang].languageModalText; }
+        document.getElementById("closeLanguageModal").innerText = translations[lang].closeLanguageModal;
+      
+        // Update text on language option buttons
+        let langOptionPL = document.querySelector('.langOption[data-lang="pl"]');
+        if (langOptionPL) { langOptionPL.innerText = (lang === "pl") ? "Polski" : "Polish"; }
+        let langOptionEN = document.querySelector('.langOption[data-lang="en"]');
+        if (langOptionEN) { langOptionEN.innerText = (lang === "pl") ? "Angielski" : "English"; }
+      }
+
       function setLanguage(langCode) {
-        // Zapisz język w localStorage lub cookie – tu uproszczamy zapis do localStorage
         localStorage.setItem("siteLanguage", langCode);
+        updateLanguageContent(langCode);
+        toggleModal("languageModal", false);
         alert("Ustawiono język: " + (langCode === "pl" ? "Polski" : "English"));
-        // Tutaj możesz dodać dodatkową logikę dla zmiany treści interfejsu
       }
 
       // ============================
