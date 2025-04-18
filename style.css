@@ -1,26 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Nunito', sans-serif;
+    background-color: #e8f5e9;
+    margin: 0;
+    padding: 0;
     text-align: center;
-    background-color: #e0e0e0;
 }
 
-.hidden {
-    display: none;
+button {
+    font-size: 16px;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
 }
 
-#menu, #team-selection, #player-editor, #game-container {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 600px;
+#menu, #game-container {
     margin: 20px auto;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
 }
 
 canvas {
-    background-color: green;
     border: 4px solid white;
+    background-color: green;
     display: block;
     margin: auto;
+}
+
+#scoreboard {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#lsDropdown {
+    display: none;
+    position: absolute;
+    background-color: white;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.show {
+    display: block;
+}
+
+.cat-icon {
+    background-image: url('https://i.imgur.com/kc8RNTX.png'); /* przykładowa sprite image */
+    background-repeat: no-repeat;
+    display: inline-block;
+}
+
+.cat-icon.ci-miniball {
+    background-position: -102px -204px;
+    width: 50px;
+    height: 50px;
+}
+
+.cat-icon.ci-football {
+    background-position: -153px -153px;
+    width: 50px;
+    height: 50px;
+}
+
+.collapse-content {
+    display: none;
+    margin: 10px auto;
+    font-size: 14px;
+    max-width: 400px;
+}
+
+.collapse-button.active + .collapse-content {
+    display: block;
 }
