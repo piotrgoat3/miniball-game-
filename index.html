@@ -8,21 +8,25 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <!-- Pasek u góry z przyciskami -->
-    <div id="top-menu">
+  <!-- Ekran startowy: Duży przycisk "SZYBKI MECZ" -->
+  <div id="startScreen" class="screen">
+    <h1>MiniSoccer ⚽</h1>
+    <button id="startMatchBtn">SZYBKI MECZ</button>
+    <div class="start-options">
       <button id="btnPlayerDB">Baza Zawodników</button>
       <button id="btnLanguage">Język</button>
       <button id="btnSettings">Ustawienia</button>
     </div>
+  </div>
 
-    <!-- Wynik meczu -->
+  <!-- Ekran gry (mecz) -->
+  <div id="gameScreen" class="screen hidden">
+    <!-- Wynik meczu umieszczony nad boiskiem -->
     <div id="scoreboardContainer">
       <h2 id="scoreboard">0 - 0</h2>
     </div>
-
-    <!-- Pole gry (canvas) -->
     <canvas id="gameCanvas" width="800" height="500"></canvas>
+    <button id="backToStart">Powrót do Menu</button>
   </div>
 
   <!-- Modal bazy zawodników -->
@@ -37,7 +41,7 @@
         <input type="number" id="playerRating" placeholder="Ocena" required min="0" max="100">
         <button type="submit">Dodaj</button>
       </form>
-      <button id="closeModal">Zamknij</button>
+      <button id="closePlayerDB">Zamknij</button>
     </div>
   </div>
 
