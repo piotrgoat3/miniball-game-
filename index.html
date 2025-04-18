@@ -4,34 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>MiniSoccer - Szybki Mecz</title>
-    <!-- Łączenie czcionki Nunito -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Łącze do czcionki Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
     <style>
-      /* ============================================
-         GLOBALNE STYLE – AESTHETIC LOOK & RESET
-         ============================================ */
+      /* ============================
+         GLOBALNE STYLE – AESTHETIC LOOK
+         ============================ */
       @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
-
       body {
         font-family: 'Nunito', sans-serif;
-        /* Ciepły, pastelowy gradient – popularny aesthetic look */
         background: linear-gradient(135deg, #f6d365, #fda085);
         margin: 0;
         padding: 0;
         text-align: center;
         color: #333;
       }
-
       .hidden {
         display: none !important;
       }
-
-      /* ============================================
+      
+      /* ============================
          EKRAN STARTOWY
-         ============================================ */
+         ============================ */
       #startScreen {
         padding: 20px;
       }
@@ -45,23 +39,23 @@
         padding: 12px 24px;
         margin: 10px;
         cursor: pointer;
-        background: rgba(255,255,255,0.9);
+        background: rgba(255, 255, 255, 0.9);
         border: none;
         border-radius: 8px;
         transition: background 0.3s, transform 0.2s;
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
       }
       #startScreen button:hover {
-        background: rgba(255,255,255,1);
+        background: rgba(255, 255, 255, 1);
         transform: translateY(-2px);
       }
       .start-options {
         margin-top: 20px;
       }
-
-      /* ============================================
+      
+      /* ============================
          EKRAN GRY
-         ============================================ */
+         ============================ */
       #gameScreen {
         padding: 20px;
       }
@@ -79,33 +73,33 @@
         border-radius: 12px;
         display: block;
         margin: 0 auto;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
       }
       #backToStartBtn {
         font-size: 18px;
         padding: 10px 20px;
         margin-top: 15px;
         cursor: pointer;
-        background: rgba(255,255,255,0.9);
+        background: rgba(255, 255, 255, 0.9);
         border: none;
         border-radius: 8px;
         transition: background 0.3s;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       }
       #backToStartBtn:hover {
-        background: rgba(255,255,255,1);
+        background: rgba(255, 255, 255, 1);
       }
-
-      /* ============================================
+      
+      /* ============================
          MODALE – Baza zawodników & Wybór języka
-         ============================================ */
+         ============================ */
       .modal {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0,0,0,0.5);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -122,31 +116,35 @@
         width: 90%;
         max-width: 500px;
         border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
       }
       .modal-content h2 {
         margin-top: 0;
       }
       .modal-content button {
-        background: rgba(255,255,255,0.9);
+        background: rgba(255, 255, 255, 0.9);
         border: none;
         border-radius: 6px;
         transition: background 0.3s;
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
       }
       .modal-content button:hover {
-        background: rgba(255,255,255,1);
+        background: rgba(255, 255, 255, 1);
       }
       input {
         border: 1px solid #ccc;
         border-radius: 6px;
+        padding: 8px;
+        margin: 5px 0;
+        box-sizing: border-box;
       }
     </style>
   </head>
   <body>
-    <!-- ============================================
+  
+    <!-- ============================
          EKRAN STARTOWY
-         ============================================ -->
+         ============================ -->
     <div id="startScreen">
       <h1>MiniSoccer ⚽</h1>
       <button id="startMatchBtn">SZYBKI MECZ</button>
@@ -156,10 +154,10 @@
         <button id="btnSettings">Ustawienia</button>
       </div>
     </div>
-    
-    <!-- ============================================
+  
+    <!-- ============================
          EKRAN GRY
-         ============================================ -->
+         ============================ -->
     <div id="gameScreen" class="hidden">
       <div id="scoreboardContainer">
         <h2 id="scoreboard">Gole: 0</h2>
@@ -167,15 +165,15 @@
       <canvas id="gameCanvas" width="800" height="500"></canvas>
       <button id="backToStartBtn">Powrót do Menu</button>
     </div>
-    
-    <!-- ============================================
+  
+    <!-- ============================
          MODAL: Baza zawodników
-         ============================================ -->
+         ============================ -->
     <div id="playerDBModal" class="modal hidden">
       <div class="modal-content">
         <h2>Baza zawodników</h2>
         <div id="playerList">
-          <!-- Tu pojawi się lista zawodników -->
+          <!-- Lista zawodników pojawi się tutaj -->
         </div>
         <h3>Dodaj zawodnika</h3>
         <form id="addPlayerForm">
@@ -187,10 +185,10 @@
         <button id="closePlayerDBBtn">Zamknij</button>
       </div>
     </div>
-    
-    <!-- ============================================
+  
+    <!-- ============================
          MODAL: Wybór języka
-         ============================================ -->
+         ============================ -->
     <div id="languageModal" class="modal hidden">
       <div class="modal-content">
         <h2>Wybór języka</h2>
@@ -200,7 +198,7 @@
         <button id="closeLanguageModalBtn">Zamknij</button>
       </div>
     </div>
-    
+  
     <!-- ============================================
          JAVASCRIPT – LOGIKA GRY I OBSŁUGA INTERFEJSU
          ============================================ -->
@@ -249,44 +247,40 @@
             closeLanguageModal: "Close"
           }
         };
-      
-        // Aktualizacja tekstów na ekranie startowym
+        
         document.querySelector("#startScreen h1").innerText = translations[lang].header;
         document.getElementById("startMatchBtn").innerText = translations[lang].startMatchBtn;
         document.getElementById("btnPlayerDB").innerText = translations[lang].btnPlayerDB;
         document.getElementById("btnLanguage").innerText = translations[lang].btnLanguage;
         document.getElementById("btnSettings").innerText = translations[lang].btnSettings;
       
-        // Aktualizacja tekstów na ekranie gry
         document.getElementById("backToStartBtn").innerText = translations[lang].backToStartBtn;
         document.getElementById("scoreboard").innerText = translations[lang].scoreboard + score.goals;
       
-        // Aktualizacja tekstów w modalu Bazy zawodników
         const playerDBHeader = document.querySelector("#playerDBModal .modal-content h2");
-        if (playerDBHeader) playerDBHeader.innerText = translations[lang].playerDBModalHeader;
+        if(playerDBHeader) playerDBHeader.innerText = translations[lang].playerDBModalHeader;
         const addPlayerHeader = document.querySelector("#playerDBModal .modal-content h3");
-        if (addPlayerHeader) addPlayerHeader.innerText = translations[lang].addPlayerFormHeader;
+        if(addPlayerHeader) addPlayerHeader.innerText = translations[lang].addPlayerFormHeader;
         document.getElementById("playerName").setAttribute("placeholder", translations[lang].playerNamePlaceholder);
         document.getElementById("playerTeam").setAttribute("placeholder", translations[lang].playerTeamPlaceholder);
         document.getElementById("playerRating").setAttribute("placeholder", translations[lang].playerRatingPlaceholder);
         const addPlayerBtn = document.querySelector("#addPlayerForm button[type=submit]");
-        if (addPlayerBtn) addPlayerBtn.innerText = translations[lang].addPlayerButton;
+        if(addPlayerBtn) addPlayerBtn.innerText = translations[lang].addPlayerButton;
         document.getElementById("closePlayerDBBtn").innerText = translations[lang].closePlayerDB;
       
-        // Aktualizacja tekstów w modalu Wyboru języka
         const langModalHeader = document.querySelector("#languageModal .modal-content h2");
-        if (langModalHeader) langModalHeader.innerText = translations[lang].languageModalHeader;
+        if(langModalHeader) langModalHeader.innerText = translations[lang].languageModalHeader;
         const langModalText = document.querySelector("#languageModal .modal-content p");
-        if (langModalText) langModalText.innerText = translations[lang].languageModalText;
+        if(langModalText) langModalText.innerText = translations[lang].languageModalText;
         document.getElementById("closeLanguageModalBtn").innerText = translations[lang].closeLanguageModal;
         const langOptionPL = document.querySelector('.langOption[data-lang="pl"]');
-        if (langOptionPL) langOptionPL.innerText = lang === "pl" ? "Polski" : "Polish";
+        if(langOptionPL) langOptionPL.innerText = lang === "pl" ? "Polski" : "Polish";
         const langOptionEN = document.querySelector('.langOption[data-lang="en"]');
-        if (langOptionEN) langOptionEN.innerText = lang === "pl" ? "Angielski" : "English";
+        if(langOptionEN) langOptionEN.innerText = lang === "pl" ? "Angielski" : "English";
       }
       
       function setLanguage(langCode) {
-        localStorage.setItem("siteLanguage", langCode);  // Możesz usunąć ten zapis, jeśli nie używasz localStorage
+        localStorage.setItem("siteLanguage", langCode); // Jeżeli nie chcesz korzystać z localStorage, możesz usunąć tę linię.
         updateLanguageContent(langCode);
         toggleModal("languageModal", false);
         alert("Ustawiono język: " + (langCode === "pl" ? "Polski" : "English"));
@@ -295,19 +289,18 @@
       /**************************************
        * CZĘŚĆ B: LOGIKA GRY – TRYB "SZYBKI MECZ"
        **************************************/
-      // Definicje stałych dla gry
+      // Definicje stałych
       const PLAYER_RADIUS = 16;
       const GOALKEEPER_RADIUS = 18;
-      
-      // Ustawienie liczby goli
+      // Reset wyniku
       score.goals = 0;
       
-      // Funkcja inicjalizująca obiekty gry (piłka, 4 outfield gracze, bramkarz)
+      // Inicjalizacja obiektów gry
       function initGame() {
         canvas = document.getElementById("gameCanvas");
         ctx = canvas.getContext("2d");
       
-        // Piłka – umieszczona centralnie, lekko przesunięta w prawo
+        // Piłka – ustawiona na środku, lekko przesunięta w prawo
         ball = {
           x: canvas.width * 0.55,
           y: canvas.height / 2,
@@ -316,7 +309,7 @@
           dy: 1.5
         };
       
-        // 4 outfield gracze – przykładowe pozycje na lewej połowie
+        // 4 outfield gracze – ustawieni na lewej połowie
         fieldPlayers = [
           { x: canvas.width * 0.25, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
           { x: canvas.width * 0.25, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
@@ -324,7 +317,7 @@
           { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 }
         ];
       
-        // Bramkarz – umieszczony blisko lewej krawędzi, statyczny
+        // Bramkarz – statyczny, blisko lewej krawędzi
         goalkeeper = { x: 60, y: canvas.height / 2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0 };
       
         score.goals = 0;
@@ -335,44 +328,42 @@
         ctx.strokeStyle = "#fff";
         ctx.lineWidth = 4;
         ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-        // Bramka po prawej stronie
         ctx.fillStyle = "white";
         ctx.fillRect(canvas.width - 10, canvas.height / 2 - 50, 10, 100);
-        // Bannery (żółte paski)
         ctx.fillStyle = "yellow";
         ctx.fillRect(10, 0, canvas.width - 20, 10);
         ctx.fillRect(10, canvas.height - 10, canvas.width - 20, 10);
       }
       
-      // Rysowanie wszystkich obiektów gry
+      // Rysowanie obiektów gry: piłka, gracze, bramkarz, linia przeciągania
       function drawGameObjects() {
         // Piłka
         ctx.beginPath();
-        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
         ctx.fillStyle = "white";
         ctx.fill();
         ctx.closePath();
       
-        // Outfield gracze (rysowani na niebiesko)
-        fieldPlayers.forEach(player => {
+        // Gracze outfield – niebiescy
+        fieldPlayers.forEach((player) => {
           ctx.beginPath();
-          ctx.arc(player.x, player.y, player.radius, 0, Math.PI*2);
+          ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
           ctx.fillStyle = "blue";
           ctx.fill();
           ctx.closePath();
         });
       
-        // Bramkarz (czarny)
+        // Bramkarz – czarny
         ctx.beginPath();
-        ctx.arc(goalkeeper.x, goalkeeper.y, goalkeeper.radius, 0, Math.PI*2);
+        ctx.arc(goalkeeper.x, goalkeeper.y, goalkeeper.radius, 0, Math.PI * 2);
         ctx.fillStyle = "black";
         ctx.fill();
         ctx.closePath();
       
-        // Jeśli użytkownik przeciąga gracza – rysujemy przerywaną linię
-        if(isDragging && draggingPlayerIndex !== null) {
+        // Linie przeciągania, jeśli użytkownik przeciąga gracza
+        if (isDragging && draggingPlayerIndex !== null) {
           ctx.save();
-          ctx.setLineDash([5,5]);
+          ctx.setLineDash([5, 5]);
           ctx.strokeStyle = "red";
           ctx.lineWidth = 2;
           const p = fieldPlayers[draggingPlayerIndex];
@@ -384,10 +375,10 @@
         }
       }
       
-      // Aktualizacja pozycji obiektów gry: ruch graczy i piłki, odbicia i detekcja gola
+      // Aktualizacja ruchu obiektów: graczy i piłki, odbicia, detekcja gola
       function updatePositions() {
-        // Aktualizacja ruchu graczy outfield
-        fieldPlayers.forEach(player => {
+        // Ruch graczy outfield
+        fieldPlayers.forEach((player) => {
           player.x += player.vx;
           player.y += player.vy;
           player.vx *= FRICTION;
@@ -400,24 +391,22 @@
         ball.dx *= FRICTION;
         ball.dy *= FRICTION;
       
-        // Odbicia od górnej/dolnej krawędzi
-        if(ball.y - ball.radius < 10) {
+        if (ball.y - ball.radius < 10) {
           ball.y = 10 + ball.radius;
           ball.dy *= -1;
         }
-        if(ball.y + ball.radius > canvas.height - 10) {
+        if (ball.y + ball.radius > canvas.height - 10) {
           ball.y = canvas.height - 10 - ball.radius;
           ball.dy *= -1;
         }
       
-        // Detekcja gola: jeśli piłka przekroczy prawą krawędź, zwiększamy wynik i resetujemy piłkę
-        if(ball.x + ball.radius > canvas.width) {
+        if (ball.x + ball.radius > canvas.width) {
           score.goals++;
           resetBall();
         }
       }
       
-      // Resetowanie piłki do środka po golu
+      // Reset piłki do środka
       function resetBall() {
         ball.x = canvas.width / 2;
         ball.y = canvas.height / 2;
@@ -425,27 +414,27 @@
         ball.dy = 0;
       }
       
-      // Funkcja sprawdzająca kolizję (detekcja kolizji dwóch okręgów)
+      // Sprawdzanie kolizji dwóch okręgów
       function circleCollision(c1, c2) {
         const dx = c1.x - c2.x;
         const dy = c1.y - c2.y;
         return Math.hypot(dx, dy) < (c1.radius + c2.radius);
       }
       
-      // Jeśli gracz (lub bramkarz) dotyka piłki – nadaj impuls piłce
+      // Jeśli gracz lub bramkarz dotyka piłki, nadaj impuls piłce
       function handlePlayerBallCollision(player) {
-        if(circleCollision(player, ball)) {
+        if (circleCollision(player, ball)) {
           const dx = ball.x - player.x;
           const dy = ball.y - player.y;
           const dist = Math.hypot(dx, dy) || 1;
-          ball.dx = (dx/dist) * BALL_COLLISION_IMPULSE;
-          ball.dy = (dy/dist) * BALL_COLLISION_IMPULSE;
+          ball.dx = (dx / dist) * BALL_COLLISION_IMPULSE;
+          ball.dy = (dy / dist) * BALL_COLLISION_IMPULSE;
         }
       }
       
-      // Sprawdzenie kolizji dla wszystkich graczy
+      // Sprawdzenie kolizji dla wszystkich graczy i bramkarza
       function checkCollisions() {
-        fieldPlayers.forEach(player => {
+        fieldPlayers.forEach((player) => {
           handlePlayerBallCollision(player);
         });
         handlePlayerBallCollision(goalkeeper);
@@ -453,7 +442,7 @@
       
       // Główna pętla gry
       function gameLoop() {
-        if(!gameAnimating) return;
+        if (!gameAnimating) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawField();
         updatePositions();
@@ -470,10 +459,9 @@
         const rect = canvas.getBoundingClientRect();
         const mx = e.clientX - rect.left;
         const my = e.clientY - rect.top;
-        // Sprawdzamy dla 4 outfield graczy
-        for(let i = 0; i < fieldPlayers.length; i++) {
+        for (let i = 0; i < fieldPlayers.length; i++) {
           const p = fieldPlayers[i];
-          if(Math.hypot(mx - p.x, my - p.y) < p.radius) {
+          if (Math.hypot(mx - p.x, my - p.y) < p.radius) {
             draggingPlayerIndex = i;
             isDragging = true;
             dragStart = { x: p.x, y: p.y };
@@ -484,17 +472,16 @@
       }
       
       function canvasMouseMove(e) {
-        if(!isDragging) return;
+        if (!isDragging) return;
         const rect = canvas.getBoundingClientRect();
         dragCurrent.x = e.clientX - rect.left;
         dragCurrent.y = e.clientY - rect.top;
       }
       
       function canvasMouseUp(e) {
-        if(!isDragging || draggingPlayerIndex === null) return;
+        if (!isDragging || draggingPlayerIndex === null) return;
         const dx = dragStart.x - dragCurrent.x;
         const dy = dragStart.y - dragCurrent.y;
-        // Impuls dla przeciąganego gracza
         fieldPlayers[draggingPlayerIndex].vx = dx * DRAG_IMPULSE_SCALE;
         fieldPlayers[draggingPlayerIndex].vy = dy * DRAG_IMPULSE_SCALE;
         isDragging = false;
@@ -508,91 +495,14 @@
       }
       
       /**************************************
-       * CZĘŚĆ D: MODALE – Baza zawodników & Wybór języka
+       * CZĘŚĆ D: MODALE – Baza zawodników i Wybór języka
        **************************************/
-      // Funkcja przełączająca widoczność modala
       function toggleModal(modalId, show) {
         const modal = document.getElementById(modalId);
         if (show) modal.classList.remove("hidden");
         else modal.classList.add("hidden");
       }
       
-      // Zamknięcie modala przez kliknięcie poza zawartością
-      document.querySelectorAll(".modal").forEach(modal => {
+      document.querySelectorAll(".modal").forEach((modal) => {
         modal.addEventListener("click", function(e) {
-          if(e.target === modal) {
-            modal.classList.add("hidden");
-          }
-        });
-      });
-      
-      /**************************************
-       * CZĘŚĆ E: MODAL: OBSŁUGA BAZY ZAWODNIKÓW
-       **************************************/
-      // Definiujemy przykładową tablicę zawodników (bez localStorage)
-      const defaultPlayers = [
-        { name: "Lionel Messi", team: "Paris Saint-Germain", rating: 94 },
-        { name: "Cristiano Ronaldo", team: "Manchester United", rating: 93 },
-        { name: "Kylian Mbappe", team: "Paris Saint-Germain", rating: 92 },
-        { name: "Neymar Jr", team: "Paris Saint-Germain", rating: 91 },
-        { name: "Robert Lewandowski", team: "Bayern Munich", rating: 91 },
-        { name: "Kevin De Bruyne", team: "Manchester City", rating: 91 },
-        { name: "Virgil van Dijk", team: "Liverpool", rating: 90 },
-        { name: "Mohamed Salah", team: "Liverpool", rating: 90 },
-        { name: "Sadio Mane", team: "Liverpool", rating: 89 },
-        { name: "Jan Oblak", team: "Atletico Madrid", rating: 90 },
-        { name: "Manuel Neuer", team: "Bayern Munich", rating: 89 },
-        { name: "Erling Haaland", team: "Borussia Dortmund", rating: 90 },
-        { name: "Harry Kane", team: "Tottenham Hotspur", rating: 89 },
-        { name: "Karim Benzema", team: "Real Madrid", rating: 90 },
-        { name: "Luka Modric", team: "Real Madrid", rating: 89 },
-        { name: "N'Golo Kante", team: "Chelsea", rating: 90 },
-        { name: "Joshua Kimmich", team: "Bayern Munich", rating: 89 },
-        { name: "Bruno Fernandes", team: "Manchester United", rating: 88 },
-        { name: "Romelu Lukaku", team: "Chelsea", rating: 88 },
-        { name: "Heung-Min Son", team: "Tottenham Hotspur", rating: 89 },
-        { name: "David de Gea", team: "Manchester United", rating: 87 },
-        { name: "Pedri", team: "Barcelona", rating: 88 },
-        { name: "Frenkie de Jong", team: "Barcelona", rating: 88 },
-        { name: "Raheem Sterling", team: "Chelsea", rating: 87 },
-        { name: "Bernardo Silva", team: "Manchester City", rating: 88 },
-        { name: "Rodri", team: "Manchester City", rating: 88 },
-        { name: "Vinicius Jr", team: "Real Madrid", rating: 87 },
-        { name: "Lautaro Martinez", team: "Inter Milan", rating: 87 },
-        { name: "Casemiro", team: "Manchester United", rating: 87 },
-        { name: "Jadon Sancho", team: "Manchester United", rating: 86 }
-      ];
-      
-      // Funkcja renderująca listę zawodników
-      function renderPlayerList() {
-        const listContainer = document.getElementById("playerList");
-        listContainer.innerHTML = "";
-        defaultPlayers.forEach(player => {
-          const p = document.createElement("p");
-          p.innerText = `${player.name} (${player.team}) - Ocena: ${player.rating}`;
-          listContainer.appendChild(p);
-        });
-      }
-      
-      /**************************************
-       * CZĘŚĆ F: INICJALIZACJA ZDARZEŃ PO ŁADOWANIU DOM
-       **************************************/
-      document.addEventListener("DOMContentLoaded", () => {
-        console.log("DOM załadowany");
-      
-        // Obsługa przycisku SZYBKI MECZ – przełączamy widok na ekran gry i uruchamiamy rozgrywkę
-        document.getElementById("startMatchBtn").addEventListener("click", () => {
-          console.log("Kliknięto SZYBKI MECZ");
-          document.getElementById("startScreen").classList.add("hidden");
-          document.getElementById("gameScreen").classList.remove("hidden");
-          initGame();
-          addCanvasEvents();
-          gameAnimating = true;
-          requestAnimationFrame(gameLoop);
-        });
-      
-        // Obsługa przycisku Powrót do Menu
-        document.getElementById("backToStartBtn").addEventListener("click", () => {
-          console.log("Powrót do Menu");
-          gameAnimating = false;
-          document.getElementById("gameScreen").class
+          if (e.target
