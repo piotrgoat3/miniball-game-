@@ -9,7 +9,7 @@
       rel="stylesheet"
     />
     <style>
-      /* Podstawowe style */
+      /* Globalne style */
       @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
 
       body {
@@ -22,8 +22,9 @@
       .hidden {
         display: none !important;
       }
-      /* Ekrany */
-      #startScreen, #gameScreen {
+      /* Ekran startowy i rozgrywka */
+      #startScreen,
+      #gameScreen {
         padding: 20px;
       }
       #startScreen h1 {
@@ -55,7 +56,7 @@
         display: block;
         margin: 0 auto;
       }
-      /* Modale (Baza zawodników i Język) */
+      /* Modale – Baza zawodników oraz wybór języka */
       .modal {
         position: fixed;
         top: 0;
@@ -75,8 +76,9 @@
         max-width: 500px;
         border-radius: 8px;
       }
-      /* Formularze */
-      input, button {
+      /* Formularze – inputy i przyciski */
+      input,
+      button {
         font-size: 16px;
         margin: 5px 0;
         padding: 8px;
@@ -134,149 +136,34 @@
     </div>
 
     <script>
-      /* ===================================================
-         CZĘŚĆ I. TRYB "SZYBKI MECZ" - ROZGRYWKA
-         =================================================== */
-      // Globalne zmienne gry
-      let canvas, ctx;
-      let score = { goals: 0 };
-      let ball;
-      // Drużyna: 4 zawodników outfield (sterowanych przez przeciąganie) oraz 1 statyczny bramkarz.
-      let fieldPlayers = [];
-      let goalkeeper = {};
-      // Variables do przeciągania
-      let draggingPlayerIndex = null;
-      let dragStart = { x: 0, y: 0 };
-      let dragCurrent = { x: 0, y: 0 };
-      let isDragging = false;
-
-      // Ustawienia gry
-      const FRICTION = 0.98;
-      const DRAG_IMPULSE_SCALE = 0.2; // skalowanie impulsu dla zawodnika
-      const BALL_COLLISION_IMPULSE = 7;
-      const PLAYER_RADIUS = 16;
-      const GOALKEEPER_RADIUS = 18;
-
-      // Inicjalizacja gry
-      function initGame() {
-        canvas = document.getElementById("gameCanvas");
-        ctx = canvas.getContext("2d");
-        // Ustawienie piłki na środku (nieco przesuniętej w prawo)
-        ball = {
-          x: canvas.width * 0.55,
-          y: canvas.height / 2,
-          radius: 8,
-          dx: 0,
-          dy: 0
-        };
-        // Inicjalizacja 4 outfield graczy – ustawienie na lewej połowie
-        fieldPlayers = [
-          { x: canvas.width * 0.25, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
-          { x: canvas.width * 0.25, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
-          { x: canvas.width * 0.25, y: canvas.height * 0.7, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
-          { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 }
-        ];
-        // Inicjalizacja bramkarza – blisko lewej krawędzi
-        goalkeeper = { x: 60, y: canvas.height / 2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0 };
-        score.goals = 0;
-      }
-
-      // Rysowanie boiska
-      function drawField() {
-        ctx.strokeStyle = "#fff";
-        ctx.lineWidth = 4;
-        // Obrys boiska - margines 10 px
-        ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-        // Dla uproszczenia - rysujemy tylko bramkę po prawej stronie
-        ctx.fillStyle = "white";
-        ctx.fillRect(canvas.width - 10, canvas.height/2 - 50, 10, 100);
-        // Bannery reklamowe (żółte paski)
-        ctx.fillStyle = "yellow";
-        ctx.fillRect(10, 0, canvas.width - 20, 10);
-        ctx.fillRect(10, canvas.height - 10, canvas.width - 20, 10);
-      }
-
-      // Rysowanie wszystkich obiektów gry: piłki, zawodników i bramkarza
-      function drawGameObjects() {
-        // Piłka
-        ctx.beginPath();
-        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "white";
-        ctx.fill();
-        ctx.closePath();
-        // Outfield gracze (niebiescy)
-        fieldPlayers.forEach(player => {
-          ctx.beginPath();
-          ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
-          ctx.fillStyle = "blue";
-          ctx.fill();
-          ctx.closePath();
-        });
-        // Bramkarz (czarny)
-        ctx.beginPath();
-        ctx.arc(goalkeeper.x, goalkeeper.y, goalkeeper.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "black";
-        ctx.fill();
-        ctx.closePath();
-        // Jeśli przeciągamy gracza, rysowana jest przerywana linia
-        if(isDragging && draggingPlayerIndex !== null) {
-          ctx.save();
-          ctx.setLineDash([5, 5]);
-          ctx.strokeStyle = "red";
-          ctx.lineWidth = 2;
-          const p = fieldPlayers[draggingPlayerIndex];
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(dragCurrent.x, dragCurrent.y);
-          ctx.stroke();
-          ctx.restore();
-        }
-      }
-
-      // Aktualizacja pozycji obiektów
-      function updatePositions() {
-        // Aktualizacja pozycji zawodników (outfield)
-        fieldPlayers.forEach(player => {
-          player.x += player.vx;
-          player.y += player.vy;
-          player.vx *= FRICTION;
-          player.vy *= FRICTION;
-        });
-        // Piłka
-        ball.x += ball.dx;
-        ball.y += ball.dy;
-        ball.dx *= FRICTION;
-        ball.dy *= FRICTION;
-        // Odbicia piłki od górnej i dolnej krawędzi
-        if(ball.y - ball.radius < 10) {
-          ball.y = 10 + ball.radius;
-          ball.dy *= -1;
-        }
-        if(ball.y + ball.radius > canvas.height - 10) {
-          ball.y = canvas.height - 10 - ball.radius;
-          ball.dy *= -1;
-        }
-        // Jeśli piłka przejdzie przez prawą krawędź (bramka)
-        if(ball.x + ball.radius > canvas.width) {
-          score.goals++;
-          resetBall();
-        }
-      }
-
-      function resetBall() {
-        ball.x = canvas.width / 2;
-        ball.y = canvas.height / 2;
-        ball.dx = 0;
-        ball.dy = 0;
-      }
-
-      // Obsługa kolizji - jeśli gracz dotknie piłki, nadaj piłce impuls
-      function circleCollision(c1, c2) {
-        const dx = c1.x - c2.x;
-        const dy = c1.y - c2.y;
-        return Math.hypot(dx, dy) < (c1.radius + c2.radius);
-      }
-      function handlePlayerBallCollision(player) {
-        if(circleCollision(player, ball)) {
-          const dx = ball.x - player.x;
-          const dy = ball.y - player
+      /* =====================================
+         CZĘŚĆ I. OBSŁUGA WYBORU JĘZYKA
+         ===================================== */
+      function updateLanguageContent(lang) {
+        const translations = {
+          pl: {
+            header: "MiniSoccer ⚽",
+            startMatchBtn: "SZYBKI MECZ",
+            playerDBBtn: "Baza zawodników",
+            languageBtn: "Język",
+            settingsBtn: "Ustawienia",
+            backToStartBtn: "Powrót do Menu",
+            scoreboard: "Gole: ",
+            playerDBModalHeader: "Baza zawodników",
+            addPlayerFormHeader: "Dodaj zawodnika",
+            playerNamePlaceholder: "Imię i nazwisko",
+            playerTeamPlaceholder: "Drużyna",
+            playerRatingPlaceholder: "Ocena",
+            addPlayerButton: "Dodaj",
+            closePlayerDB: "Zamknij",
+            languageModalHeader: "Wybór języka",
+            languageModalText: "Wybierz język interfejsu:",
+            closeLanguageModal: "Zamknij"
+          },
+          en: {
+            header: "MiniSoccer ⚽",
+            startMatchBtn: "Quick Match",
+            playerDBBtn: "Player Database",
+            languageBtn: "Language",
+            settingsBtn: "Settings",
+            back
