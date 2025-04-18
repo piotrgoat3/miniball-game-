@@ -62,7 +62,7 @@
         margin: 0 auto;
       }
 
-      /* Modal z bazą zawodników */
+      /* Modale (baza zawodników oraz język) */
       .modal {
         position: fixed;
         top: 0;
@@ -129,6 +129,17 @@
           <button type="submit">Dodaj</button>
         </form>
         <button id="closePlayerDB">Zamknij</button>
+      </div>
+    </div>
+
+    <!-- Modal wyboru języka (ukryty na starcie) -->
+    <div id="languageModal" class="modal hidden">
+      <div class="modal-content">
+        <h2>Wybór języka</h2>
+        <p>Wybierz język interfejsu:</p>
+        <button class="langOption" data-lang="pl">Polski</button>
+        <button class="langOption" data-lang="en">English</button>
+        <button id="closeLanguageModal">Zamknij</button>
       </div>
     </div>
 
@@ -217,7 +228,7 @@
         requestAnimationFrame(gameLoop);
       }
 
-      // Funkcja do pokazywania/ukrywania modala
+      // Funkcja do pokazywania/ukrywania modali
       function toggleModal(modalId, show) {
         const modal = document.getElementById(modalId);
         if (show) {
@@ -231,6 +242,11 @@
       document.getElementById("playerDBModal").addEventListener("click", function (e) {
         if (e.target === this) {
           toggleModal("playerDBModal", false);
+        }
+      });
+      document.getElementById("languageModal").addEventListener("click", function (e) {
+        if (e.target === this) {
+          toggleModal("languageModal", false);
         }
       });
 
@@ -299,6 +315,16 @@
       }
 
       // ============================
+      // Obsługa wyboru języka – Modal i eventy
+      // ============================
+      function setLanguage(langCode) {
+        // Zapisz język w localStorage lub cookie – tu uproszczamy zapis do localStorage
+        localStorage.setItem("siteLanguage", langCode);
+        alert("Ustawiono język: " + (langCode === "pl" ? "Polski" : "English"));
+        // Tutaj możesz dodać dodatkową logikę dla zmiany treści interfejsu
+      }
+
+      // ============================
       // Inicjalizacja zdarzeń
       // ============================
       document.addEventListener("DOMContentLoaded", () => {
@@ -317,9 +343,9 @@
           toggleModal("playerDBModal", true);
         });
 
-        // Przycisk "Język"
+        // Otwarcie modala wyboru języka
         document.getElementById("btnLanguage").addEventListener("click", () => {
-          alert("Opcja wyboru języka – do implementacji!");
+          toggleModal("languageModal", true);
         });
 
         // Przycisk "Ustawienia"
@@ -333,9 +359,14 @@
           showScreen("startScreen");
         });
 
-        // Zamykanie modala przez przycisk "Zamknij"
+        // Zamykanie modala bazy zawodników
         document.getElementById("closePlayerDB").addEventListener("click", () => {
           toggleModal("playerDBModal", false);
+        });
+
+        // Zamykanie modala wyboru języka
+        document.getElementById("closeLanguageModal").addEventListener("click", () => {
+          toggleModal("languageModal", false);
         });
 
         // Obsługa formularza dodawania zawodnika
@@ -354,6 +385,15 @@
           renderPlayerList();
           document.getElementById("addPlayerForm").reset();
         });
+
+        // Obsługa przycisków wyboru języka w modalu
+        const langOptions = document.getElementsByClassName("langOption");
+        for (let i = 0; i < langOptions.length; i++) {
+          langOptions[i].addEventListener("click", function () {
+            const lang = this.getAttribute("data-lang");
+            setLanguage(lang);
+          });
+        }
       });
     </script>
   </body>
