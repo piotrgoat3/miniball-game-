@@ -8,9 +8,9 @@ body {
   text-align: center;
 }
 
-/* Ustawienia ekranów */
-.screen {
-  display: block;
+/* Ekrany – startowy i mecz */
+#startScreen,
+#gameScreen {
   padding: 20px;
 }
 
@@ -18,7 +18,6 @@ body {
   display: none;
 }
 
-/* Start Screen */
 #startScreen h1 {
   font-size: 48px;
   margin-bottom: 20px;
@@ -35,11 +34,7 @@ body {
   margin-top: 20px;
 }
 
-/* Game Screen */
-#gameScreen {
-  position: relative;
-}
-
+/* Ekran meczu */
 #scoreboardContainer {
   margin-bottom: 10px;
 }
@@ -51,10 +46,10 @@ body {
   padding: 0;
 }
 
-/* Canvas – boisko */
+/* Pole gry – canvas z boiskiem */
 canvas {
   background-color: green;
-  border: 4px solid #fff; /* ogólny obrys boiska */
+  border: 4px solid #fff;
   display: block;
   margin: 0 auto;
 }
@@ -81,7 +76,7 @@ canvas {
   border-radius: 8px;
 }
 
-/* Inputy i przyciski w modal */
+/* Formularze – inputy i przyciski */
 input, button {
   font-size: 16px;
   margin: 5px 0;
