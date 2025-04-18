@@ -3,16 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MiniSoccer</title>
+    <title>MiniSoccer - Szybki Mecz</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
+      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
 
       body {
-        font-family: "Nunito", sans-serif;
+        font-family: 'Nunito', sans-serif;
         background-color: #e8f5e9;
         margin: 0;
         padding: 0;
@@ -24,39 +24,32 @@
       #gameScreen {
         padding: 20px;
       }
-
       .hidden {
         display: none !important;
       }
-
       #startScreen h1 {
         font-size: 48px;
         margin-bottom: 20px;
       }
-
       #startScreen button {
         font-size: 20px;
         padding: 12px 24px;
         margin: 10px;
         cursor: pointer;
       }
-
       .start-options {
         margin-top: 20px;
       }
-
       /* Ekran meczu */
       #scoreboardContainer {
         margin-bottom: 10px;
       }
-
       #scoreboard {
         font-size: 26px;
         font-weight: bold;
         margin: 0;
         padding: 0;
       }
-
       /* Pole gry – canvas z boiskiem */
       canvas {
         background-color: green;
@@ -64,8 +57,7 @@
         display: block;
         margin: 0 auto;
       }
-
-      /* Modale (Baza zawodników i Język) */
+      /* Modale – baza zawodników oraz wybór języka */
       .modal {
         position: fixed;
         top: 0;
@@ -78,7 +70,6 @@
         justify-content: center;
         z-index: 20;
       }
-
       .modal-content {
         background: #fff;
         padding: 20px;
@@ -86,7 +77,6 @@
         max-width: 500px;
         border-radius: 8px;
       }
-
       /* Formularze – inputy i przyciski */
       input,
       button {
@@ -110,7 +100,7 @@
       </div>
     </div>
 
-    <!-- Ekran meczu (początkowo ukryty) -->
+    <!-- Ekran meczu (domyślnie ukryty) -->
     <div id="gameScreen" class="hidden">
       <div id="scoreboardContainer">
         <h2 id="scoreboard">0 - 0</h2>
@@ -119,40 +109,23 @@
       <button id="backToStart">Powrót do Menu</button>
     </div>
 
-    <!-- Modal z bazą zawodników (ukryty na starcie) -->
+    <!-- Modal bazy zawodników -->
     <div id="playerDBModal" class="modal hidden">
       <div class="modal-content">
         <h2>Baza zawodników</h2>
         <div id="playerList"></div>
         <h3>Dodaj zawodnika</h3>
         <form id="addPlayerForm">
-          <input
-            type="text"
-            id="playerName"
-            placeholder="Imię i nazwisko"
-            required
-          />
-          <input
-            type="text"
-            id="playerTeam"
-            placeholder="Drużyna"
-            required
-          />
-          <input
-            type="number"
-            id="playerRating"
-            placeholder="Ocena"
-            required
-            min="0"
-            max="100"
-          />
+          <input type="text" id="playerName" placeholder="Imię i nazwisko" required />
+          <input type="text" id="playerTeam" placeholder="Drużyna" required />
+          <input type="number" id="playerRating" placeholder="Ocena" required min="0" max="100" />
           <button type="submit">Dodaj</button>
         </form>
         <button id="closePlayerDB">Zamknij</button>
       </div>
     </div>
 
-    <!-- Modal wyboru języka (ukryty na starcie) -->
+    <!-- Modal wyboru języka -->
     <div id="languageModal" class="modal hidden">
       <div class="modal-content">
         <h2>Wybór języka</h2>
@@ -165,131 +138,151 @@
 
     <script>
       /* ---------------------------
-         REWOLUCJONIZOWANA ROZGRYWKA
+         KOD ROZGRYWKI (TRYB SZYBKIEGO MECZU)
          ---------------------------
-         Nowa wersja gry – sterowanie zawodnikiem za pomocą klawiatury,
-         prosta fizyka piłki, kolizje i detekcja golów oraz AI przeciwnika.
+         Inspiracja grami Miniball (DVAVI):
+         - Drużyna 4+1: 4 zawodników outfield (sterowanych przez przeciąganie myszką)
+           + 1 bramkarz (nieprzesuwalny)
+         - Przy przeciąganiu wyświetlana jest przerywana linia wskazująca trajektorię.
+         - Po zwolnieniu przycisku myszki zawodnik otrzymuje impuls ruchu.
+         - Jeśli dotknie piłki, zostaje ona "kopnięta" – piłka otrzymuje impuls.
       */
 
-      // Globalne zmienne gry
+      // Globalne zmienne
       let canvas, ctx;
-      let score = { left: 0, right: 0 };
-      let player, opponent, ball;
-      let gameAnimating = false;
-      let keys = {}; // przechowuje naciśnięte klawisze
+      let score = { goals: 0 };
+      let ball;
+      const FRICTION = 0.98;
+      const IMPULSE = 7; // siła uderzenia dla zawodnika
+      const BALL_IMPULSE = 8; // siła uderzenia piłki przy kontakcie
 
-      const PLAYER_SPEED = 4;
-      const OPPONENT_SPEED = 2.5;
-      const FRICTION = 0.99;
-      const IMPULSE = 5; // siła uderzenia piłki przy kolizji
+      // Drużyna: 4 outfield players oraz 1 bramkarz
+      let fieldPlayers = []; // sterowane przez gracza
+      let goalkeeper = {};     // bramkarz - statyczny
 
-      // Inicjalizacja pozycji i obiektów gry
+      // Dla przeciągania
+      let draggingPlayerIndex = null;
+      let dragStart = { x: 0, y: 0 };
+      let dragCurrent = { x: 0, y: 0 };
+      let isDragging = false;
+
+      // Inicjalizacja obiektów gry
       function initGame() {
         canvas = document.getElementById("gameCanvas");
         ctx = canvas.getContext("2d");
 
-        // Ustawienia obiektów – nasze drużyny
-        player = { x: 150, y: canvas.height / 2, radius: 20 };
-        opponent = { x: canvas.width - 150, y: canvas.height / 2, radius: 20 };
+        // Inicjalizacja piłki na środku
         ball = {
-          x: canvas.width / 2,
+          x: canvas.width * 0.55,
           y: canvas.height / 2,
-          radius: 10,
+          radius: 8,
           dx: 0,
           dy: 0,
         };
 
+        // Inicjalizacja 4 zawodników outfield - rozstawienie na lewej połowie
+        fieldPlayers = [
+          { x: canvas.width * 0.25, y: canvas.height * 0.3, radius: 16, vx: 0, vy: 0 },
+          { x: canvas.width * 0.25, y: canvas.height * 0.5, radius: 16, vx: 0, vy: 0 },
+          { x: canvas.width * 0.25, y: canvas.height * 0.7, radius: 16, vx: 0, vy: 0 },
+          { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: 16, vx: 0, vy: 0 },
+        ];
+
+        // Inicjalizacja bramkarza (na bardzo lewym brzegu)
+        goalkeeper = {
+          x: 40,
+          y: canvas.height / 2,
+          radius: 18,
+          vx: 0,
+          vy: 0,
+        };
+
         // Reset wyniku
-        score.left = 0;
-        score.right = 0;
+        score.goals = 0;
       }
 
-      // Rysowanie boiska (linia środkowa, okrąg, bramki, banery)
+      // Rysowanie boiska
       function drawField() {
         ctx.strokeStyle = "#fff";
         ctx.lineWidth = 4;
-        // Obrys boiska z marginesem 10px
+        // Obrys (margines 10px)
         ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
 
-        // Linia środkowa
+        // Linia środkowa – pozioma linia dzieląca boisko (dla uproszczenia)
         ctx.beginPath();
-        ctx.moveTo(canvas.width / 2, 10);
-        ctx.lineTo(canvas.width / 2, canvas.height - 10);
+        ctx.moveTo(canvas.width * 0.6, 10);
+        ctx.lineTo(canvas.width * 0.6, canvas.height - 10);
         ctx.stroke();
 
-        // Okrąg środkowy
-        ctx.beginPath();
-        ctx.arc(canvas.width / 2, canvas.height / 2, 50, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // Bramki
+        // Bramki – tylko po prawej stronie (przeciwnik)
         ctx.fillStyle = "white";
-        ctx.fillRect(0, canvas.height / 2 - 50, 10, 100); // lewa bramka
-        ctx.fillRect(canvas.width - 10, canvas.height / 2 - 50, 10, 100); // prawa bramka
+        // cel bramkowy: prostokąt po prawej krawędzi, wysokość 100px na środku
+        ctx.fillRect(canvas.width - 10, canvas.height / 2 - 50, 10, 100);
 
-        // Bannery reklamowe (żółte paski)
+        // Bannery reklamowe (żółte paski u góry i dołu)
         ctx.fillStyle = "yellow";
-        ctx.fillRect(10, 0, canvas.width - 20, 10); // górny banner
-        ctx.fillRect(10, canvas.height - 10, canvas.width - 20, 10); // dolny banner
+        ctx.fillRect(10, 0, canvas.width - 20, 10);
+        ctx.fillRect(10, canvas.height - 10, canvas.width - 20, 10);
       }
 
-      // Rysowanie obiektów (zawodnik, przeciwnik, piłka)
+      // Rysowanie obiektów gry: piłki, zawodników i bramkarza
       function drawGameObjects() {
-        // Zawodnik (gracz) – niebieski
-        ctx.beginPath();
-        ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "blue";
-        ctx.fill();
-        ctx.closePath();
-
-        // Przeciwnik – czerwony
-        ctx.beginPath();
-        ctx.arc(opponent.x, opponent.y, opponent.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "red";
-        ctx.fill();
-        ctx.closePath();
-
-        // Piłka – biała
+        // Piłka (biała)
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
         ctx.fillStyle = "white";
         ctx.fill();
         ctx.closePath();
+
+        // Outfield players (np. niebiescy)
+        fieldPlayers.forEach((player) => {
+          ctx.beginPath();
+          ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+          ctx.fillStyle = "blue";
+          ctx.fill();
+          ctx.closePath();
+        });
+
+        // Bramkarz (np. zielony lub czarny)
+        ctx.beginPath();
+        ctx.arc(goalkeeper.x, goalkeeper.y, goalkeeper.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "black";
+        ctx.fill();
+        ctx.closePath();
+
+        // Jeśli aktualnie przeciągamy gracza - rysujemy przerywaną linię
+        if (isDragging && draggingPlayerIndex !== null) {
+          ctx.save();
+          ctx.setLineDash([5, 5]);
+          ctx.strokeStyle = "red";
+          ctx.lineWidth = 2;
+          let p = fieldPlayers[draggingPlayerIndex];
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(dragCurrent.x, dragCurrent.y);
+          ctx.stroke();
+          ctx.restore();
+        }
       }
 
-      // Aktualizacja pozycji (sterowanie zawodnikiem, ruch AI przeciwnika, ruch piłki)
+      // Aktualizacja pozycji obiektów: zawodników, piłki
       function updatePositions() {
-        // Sterowanie zawodnikiem za pomocą klawiszy
-        if (keys["ArrowUp"] && player.y - player.radius > 10)
-          player.y -= PLAYER_SPEED;
-        if (keys["ArrowDown"] && player.y + player.radius < canvas.height - 10)
-          player.y += PLAYER_SPEED;
-        if (keys["ArrowLeft"] && player.x - player.radius > 10)
-          player.x -= PLAYER_SPEED;
-        if (
-          keys["ArrowRight"] &&
-          player.x + player.radius < canvas.width / 2 - 20
-        )
-          player.x += PLAYER_SPEED;
-
-        // Prosty algorytm AI: przeciwnik podąża za piłką
-        let dx = ball.x - opponent.x;
-        let dy = ball.y - opponent.y;
-        let dist = Math.hypot(dx, dy);
-        if (dist > 1) {
-          opponent.x += (dx / dist) * OPPONENT_SPEED;
-          opponent.y += (dy / dist) * OPPONENT_SPEED;
-        }
-
-        // Aktualizacja pozycji piłki
+        // Aktualizujemy pozycje zawodników outfield
+        fieldPlayers.forEach((player) => {
+          player.x += player.vx;
+          player.y += player.vy;
+          // Tarcie
+          player.vx *= FRICTION;
+          player.vy *= FRICTION;
+        });
+        // Bramkarz – pozostaje statyczny, ale można ewentualnie dodać drobne ruchy
+        // Aktualizacja piłki
         ball.x += ball.dx;
         ball.y += ball.dy;
-
-        // Zastosowanie tarcia (spowolnienie)
         ball.dx *= FRICTION;
         ball.dy *= FRICTION;
 
-        // Odbicia od górnej i dolnej krawędzi
+        // Odbicie piłki od górnej/dolnej krawędzi
         if (ball.y - ball.radius < 10) {
           ball.y = 10 + ball.radius;
           ball.dy *= -1;
@@ -299,20 +292,14 @@
           ball.dy *= -1;
         }
 
-        // Detekcja golów
-        if (ball.x - ball.radius < 0) {
-          // GOL dla drużyny prawej (przeciwnik)
-          score.right++;
-          resetBall();
-        }
+        // Jeśli piłka trafia do miejsca bramkowym (po prawej krawędzi)
         if (ball.x + ball.radius > canvas.width) {
-          // GOL dla drużyny lewej (gracz)
-          score.left++;
+          score.goals++;
           resetBall();
         }
       }
 
-      // Resetowanie piłki do centrum po golu
+      // Reset piłki do centrum po golu
       function resetBall() {
         ball.x = canvas.width / 2;
         ball.y = canvas.height / 2;
@@ -320,36 +307,22 @@
         ball.dy = 0;
       }
 
-      // Sprawdzenie kolizji między dwoma okręgami
+      // Prosta obsługa kolizji między okręgami
       function circleCollision(c1, c2) {
         let dx = c1.x - c2.x;
         let dy = c1.y - c2.y;
-        let distance = Math.hypot(dx, dy);
-        return distance < c1.radius + c2.radius;
+        return Math.hypot(dx, dy) < (c1.radius + c2.radius);
       }
 
-      // Obsługa kolizji: gdy zawodnik (lub przeciwnik) dotyka piłki, odbija ją
-      function handleCollisions() {
+      // Jeśli zawodnik (outfield gracz) dotknie piłki, nadaj piłce impuls
+      function handlePlayerBallCollision(player) {
         if (circleCollision(player, ball)) {
           let dx = ball.x - player.x;
           let dy = ball.y - player.y;
           let dist = Math.hypot(dx, dy) || 1;
-          ball.dx = (dx / dist) * IMPULSE;
-          ball.dy = (dy / dist) * IMPULSE;
+          ball.dx = (dx / dist) * BALL_IMPULSE;
+          ball.dy = (dy / dist) * BALL_IMPULSE;
         }
-        if (circleCollision(opponent, ball)) {
-          let dx = ball.x - opponent.x;
-          let dy = ball.y - opponent.y;
-          let dist = Math.hypot(dx, dy) || 1;
-          ball.dx = (dx / dist) * IMPULSE;
-          ball.dy = (dy / dist) * IMPULSE;
-        }
-      }
-
-      // Aktualizacja wyniku (scoreboard)
-      function updateScoreboard() {
-        document.getElementById("scoreboard").innerText =
-          score.left + " - " + score.right;
       }
 
       // Główna pętla gry
@@ -358,28 +331,66 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawField();
         updatePositions();
-        handleCollisions();
+        // Sprawdź kolizje dla każdego gracza
+        fieldPlayers.forEach((player) => {
+          handlePlayerBallCollision(player);
+        });
+        // Dla bramkarza
+        handlePlayerBallCollision(goalkeeper);
         drawGameObjects();
-        updateScoreboard();
+        document.getElementById("scoreboard").innerText = "Gole: " + score.goals;
         requestAnimationFrame(gameLoop);
       }
 
-      // Obsługa zdarzeń klawiaturowych
-      window.addEventListener("keydown", function (e) {
-        keys[e.key] = true;
-      });
-      window.addEventListener("keyup", function (e) {
-        keys[e.key] = false;
-      });
+      // Obsługa zdarzeń myszy na canvasie – przeciąganie zawodników
+      function canvasMouseDown(e) {
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        // Sprawdź, czy kliknięto na któregoś z outfield graczy (pierwsze 4)
+        for (let i = 0; i < fieldPlayers.length; i++) {
+          let p = fieldPlayers[i];
+          let dist = Math.hypot(mx - p.x, my - p.y);
+          if (dist < p.radius) {
+            draggingPlayerIndex = i;
+            isDragging = true;
+            dragStart = { x: p.x, y: p.y };
+            dragCurrent = { x: mx, y: my };
+            break;
+          }
+        }
+      }
+
+      function canvasMouseMove(e) {
+        if (!isDragging) return;
+        const rect = canvas.getBoundingClientRect();
+        dragCurrent.x = e.clientX - rect.left;
+        dragCurrent.y = e.clientY - rect.top;
+      }
+
+      function canvasMouseUp(e) {
+        if (!isDragging || draggingPlayerIndex === null) return;
+        // Oblicz impuls: kierunek = (dragStart - dragCurrent)
+        const dx = dragStart.x - dragCurrent.x;
+        const dy = dragStart.y - dragCurrent.y;
+        const scale = 0.1; // Dostosuj siłę impulsu
+        fieldPlayers[draggingPlayerIndex].vx = dx * scale;
+        fieldPlayers[draggingPlayerIndex].vy = dy * scale;
+        // Zakończ przeciąganie
+        isDragging = false;
+        draggingPlayerIndex = null;
+      }
+
+      // Dodaj zdarzenia myszy do canvas
+      function addCanvasEvents() {
+        canvas.addEventListener("mousedown", canvasMouseDown);
+        canvas.addEventListener("mousemove", canvasMouseMove);
+        canvas.addEventListener("mouseup", canvasMouseUp);
+      }
 
       /* ---------------------------
-         MODALE I POZOSTAŁE FUNKCJE
-         (Baza zawodników, wybór języka)
-         ---------------------------
-         Poniższe funkcje zawierają obsługę localStorage do przechowywania bazy
-         zawodników oraz mechanizm zmiany języka interfejsu.
-      */
-
+         MODALE: Baza zawodników i Język
+      --------------------------- */
       function toggleModal(modalId, show) {
         const modal = document.getElementById(modalId);
         if (show) {
@@ -389,19 +400,15 @@
         }
       }
 
-      // Zamknięcie modala przez kliknięcie poza jego zawartość
-      document.getElementById("playerDBModal").addEventListener("click", function (
-        e
-      ) {
+      // Zamknięcie modala przez kliknięcie poza zawartość
+      document.getElementById("playerDBModal").addEventListener("click", function (e) {
         if (e.target === this) toggleModal("playerDBModal", false);
       });
-      document
-        .getElementById("languageModal")
-        .addEventListener("click", function (e) {
-          if (e.target === this) toggleModal("languageModal", false);
-        });
+      document.getElementById("languageModal").addEventListener("click", function (e) {
+        if (e.target === this) toggleModal("languageModal", false);
+      });
 
-      // Obsługa bazy zawodników przy użyciu localStorage
+      // Baza zawodników – localStorage
       function loadPlayers() {
         let players = localStorage.getItem("players");
         if (players) {
@@ -443,11 +450,9 @@
           return defaultPlayers;
         }
       }
-
       function savePlayers(players) {
         localStorage.setItem("players", JSON.stringify(players));
       }
-
       function renderPlayerList() {
         const players = loadPlayers();
         const listContainer = document.getElementById("playerList");
@@ -458,8 +463,7 @@
         }
         players.forEach((player) => {
           const p = document.createElement("p");
-          p.innerText =
-            player.name + " (" + player.team + ") - Ocena: " + player.rating;
+          p.innerText = `${player.name} (${player.team}) - Ocena: ${player.rating}`;
           listContainer.appendChild(p);
         });
       }
@@ -483,7 +487,7 @@
             closePlayerDB: "Zamknij",
             languageModalHeader: "Wybór języka",
             languageModalText: "Wybierz język interfejsu:",
-            closeLanguageModal: "Zamknij",
+            closeLanguageModal: "Zamknij"
           },
           en: {
             header: "MiniSoccer ⚽",
@@ -494,182 +498,3 @@
             backToStart: "Back to Menu",
             playerDBModalHeader: "Player Database",
             addPlayerFormHeader: "Add Player",
-            playerNamePlaceholder: "Name",
-            playerTeamPlaceholder: "Team",
-            playerRatingPlaceholder: "Rating",
-            addPlayerButton: "Add",
-            closePlayerDB: "Close",
-            languageModalHeader: "Language Selection",
-            languageModalText: "Select the interface language:",
-            closeLanguageModal: "Close",
-          },
-        };
-
-        // Aktualizacja tekstów w ekranie startowym
-        document.querySelector("#startScreen h1").innerText =
-          translations[lang].header;
-        document.getElementById("startMatchBtn").innerText =
-          translations[lang].startMatchBtn;
-        document.getElementById("btnPlayerDB").innerText =
-          translations[lang].btnPlayerDB;
-        document.getElementById("btnLanguage").innerText =
-          translations[lang].btnLanguage;
-        document.getElementById("btnSettings").innerText =
-          translations[lang].btnSettings;
-
-        // Aktualizacja tekstów na ekranie gry
-        document.getElementById("backToStart").innerText =
-          translations[lang].backToStart;
-
-        // Aktualizacja tekstów w modalu bazy zawodników
-        let playerDBModalHeader = document.querySelector(
-          "#playerDBModal .modal-content h2"
-        );
-        if (playerDBModalHeader)
-          playerDBModalHeader.innerText = translations[lang].playerDBModalHeader;
-        let addPlayerFormHeader = document.querySelector(
-          "#playerDBModal .modal-content h3"
-        );
-        if (addPlayerFormHeader)
-          addPlayerFormHeader.innerText = translations[lang].addPlayerFormHeader;
-        document
-          .getElementById("playerName")
-          .setAttribute("placeholder", translations[lang].playerNamePlaceholder);
-        document
-          .getElementById("playerTeam")
-          .setAttribute("placeholder", translations[lang].playerTeamPlaceholder);
-        document
-          .getElementById("playerRating")
-          .setAttribute(
-            "placeholder",
-            translations[lang].playerRatingPlaceholder
-          );
-        let playerAddButton = document.querySelector(
-          "#addPlayerForm button[type=submit]"
-        );
-        if (playerAddButton)
-          playerAddButton.innerText = translations[lang].addPlayerButton;
-        document.getElementById("closePlayerDB").innerText =
-          translations[lang].closePlayerDB;
-
-        // Aktualizacja tekstów w modalu wyboru języka
-        let languageModalHeader = document.querySelector(
-          "#languageModal .modal-content h2"
-        );
-        if (languageModalHeader)
-          languageModalHeader.innerText = translations[lang].languageModalHeader;
-        let languageModalText = document.querySelector(
-          "#languageModal .modal-content p"
-        );
-        if (languageModalText)
-          languageModalText.innerText = translations[lang].languageModalText;
-        document.getElementById("closeLanguageModal").innerText =
-          translations[lang].closeLanguageModal;
-        let langOptionPL = document.querySelector('.langOption[data-lang="pl"]');
-        if (langOptionPL)
-          langOptionPL.innerText = lang === "pl" ? "Polski" : "Polish";
-        let langOptionEN = document.querySelector('.langOption[data-lang="en"]');
-        if (langOptionEN)
-          langOptionEN.innerText = lang === "pl" ? "Angielski" : "English";
-      }
-
-      function setLanguage(langCode) {
-        localStorage.setItem("siteLanguage", langCode);
-        updateLanguageContent(langCode);
-        toggleModal("languageModal", false);
-        alert("Ustawiono język: " + (langCode === "pl" ? "Polski" : "English"));
-      }
-
-      /* ---------------------------
-         INICJALIZACJA ZDARZEŃ
-         ---------------------------
-      */
-      document.addEventListener("DOMContentLoaded", () => {
-        // Rozpoczęcie meczu – ekran gry
-        document
-          .getElementById("startMatchBtn")
-          .addEventListener("click", () => {
-            showScreen("gameScreen");
-            initGame();
-            gameAnimating = true;
-            requestAnimationFrame(gameLoop);
-          });
-
-        // Powrót do menu
-        document
-          .getElementById("backToStart")
-          .addEventListener("click", () => {
-            gameAnimating = false;
-            showScreen("startScreen");
-          });
-
-        // Otwarcie modala z bazą zawodników
-        document
-          .getElementById("btnPlayerDB")
-          .addEventListener("click", () => {
-            renderPlayerList();
-            toggleModal("playerDBModal", true);
-          });
-
-        // Otwarcie modala wyboru języka
-        document
-          .getElementById("btnLanguage")
-          .addEventListener("click", () => {
-            toggleModal("languageModal", true);
-          });
-
-        // Przycisk "Ustawienia"
-        document
-          .getElementById("btnSettings")
-          .addEventListener("click", () => {
-            alert("Opcja ustawień – do implementacji!");
-          });
-
-        // Zamykanie modala bazy zawodników
-        document
-          .getElementById("closePlayerDB")
-          .addEventListener("click", () => {
-            toggleModal("playerDBModal", false);
-          });
-
-        // Zamykanie modala wyboru języka
-        document
-          .getElementById("closeLanguageModal")
-          .addEventListener("click", () => {
-            toggleModal("languageModal", false);
-          });
-
-        // Obsługa formularza dodawania zawodnika
-        document
-          .getElementById("addPlayerForm")
-          .addEventListener("submit", (e) => {
-            e.preventDefault();
-            const name = document.getElementById("playerName").value.trim();
-            const team = document.getElementById("playerTeam").value.trim();
-            const rating = parseInt(
-              document.getElementById("playerRating").value.trim(),
-              10
-            );
-            if (!name || !team || isNaN(rating)) {
-              alert("Proszę uzupełnić wszystkie pola.");
-              return;
-            }
-            let players = loadPlayers();
-            players.push({ name, team, rating });
-            savePlayers(players);
-            renderPlayerList();
-            document.getElementById("addPlayerForm").reset();
-          });
-
-        // Obsługa przycisków wyboru języka
-        const langOptions = document.getElementsByClassName("langOption");
-        for (let i = 0; i < langOptions.length; i++) {
-          langOptions[i].addEventListener("click", function () {
-            const lang = this.getAttribute("data-lang");
-            setLanguage(lang);
-          });
-        }
-      });
-    </script>
-  </body>
-</html>
