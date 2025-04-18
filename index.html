@@ -8,20 +8,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Ekran startowy: Duży przycisk "SZYBKI MECZ" -->
-  <div id="startScreen" class="screen">
+  <!-- Ekran startowy -->
+  <div id="startScreen">
     <h1>MiniSoccer ⚽</h1>
     <button id="startMatchBtn">SZYBKI MECZ</button>
     <div class="start-options">
-      <button id="btnPlayerDB">Baza Zawodników</button>
+      <button id="btnPlayerDB">Baza zawodników</button>
       <button id="btnLanguage">Język</button>
       <button id="btnSettings">Ustawienia</button>
     </div>
   </div>
 
-  <!-- Ekran gry (mecz) -->
-  <div id="gameScreen" class="screen hidden">
-    <!-- Wynik meczu umieszczony nad boiskiem -->
+  <!-- Ekran meczu -->
+  <div id="gameScreen" class="hidden">
     <div id="scoreboardContainer">
       <h2 id="scoreboard">0 - 0</h2>
     </div>
@@ -29,7 +28,7 @@
     <button id="backToStart">Powrót do Menu</button>
   </div>
 
-  <!-- Modal bazy zawodników -->
+  <!-- Modal z bazą zawodników – nie widoczny od razu -->
   <div id="playerDBModal" class="modal hidden">
     <div class="modal-content">
       <h2>Baza Zawodników</h2>
