@@ -2,55 +2,48 @@
 let canvas, ctx;
 let score = { left: 0, right: 0 };
 
-// Przykładowe obiekty: zawodnik oraz piłka
+// Przykładowe obiekty do gry (dla uproszczenia)
 let player = { x: 300, y: 250, radius: 20 };
 let ball = { x: 500, y: 250, radius: 10, dx: 2, dy: 1.5 };
-
-// Sterowanie animacją
 let gameAnimating = false;
 
-// Funkcja do przełączania widoków (ekranów)
+// Funkcja do przełączania ekranów
 function showScreen(id) {
   document.getElementById("startScreen").classList.add("hidden");
   document.getElementById("gameScreen").classList.add("hidden");
   document.getElementById(id).classList.remove("hidden");
 }
 
-// Rysujemy cały pitch – boisko z liniami, bramkami i banerami
+// Rysowanie boiska z liniami, bramkami i banerami
 function drawField() {
-  // Rysujemy zewnętrzny obrys boiska
   ctx.strokeStyle = "#fff";
   ctx.lineWidth = 4;
+  // Zewnętrzny obrys boiska – zostawiamy mały margines (10px)
   ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
 
-  // Rysujemy linię środkową (dzielącą boisko na dwie połowy)
+  // Linia środkowa
   ctx.beginPath();
   ctx.moveTo(canvas.width / 2, 10);
   ctx.lineTo(canvas.width / 2, canvas.height - 10);
   ctx.stroke();
 
-  // Rysujemy okrąg środkowy (center circle)
+  // Okrąg środkowy
   ctx.beginPath();
   ctx.arc(canvas.width / 2, canvas.height / 2, 50, 0, Math.PI * 2);
   ctx.stroke();
 
-  // Rysujemy bramki po lewej i prawej stronie
-  // Załóżmy, że bramka to prostokąt o szerokości 10px i wysokości 100px umieszczony na środku krawędzi
+  // Bramki – prostokąty po lewej i prawej stronie
   ctx.fillStyle = "white";
-  // Lewa bramka
-  ctx.fillRect(0, (canvas.height / 2) - 50, 10, 100);
-  // Prawa bramka
-  ctx.fillRect(canvas.width - 10, (canvas.height / 2) - 50, 10, 100);
+  ctx.fillRect(0, (canvas.height / 2) - 50, 10, 100);                 // lewa bramka
+  ctx.fillRect(canvas.width - 10, (canvas.height / 2) - 50, 10, 100);     // prawa bramka
 
-  // Rysujemy bannery reklamowe (na górze i dole boiska)
+  // Bannery reklamowe – top i bottom (żółte paski)
   ctx.fillStyle = "yellow";
-  // Górny banner
-  ctx.fillRect(10, 0, canvas.width - 20, 10);
-  // Dolny banner
-  ctx.fillRect(10, canvas.height - 10, canvas.width - 20, 10);
+  ctx.fillRect(10, 0, canvas.width - 20, 10);                            // górny banner
+  ctx.fillRect(10, canvas.height - 10, canvas.width - 20, 10);            // dolny banner
 }
 
-// Funkcja rysująca obiekty gry
+// Rysowanie obiektów – piłki i zawodnika
 function drawGameObjects() {
   // Rysujemy piłkę
   ctx.beginPath();
@@ -67,7 +60,7 @@ function drawGameObjects() {
   ctx.closePath();
 }
 
-// Pętla gry – rysowanie boiska, obiektów i aktualizacja pozycji piłki
+// Główna pętla gry
 function gameLoop() {
   if (!gameAnimating) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -75,11 +68,9 @@ function gameLoop() {
   drawField();
   drawGameObjects();
 
-  // Aktualizacja pozycji piłki (prosta fizyka)
+  // Aktualizacja pozycji piłki z prostą fizyką odbicia
   ball.x += ball.dx;
   ball.y += ball.dy;
-
-  // Odbijanie piłki od krawędzi boiska (uwzględniając obrys)
   if (ball.x - ball.radius < 10 || ball.x + ball.radius > canvas.width - 10) {
     ball.dx *= -1;
   }
@@ -87,13 +78,11 @@ function gameLoop() {
     ball.dy *= -1;
   }
 
-  // Aktualizacja wyniku (na razie statyczne "0 - 0")
   document.getElementById("scoreboard").innerText = `${score.left} - ${score.right}`;
-
   requestAnimationFrame(gameLoop);
 }
 
-// Obsługa modal do bazy zawodników
+// Funkcja do pokazywania/ukrywania modala
 function toggleModal(modalId, show) {
   const modal = document.getElementById(modalId);
   if (show) {
@@ -103,8 +92,15 @@ function toggleModal(modalId, show) {
   }
 }
 
+// Umożliwienie zamknięcia modala klikając poza obszarem modal-content
+document.getElementById("playerDBModal").addEventListener("click", function(e) {
+  if (e.target === this) {
+    toggleModal("playerDBModal", false);
+  }
+});
+
 // ============================
-// Baza zawodników – localStorage
+// Baza zawodników – obsługa localStorage
 // ============================
 function loadPlayers() {
   let players = localStorage.getItem("players");
@@ -112,9 +108,36 @@ function loadPlayers() {
     return JSON.parse(players);
   } else {
     const defaultPlayers = [
-      { "name": "Robert Lewandowski", "team": "Polska", "rating": 91 },
-      { "name": "Lionel Messi", "team": "Argentyna", "rating": 94 },
-      { "name": "Cristiano Ronaldo", "team": "Portugalia", "rating": 92 }
+      { "name": "Lionel Messi", "team": "Paris Saint-Germain", "rating": 94 },
+      { "name": "Cristiano Ronaldo", "team": "Manchester United", "rating": 93 },
+      { "name": "Kylian Mbappe", "team": "Paris Saint-Germain", "rating": 92 },
+      { "name": "Neymar Jr", "team": "Paris Saint-Germain", "rating": 91 },
+      { "name": "Robert Lewandowski", "team": "Bayern Munich", "rating": 91 },
+      { "name": "Kevin De Bruyne", "team": "Manchester City", "rating": 91 },
+      { "name": "Virgil van Dijk", "team": "Liverpool", "rating": 90 },
+      { "name": "Mohamed Salah", "team": "Liverpool", "rating": 90 },
+      { "name": "Sadio Mane", "team": "Liverpool", "rating": 89 },
+      { "name": "Jan Oblak", "team": "Atletico Madrid", "rating": 90 },
+      { "name": "Manuel Neuer", "team": "Bayern Munich", "rating": 89 },
+      { "name": "Erling Haaland", "team": "Borussia Dortmund", "rating": 90 },
+      { "name": "Harry Kane", "team": "Tottenham Hotspur", "rating": 89 },
+      { "name": "Karim Benzema", "team": "Real Madrid", "rating": 90 },
+      { "name": "Luka Modric", "team": "Real Madrid", "rating": 89 },
+      { "name": "N'Golo Kante", "team": "Chelsea", "rating": 90 },
+      { "name": "Joshua Kimmich", "team": "Bayern Munich", "rating": 89 },
+      { "name": "Bruno Fernandes", "team": "Manchester United", "rating": 88 },
+      { "name": "Romelu Lukaku", "team": "Chelsea", "rating": 88 },
+      { "name": "Heung-Min Son", "team": "Tottenham Hotspur", "rating": 89 },
+      { "name": "David de Gea", "team": "Manchester United", "rating": 87 },
+      { "name": "Pedri", "team": "Barcelona", "rating": 88 },
+      { "name": "Frenkie de Jong", "team": "Barcelona", "rating": 88 },
+      { "name": "Raheem Sterling", "team": "Chelsea", "rating": 87 },
+      { "name": "Bernardo Silva", "team": "Manchester City", "rating": 88 },
+      { "name": "Rodri", "team": "Manchester City", "rating": 88 },
+      { "name": "Vinicius Jr", "team": "Real Madrid", "rating": 87 },
+      { "name": "Lautaro Martinez", "team": "Inter Milan", "rating": 87 },
+      { "name": "Casemiro", "team": "Manchester United", "rating": 87 },
+      { "name": "Jadon Sancho", "team": "Manchester United", "rating": 86 }
     ];
     localStorage.setItem("players", JSON.stringify(defaultPlayers));
     return defaultPlayers;
@@ -141,45 +164,43 @@ function renderPlayerList() {
 }
 
 // ============================
-// Inicjalizacja zdarzeń po załadowaniu strony
+// Inicjalizacja zdarzeń
 // ============================
 document.addEventListener("DOMContentLoaded", () => {
-  // Przycisk startowy do rozpoczęcia meczu
+  // Przyciski w ekranie startowym
   document.getElementById("startMatchBtn").addEventListener("click", () => {
     showScreen("gameScreen");
-    // Inicjujemy canvas i uruchamiamy pętlę gry
     canvas = document.getElementById("gameCanvas");
     ctx = canvas.getContext("2d");
     gameAnimating = true;
     requestAnimationFrame(gameLoop);
   });
 
-  // Powrót do menu (z ekranu gry)
-  document.getElementById("backToStart").addEventListener("click", () => {
-    gameAnimating = false;
-    showScreen("startScreen");
-  });
-
-  // Przycisk do otwierania bazy zawodników
   document.getElementById("btnPlayerDB").addEventListener("click", () => {
     renderPlayerList();
     toggleModal("playerDBModal", true);
   });
 
-  // Przycisk zamykania bazy zawodników
-  document.getElementById("closePlayerDB").addEventListener("click", () => {
-    toggleModal("playerDBModal", false);
-  });
-
-  // Przykładowe przyciski dla Języka i Ustawień
   document.getElementById("btnLanguage").addEventListener("click", () => {
     alert("Opcja wyboru języka – do implementacji!");
   });
+
   document.getElementById("btnSettings").addEventListener("click", () => {
     alert("Opcja ustawień – do implementacji!");
   });
 
-  // Obsługa formularza dodawania zawodnika
+  // Powrót do menu z ekranu meczu
+  document.getElementById("backToStart").addEventListener("click", () => {
+    gameAnimating = false;
+    showScreen("startScreen");
+  });
+
+  // Zamykanie modala przy kliknięciu przycisku "Zamknij"
+  document.getElementById("closePlayerDB").addEventListener("click", () => {
+    toggleModal("playerDBModal", false);
+  });
+
+  // Obsługa formularza dodawania zawodnika (uruchamia się dopiero wewnątrz modala)
   document.getElementById("addPlayerForm").addEventListener("submit", e => {
     e.preventDefault();
     const name = document.getElementById("playerName").value.trim();
