@@ -5,16 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>MiniSoccer - Szybki Mecz</title>
     <!-- Łączenie czcionki Nunito -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      /* ============================================
-         GLOBALNE STYLE – AESTHETIC LOOK & RESET
-         ============================================ */
+      /* ============================================================================
+         GLOBALNE STYLE – GRAFICZNY DESIGN (AESTHETIC STYLE)
+         ============================================================================
+         Używamy gradientowego tła, łagodnych cieni, zaokrąglonych elementów i
+         płynnych przejść, by nadać interfejsowi nowoczesny i przyjemny wygląd.
+      ============================================================================ */
       @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
       
       body {
         font-family: 'Nunito', sans-serif;
-        /* Ciepły, pastelowy gradient – popularny aesthetic look */
         background: linear-gradient(135deg, #f6d365, #fda085);
         margin: 0;
         padding: 0;
@@ -26,127 +31,156 @@
         display: none !important;
       }
       
-      /* ============================================
+      /* ============================================================================
          EKRAN STARTOWY
-         ============================================ */
+         ============================================================================
+         Duży nagłówek, przyciski o modernistycznym wyglądzie z cieniem i animacjami.
+      ============================================================================ */
       #startScreen {
-        padding: 20px;
+        padding: 40px 20px;
       }
+      
       #startScreen h1 {
-        font-size: 48px;
-        margin-bottom: 20px;
-        text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        font-size: 56px;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        letter-spacing: 1px;
       }
+      
       #startScreen button {
         font-size: 20px;
-        padding: 12px 24px;
+        padding: 14px 28px;
         margin: 10px;
         cursor: pointer;
-        background: rgba(255,255,255,0.9);
+        background: rgba(255, 255, 255, 0.95);
         border: none;
-        border-radius: 8px;
-        transition: background 0.3s, transform 0.2s;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        border-radius: 12px;
+        transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.25);
       }
+      
       #startScreen button:hover {
-        background: rgba(255,255,255,1);
-        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 1);
+        transform: translateY(-3px);
+        box-shadow: 0 5px 10px rgba(0,0,0,0.3);
       }
+      
       .start-options {
         margin-top: 20px;
       }
       
-      /* ============================================
+      /* ============================================================================
          EKRAN GRY
-         ============================================ */
+         ============================================================================
+         Prezentujemy wynik, boisko (canvas) z cieniami i zaokrąglonymi rogami.
+      ============================================================================ */
       #gameScreen {
         padding: 20px;
       }
+      
       #scoreboardContainer {
-        margin-bottom: 10px;
+        margin-bottom: 20px;
       }
+      
       #scoreboard {
-        font-size: 26px;
+        font-size: 28px;
         font-weight: bold;
-        margin: 0;
       }
+      
       canvas {
-        background-color: green;
+        background-color: #228B22;  /* odcień zieleni – boisko */
         border: 4px solid #fff;
-        border-radius: 12px;
+        border-radius: 16px;
         display: block;
         margin: 0 auto;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.35);
       }
+      
       #backToStartBtn {
         font-size: 18px;
-        padding: 10px 20px;
-        margin-top: 15px;
+        padding: 12px 24px;
+        margin-top: 20px;
         cursor: pointer;
         background: rgba(255,255,255,0.9);
         border: none;
-        border-radius: 8px;
+        border-radius: 10px;
         transition: background 0.3s;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.25);
       }
+      
       #backToStartBtn:hover {
         background: rgba(255,255,255,1);
       }
       
-      /* ============================================
-         MODALE – Baza zawodników & Wybór języka
-         ============================================ */
+      /* ============================================================================
+         MODALE – Baza zawodników oraz Wybór języka
+         ============================================================================
+         Modale mają efekt fadeIn, zaokrąglone rogi oraz cieniowanie, co nadaje im
+         nowoczesny, estetyczny wygląd.
+      ============================================================================ */
       .modal {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.5);
+        background: rgba(0, 0, 0, 0.6);
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 20;
+        z-index: 100;
         animation: fadeIn 0.3s;
       }
+      
       @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
       }
+      
       .modal-content {
         background: #fff;
-        padding: 20px;
+        padding: 30px;
         width: 90%;
         max-width: 500px;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        border-radius: 16px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
       }
+      
       .modal-content h2 {
         margin-top: 0;
+        font-size: 28px;
       }
+      
       .modal-content button {
         background: rgba(255,255,255,0.9);
         border: none;
         border-radius: 6px;
-        transition: background 0.3s;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        padding: 10px 20px;
+        margin-top: 10px;
+        transition: background 0.3s, transform 0.2s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+        cursor: pointer;
       }
+      
       .modal-content button:hover {
         background: rgba(255,255,255,1);
+        transform: translateY(-2px);
       }
+      
       input {
         border: 1px solid #ccc;
         border-radius: 6px;
-        padding: 8px;
+        padding: 10px;
         margin: 5px 0;
+        width: 100%;
         box-sizing: border-box;
       }
     </style>
   </head>
   <body>
-    <!-- ============================================
-         EKRAN STARTOWY
-         ============================================ -->
+    <!-- ============================================================
+         EKRAN STARTOWY – przyciski umożliwiające przejście do trybu gry i otwarcie modali
+         ============================================================ -->
     <div id="startScreen">
       <h1>MiniSoccer ⚽</h1>
       <button id="startMatchBtn">SZYBKI MECZ</button>
@@ -157,9 +191,9 @@
       </div>
     </div>
     
-    <!-- ============================================
-         EKRAN GRY
-         ============================================ -->
+    <!-- ============================================================
+         EKRAN GRY – prosty tryb meczowy z canvas
+         ============================================================ -->
     <div id="gameScreen" class="hidden">
       <div id="scoreboardContainer">
         <h2 id="scoreboard">Gole: 0</h2>
@@ -168,13 +202,15 @@
       <button id="backToStartBtn">Powrót do Menu</button>
     </div>
     
-    <!-- ============================================
-         MODAL: Baza zawodników
-         ============================================ -->
+    <!-- ============================================================
+         MODAL: Baza zawodników – lista zawodników oraz formularz dodawania
+         ============================================================ -->
     <div id="playerDBModal" class="modal hidden">
       <div class="modal-content">
         <h2>Baza zawodników</h2>
-        <div id="playerList"><!-- Lista zawodników pojawi się tutaj --></div>
+        <div id="playerList">
+          <!-- Lista zawodników pojawi się tutaj -->
+        </div>
         <h3>Dodaj zawodnika</h3>
         <form id="addPlayerForm">
           <input type="text" id="playerName" placeholder="Imię i nazwisko" required />
@@ -186,9 +222,9 @@
       </div>
     </div>
     
-    <!-- ============================================
-         MODAL: Wybór języka
-         ============================================ -->
+    <!-- ============================================================
+         MODAL: Wybór języka – umożliwia zmianę języka interfejsu
+         ============================================================ -->
     <div id="languageModal" class="modal hidden">
       <div class="modal-content">
         <h2>Wybór języka</h2>
@@ -199,14 +235,14 @@
       </div>
     </div>
     
-    <!-- ============================================
+    <!-- ============================================================
          JAVASCRIPT – LOGIKA GRY I OBSŁUGA INTERFEJSU
-         ============================================ -->
+         ============================================================ -->
     <script>
       /**************************************
        * CZĘŚĆ A: OBSŁUGA WYBORU JĘZYKA
        **************************************/
-      // Używamy obiektu score z właściwością goals
+      // Globalny obiekt wyniku
       let score = { goals: 0 };
       
       function updateLanguageContent(lang) {
@@ -251,15 +287,18 @@
           }
         };
       
+        // Ekran startowy
         document.querySelector("#startScreen h1").innerText = translations[lang].header;
         document.getElementById("startMatchBtn").innerText = translations[lang].startMatchBtn;
         document.getElementById("btnPlayerDB").innerText = translations[lang].btnPlayerDB;
         document.getElementById("btnLanguage").innerText = translations[lang].btnLanguage;
         document.getElementById("btnSettings").innerText = translations[lang].btnSettings;
       
+        // Ekran gry
         document.getElementById("backToStartBtn").innerText = translations[lang].backToStartBtn;
         document.getElementById("scoreboard").innerText = translations[lang].scoreboard + score.goals;
       
+        // Modal Bazy zawodników
         const playerDBHeader = document.querySelector("#playerDBModal .modal-content h2");
         if (playerDBHeader) playerDBHeader.innerText = translations[lang].playerDBModalHeader;
         const addPlayerHeader = document.querySelector("#playerDBModal .modal-content h3");
@@ -271,6 +310,7 @@
         if (addPlayerBtn) addPlayerBtn.innerText = translations[lang].addPlayerButton;
         document.getElementById("closePlayerDBBtn").innerText = translations[lang].closePlayerDB;
       
+        // Modal Wyboru języka
         const langModalHeader = document.querySelector("#languageModal .modal-content h2");
         if (langModalHeader) langModalHeader.innerText = translations[lang].languageModalHeader;
         const langModalText = document.querySelector("#languageModal .modal-content p");
@@ -283,6 +323,7 @@
       }
       
       function setLanguage(langCode) {
+        // Jeśli nie chcesz korzystać z localStorage, tę linię możesz pominąć
         localStorage.setItem("siteLanguage", langCode);
         updateLanguageContent(langCode);
         toggleModal("languageModal", false);
@@ -292,7 +333,7 @@
       /**************************************
        * CZĘŚĆ B: LOGIKA GRY – TRYB "SZYBKI MECZ"
        **************************************/
-      // Definiujemy stałe dla gry
+      // Definicje stałych – promienie zawodników
       const PLAYER_RADIUS = 16;
       const GOALKEEPER_RADIUS = 18;
       score.goals = 0;
@@ -301,6 +342,7 @@
         canvas = document.getElementById("gameCanvas");
         ctx = canvas.getContext("2d");
       
+        // Inicjalizacja piłki – umieszczona centralnie, lekko na prawo
         ball = {
           x: canvas.width * 0.55,
           y: canvas.height / 2,
@@ -309,6 +351,7 @@
           dy: 1.5
         };
       
+        // Inicjalizacja 4 outfield graczy – przykładowe pozycje na lewej połowie
         fieldPlayers = [
           { x: canvas.width * 0.25, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
           { x: canvas.width * 0.25, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
@@ -316,6 +359,7 @@
           { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 }
         ];
       
+        // Bramkarz – statyczny, blisko lewej krawędzi
         goalkeeper = { x: 60, y: canvas.height / 2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0 };
       
         score.goals = 0;
@@ -353,9 +397,9 @@
         ctx.fill();
         ctx.closePath();
       
-        if (isDragging && draggingPlayerIndex !== null) {
+        if(isDragging && draggingPlayerIndex !== null) {
           ctx.save();
-          ctx.setLineDash([5, 5]);
+          ctx.setLineDash([5,5]);
           ctx.strokeStyle = "red";
           ctx.lineWidth = 2;
           const p = fieldPlayers[draggingPlayerIndex];
@@ -380,16 +424,16 @@
         ball.dx *= FRICTION;
         ball.dy *= FRICTION;
       
-        if (ball.y - ball.radius < 10) {
+        if(ball.y - ball.radius < 10) {
           ball.y = 10 + ball.radius;
           ball.dy *= -1;
         }
-        if (ball.y + ball.radius > canvas.height - 10) {
+        if(ball.y + ball.radius > canvas.height - 10) {
           ball.y = canvas.height - 10 - ball.radius;
           ball.dy *= -1;
         }
       
-        if (ball.x + ball.radius > canvas.width) {
+        if(ball.x + ball.radius > canvas.width) {
           score.goals++;
           resetBall();
         }
@@ -409,12 +453,12 @@
       }
       
       function handlePlayerBallCollision(player) {
-        if (circleCollision(player, ball)) {
+        if(circleCollision(player, ball)) {
           const dx = ball.x - player.x;
           const dy = ball.y - player.y;
           const dist = Math.hypot(dx, dy) || 1;
-          ball.dx = (dx/dist) * BALL_COLLISION_IMPULSE;
-          ball.dy = (dy/dist) * BALL_COLLISION_IMPULSE;
+          ball.dx = (dx/dist) * 7;
+          ball.dy = (dy/dist) * 7;
         }
       }
       
@@ -426,7 +470,7 @@
       }
       
       function gameLoop() {
-        if (!gameAnimating) return;
+        if(!gameAnimating) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawField();
         updatePositions();
@@ -448,9 +492,9 @@
         const rect = canvas.getBoundingClientRect();
         const mx = e.clientX - rect.left;
         const my = e.clientY - rect.top;
-        for (let i = 0; i < fieldPlayers.length; i++) {
+        for(let i = 0; i < fieldPlayers.length; i++){
           const p = fieldPlayers[i];
-          if (Math.hypot(mx - p.x, my - p.y) < p.radius) {
+          if(Math.hypot(mx - p.x, my - p.y) < p.radius) {
             draggingPlayerIndex = i;
             isDragging = true;
             dragStart = { x: p.x, y: p.y };
@@ -461,18 +505,18 @@
       }
       
       function canvasMouseMove(e) {
-        if (!isDragging) return;
+        if(!isDragging) return;
         const rect = canvas.getBoundingClientRect();
         dragCurrent.x = e.clientX - rect.left;
         dragCurrent.y = e.clientY - rect.top;
       }
       
       function canvasMouseUp(e) {
-        if (!isDragging || draggingPlayerIndex === null) return;
+        if(!isDragging || draggingPlayerIndex === null) return;
         const dx = dragStart.x - dragCurrent.x;
         const dy = dragStart.y - dragCurrent.y;
-        fieldPlayers[draggingPlayerIndex].vx = dx * DRAG_IMPULSE_SCALE;
-        fieldPlayers[draggingPlayerIndex].vy = dy * DRAG_IMPULSE_SCALE;
+        fieldPlayers[draggingPlayerIndex].vx = dx * 0.2;
+        fieldPlayers[draggingPlayerIndex].vy = dy * 0.2;
         isDragging = false;
         draggingPlayerIndex = null;
       }
@@ -488,13 +532,13 @@
        **************************************/
       function toggleModal(modalId, show) {
         const modal = document.getElementById(modalId);
-        if (show) modal.classList.remove("hidden");
+        if(show) modal.classList.remove("hidden");
         else modal.classList.add("hidden");
       }
       
       document.querySelectorAll(".modal").forEach(modal => {
         modal.addEventListener("click", function(e) {
-          if (e.target === modal) {
+          if(e.target === modal) {
             modal.classList.add("hidden");
           }
         });
@@ -552,6 +596,7 @@
       document.addEventListener("DOMContentLoaded", () => {
         console.log("DOM załadowany");
       
+        // Przyciski na ekranie startowym
         document.getElementById("startMatchBtn").addEventListener("click", () => {
           console.log("Kliknięto SZYBKI MECZ");
           document.getElementById("startScreen").classList.add("hidden");
@@ -569,6 +614,7 @@
           document.getElementById("startScreen").classList.remove("hidden");
         });
       
+        // Modale
         document.getElementById("btnPlayerDB").addEventListener("click", () => {
           console.log("Kliknięto Baza zawodników");
           renderPlayerList();
