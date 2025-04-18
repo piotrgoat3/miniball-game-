@@ -1,10 +1,25 @@
+// Globalne zmienne gry (bez zmian)
 let canvas, ctx, ball, score = { left: 0, right: 0 };
 let dragging = false, dragStart = null;
 let player = { x: 300, y: 250, radius: 20 };
 
+// Funkcja przełączająca widoki
+function showScreen(screenId) {
+    // Ukryj wszystkie główne kontenery
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("game-container").classList.add("hidden");
+    document.getElementById("playerDB").classList.add("hidden");
+    // Pokaż wybrany
+    document.getElementById(screenId).classList.remove("hidden");
+}
+
+function backToMenu() {
+    showScreen("startScreen");
+}
+
+// Ekran gry - przykładowa implementacja, jak wcześniej
 function startGame() {
-    document.getElementById("menu").classList.add("hidden");
-    document.getElementById("game-container").classList.remove("hidden");
+    showScreen("game-container");
 
     canvas = document.getElementById("gameCanvas");
     ctx = canvas.getContext("2d");
@@ -18,19 +33,19 @@ function startGame() {
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // bandy
+    // Rysowanie band (obszary)
     ctx.fillStyle = "yellow";
     ctx.fillRect(0, 0, canvas.width, 20);
     ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
 
-    // piłka
+    // Rysowanie piłki
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
     ctx.fillStyle = "white";
     ctx.fill();
     ctx.closePath();
 
-    // zawodnik
+    // Rysowanie zawodnika
     ctx.beginPath();
     ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
     ctx.fillStyle = "blue";
@@ -45,7 +60,7 @@ function gameLoop() {
         ctx.stroke();
     }
 
-    // update fizyki piłki
+    // Aktualizacja pozycji piłki
     ball.x += ball.dx;
     ball.y += ball.dy;
     ball.dx *= 0.98;
@@ -58,11 +73,27 @@ function gameLoop() {
 }
 
 function updateScore() {
-    document.getElementById("score").innerText = `${score.left} - ${score.right}`;
+    // Używamy poprawnego identyfikatora "scoreboard"
+    document.getElementById("scoreboard").innerText = `${score.left} - ${score.right}`;
 }
 
-// Sterowanie myszy
+// Sterowanie myszy (obsługa zdarzeń)
 document.addEventListener("DOMContentLoaded", () => {
+    // Przypisanie obsługi przycisków startowych
+    document.getElementById("quickMatchBtn").addEventListener("click", startGame);
+    document.getElementById("playerDBBtn").addEventListener("click", () => {
+        showScreen("playerDB");
+        renderPlayerList();
+    });
+    // Przyciski dla "języka" oraz "ustawień" – do rozbudowy
+    document.getElementById("langBtn").addEventListener("click", () => {
+        alert("Opcja zmiany języka – jeszcze do zaimplementowania!");
+    });
+    document.getElementById("settingsBtn").addEventListener("click", () => {
+        alert("Opcja ustawień – jeszcze do zaimplementowania!");
+    });
+
+    // Inicjalizacja canvas do celów rejestracji zdarzeń (choć nie jest używany w menu)
     canvas = document.getElementById("gameCanvas");
 
     canvas.addEventListener("mousedown", e => {
@@ -86,43 +117,71 @@ document.addEventListener("DOMContentLoaded", () => {
             ball.dx += (dragStart.x - mx) / 10;
             ball.dy += (dragStart.y - my) / 10;
         }
-
         dragging = false;
         dragStart = null;
     });
-});
 
-// Język - menu
-function hideLsDropdown(event) {
-    if (event.target.id !== 'lsbtn' && event.target.parentNode.id !== 'lsbtn') {
-        document.getElementById("lsDropdown").classList.remove("show");
-        window.removeEventListener('click', hideLsDropdown);
-    }
-}
-
-function langSwitcherHandler() {
-    let dropdown = document.getElementById("lsDropdown");
-    dropdown.classList.toggle("show");
-    if (dropdown.classList.contains("show")) {
-        window.addEventListener('click', hideLsDropdown);
-    }
-}
-
-function setLanguage(event) {
-    let prefix = 'lang_';
-    let langCode = 'pl';
-    if (event.target.id.indexOf(prefix) !== -1)
-        langCode = event.target.id.replace('lang_', '');
-    document.cookie = "site_lang=" + langCode + ';path=/;max-age=31536000';
-    alert("Ustawiono język: " + langCode);
-}
-
-// Collapse (zwijane menu)
-document.addEventListener("DOMContentLoaded", () => {
-    let coll = document.getElementsByClassName("collapse-button");
+    // Obsługa rozwijanego collapse (tak jak wcześniejsze)
+    const coll = document.getElementsByClassName("collapse-button");
     for (let i = 0; i < coll.length; i++) {
         coll[i].addEventListener("click", function () {
             this.classList.toggle("active");
         });
     }
+});
+
+// ==========================
+// Baza zawodników - obsługa localStorage
+// ==========================
+function loadPlayers() {
+    let players = localStorage.getItem("players");
+    if (players) {
+        return JSON.parse(players);
+    } else {
+        const defaultPlayers = [
+            { "name": "Robert Lewandowski", "team": "Polska", "rating": 91 },
+            { "name": "Lionel Messi", "team": "Argentyna", "rating": 94 },
+            { "name": "Cristiano Ronaldo", "team": "Portugalia", "rating": 92 }
+        ];
+        localStorage.setItem("players", JSON.stringify(defaultPlayers));
+        return defaultPlayers;
+    }
+}
+
+function savePlayers(players) {
+    localStorage.setItem("players", JSON.stringify(players));
+}
+
+function renderPlayerList() {
+    const players = loadPlayers();
+    const listContainer = document.getElementById("playerList");
+    if (!listContainer) return;
+    listContainer.innerHTML = "";
+    if (players.length === 0) {
+        listContainer.innerHTML = "<p>Brak zawodników w bazie.</p>";
+        return;
+    }
+    players.forEach((player, index) => {
+        const playerItem = document.createElement("p");
+        playerItem.innerText = `${player.name} (${player.team}) - Ocena: ${player.rating}`;
+        listContainer.appendChild(playerItem);
+    });
+}
+
+// Obsługa formularza dodawania zawodnika
+document.getElementById("addPlayerForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const name = document.getElementById("playerName").value.trim();
+    const team = document.getElementById("playerTeam").value.trim();
+    const rating = parseInt(document.getElementById("playerRating").value.trim(), 10);
+    if (!name || !team || isNaN(rating)) {
+        alert("Proszę uzupełnić wszystkie pola.");
+        return;
+    }
+    const players = loadPlayers();
+    players.push({ name, team, rating });
+    savePlayers(players);
+    renderPlayerList();
+    // Czyścimy formularz
+    document.getElementById("addPlayerForm").reset();
 });
