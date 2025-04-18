@@ -8,39 +8,40 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
   <div class="gp-container">
-    <div class="top-cats">
-      <div class="cat-item">
-        <div class="cat-icon ci-miniball"></div>
-        <div class="cat-title">MiniBall</div>
-      </div>
-      <div class="cat-item">
-        <div class="cat-icon ci-football"></div>
-        <div class="cat-title">Football</div>
-      </div>
-    </div>
-
-    <div id="menu">
+    <!-- Ekran startowy -->
+    <div id="startScreen">
       <h1>MiniSoccer ⚽</h1>
-      <button onclick="startGame()">🎮 Rozpocznij mecz</button>
-      <button class="collapse-button">ℹ️ Instrukcja</button>
-      <div class="collapse-content">
-        <p>Przeciągnij zawodnika, aby oddać strzał. Piłka odbija się od band, a wynik zmienia się po golu!</p>
-      </div>
-      <div id="langSwitch">
-        <button id="lsbtn" onclick="langSwitcherHandler()">🌐 Język</button>
-        <div id="lsDropdown" class="dropdown-content">
-          <button id="lang_pl" onclick="setLanguage(event)">Polski</button>
-          <button id="lang_en" onclick="setLanguage(event)">English</button>
-        </div>
+      <button id="quickMatchBtn">SZYBKI MECZ</button>
+      <div class="start-options">
+        <button id="playerDBBtn">Baza zawodników</button>
+        <button id="langBtn">Język</button>
+        <button id="settingsBtn">Ustawienia</button>
       </div>
     </div>
 
+    <!-- Kontener gry -->
     <div id="game-container" class="hidden">
       <h2 id="scoreboard">0 - 0</h2>
       <canvas id="gameCanvas" width="800" height="500"></canvas>
+      <button onclick="backToMenu()">Powrót do menu</button>
     </div>
+
+    <!-- Kontener bazy zawodników -->
+    <div id="playerDB" class="hidden">
+      <h2>Baza Zawodników</h2>
+      <div id="playerList"></div>
+      <h3>Dodaj zawodnika</h3>
+      <form id="addPlayerForm">
+        <input type="text" id="playerName" placeholder="Imię i nazwisko" required>
+        <input type="text" id="playerTeam" placeholder="Drużyna" required>
+        <input type="number" id="playerRating" placeholder="Ocena" required min="0" max="100">
+        <button type="submit">Dodaj</button>
+      </form>
+      <button onclick="backToMenu()">Powrót do menu</button>
+    </div>
+
+    <!-- Ewentualne kontenery dla języka i ustawień można rozbudować w podobny sposób -->
   </div>
 
   <script src="script.js"></script>
