@@ -5,18 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>MiniSoccer - Szybki Mecz</title>
     <!-- Łączenie czcionki Nunito -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
     <style>
-      /* ========================================
-         GLOBALNE STYLE – AESTHETIC LOOK
-         ======================================== */
+      /* ============================================
+         GLOBALNE STYLE – AESTHETIC LOOK & RESET
+         ============================================ */
       @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
       
       body {
         font-family: 'Nunito', sans-serif;
+        /* Ciepły, pastelowy gradient – popularny aesthetic look */
         background: linear-gradient(135deg, #f6d365, #fda085);
         margin: 0;
         padding: 0;
@@ -28,16 +26,16 @@
         display: none !important;
       }
       
-      /* ========================================
+      /* ============================================
          EKRAN STARTOWY
-         ======================================== */
+         ============================================ */
       #startScreen {
         padding: 20px;
       }
       #startScreen h1 {
         font-size: 48px;
         margin-bottom: 20px;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
       }
       #startScreen button {
         font-size: 20px;
@@ -58,9 +56,9 @@
         margin-top: 20px;
       }
       
-      /* ========================================
+      /* ============================================
          EKRAN GRY
-         ======================================== */
+         ============================================ */
       #gameScreen {
         padding: 20px;
       }
@@ -95,16 +93,16 @@
         background: rgba(255,255,255,1);
       }
       
-      /* ========================================
+      /* ============================================
          MODALE – Baza zawodników & Wybór języka
-         ======================================== */
+         ============================================ */
       .modal {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0,0,0,0.5);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -146,9 +144,9 @@
     </style>
   </head>
   <body>
-    <!-- ========================================
+    <!-- ============================================
          EKRAN STARTOWY
-         ======================================== -->
+         ============================================ -->
     <div id="startScreen">
       <h1>MiniSoccer ⚽</h1>
       <button id="startMatchBtn">SZYBKI MECZ</button>
@@ -159,9 +157,9 @@
       </div>
     </div>
     
-    <!-- ========================================
+    <!-- ============================================
          EKRAN GRY
-         ======================================== -->
+         ============================================ -->
     <div id="gameScreen" class="hidden">
       <div id="scoreboardContainer">
         <h2 id="scoreboard">Gole: 0</h2>
@@ -170,15 +168,13 @@
       <button id="backToStartBtn">Powrót do Menu</button>
     </div>
     
-    <!-- ========================================
+    <!-- ============================================
          MODAL: Baza zawodników
-         ======================================== -->
+         ============================================ -->
     <div id="playerDBModal" class="modal hidden">
       <div class="modal-content">
         <h2>Baza zawodników</h2>
-        <div id="playerList">
-          <!-- Lista zawodników pojawi się tutaj -->
-        </div>
+        <div id="playerList"><!-- Lista zawodników pojawi się tutaj --></div>
         <h3>Dodaj zawodnika</h3>
         <form id="addPlayerForm">
           <input type="text" id="playerName" placeholder="Imię i nazwisko" required />
@@ -190,9 +186,9 @@
       </div>
     </div>
     
-    <!-- ========================================
+    <!-- ============================================
          MODAL: Wybór języka
-         ======================================== -->
+         ============================================ -->
     <div id="languageModal" class="modal hidden">
       <div class="modal-content">
         <h2>Wybór języka</h2>
@@ -203,13 +199,16 @@
       </div>
     </div>
     
-    <!-- ========================================
+    <!-- ============================================
          JAVASCRIPT – LOGIKA GRY I OBSŁUGA INTERFEJSU
-         ======================================== -->
+         ============================================ -->
     <script>
       /**************************************
        * CZĘŚĆ A: OBSŁUGA WYBORU JĘZYKA
        **************************************/
+      // Używamy obiektu score z właściwością goals
+      let score = { goals: 0 };
+      
       function updateLanguageContent(lang) {
         const translations = {
           pl: {
@@ -284,7 +283,6 @@
       }
       
       function setLanguage(langCode) {
-        // Jeśli nie używamy localStorage, tę linię możesz usunąć:
         localStorage.setItem("siteLanguage", langCode);
         updateLanguageContent(langCode);
         toggleModal("languageModal", false);
@@ -294,6 +292,7 @@
       /**************************************
        * CZĘŚĆ B: LOGIKA GRY – TRYB "SZYBKI MECZ"
        **************************************/
+      // Definiujemy stałe dla gry
       const PLAYER_RADIUS = 16;
       const GOALKEEPER_RADIUS = 18;
       score.goals = 0;
@@ -340,7 +339,7 @@
         ctx.fill();
         ctx.closePath();
       
-        fieldPlayers.forEach((player) => {
+        fieldPlayers.forEach(player => {
           ctx.beginPath();
           ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
           ctx.fillStyle = "blue";
@@ -369,7 +368,7 @@
       }
       
       function updatePositions() {
-        fieldPlayers.forEach((player) => {
+        fieldPlayers.forEach(player => {
           player.x += player.vx;
           player.y += player.vy;
           player.vx *= FRICTION;
@@ -414,13 +413,13 @@
           const dx = ball.x - player.x;
           const dy = ball.y - player.y;
           const dist = Math.hypot(dx, dy) || 1;
-          ball.dx = (dx / dist) * BALL_COLLISION_IMPULSE;
-          ball.dy = (dy / dist) * BALL_COLLISION_IMPULSE;
+          ball.dx = (dx/dist) * BALL_COLLISION_IMPULSE;
+          ball.dy = (dy/dist) * BALL_COLLISION_IMPULSE;
         }
       }
       
       function checkCollisions() {
-        fieldPlayers.forEach((player) => {
+        fieldPlayers.forEach(player => {
           handlePlayerBallCollision(player);
         });
         handlePlayerBallCollision(goalkeeper);
@@ -440,6 +439,11 @@
       /**************************************
        * CZĘŚĆ C: OBSŁUGA PRZECIĄGANIA GRACZA
        **************************************/
+      let draggingPlayerIndex = null;
+      let dragStart = { x: 0, y: 0 };
+      let dragCurrent = { x: 0, y: 0 };
+      let isDragging = false;
+      
       function canvasMouseDown(e) {
         const rect = canvas.getBoundingClientRect();
         const mx = e.clientX - rect.left;
@@ -548,7 +552,6 @@
       document.addEventListener("DOMContentLoaded", () => {
         console.log("DOM załadowany");
       
-        // Obsługa przycisku SZYBKI MECZ
         document.getElementById("startMatchBtn").addEventListener("click", () => {
           console.log("Kliknięto SZYBKI MECZ");
           document.getElementById("startScreen").classList.add("hidden");
@@ -559,7 +562,6 @@
           requestAnimationFrame(gameLoop);
         });
       
-        // Przyciski powrotu, modali i innych opcji
         document.getElementById("backToStartBtn").addEventListener("click", () => {
           console.log("Powrót do Menu");
           gameAnimating = false;
