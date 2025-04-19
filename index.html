@@ -13,23 +13,22 @@
       /* ============================================================================
          GLOBALNE STYLE – GRAFICZNY DESIGN (AESTHETIC STYLE)
          ============================================================================
-         Ustawiamy tło całego dokumentu na obrazek stadionu – styl piłkarski.
-         Możesz podmienić URL na inny obrazek z Unsplash lub innego źródła.
+         Tło całego dokumentu ustawione jest na obraz stadionu/piłkarskiej murawy.
       ============================================================================ */
       @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
-
+      
       body {
         font-family: 'Nunito', sans-serif;
-        /* Tło stadium – zmień URL, jeśli znajdziesz lepszy obraz */
-        background: url('https://images.unsplash.com/photo-1430232324554-8f4aebd06683?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Zm9vdGJhbGwlMjB3YWxscGFwZXJ8ZW58MHx8MHx8fDA%3D')
-                    no-repeat center center fixed !important;
+        /* Tło całego menu – obraz stadionu (podmień URL na inny, jeśli chcesz) */
+        background: url('https://images.unsplash.com/photo-1430232324554-8f4aebd06683?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Zm9vdGJhbGwlMjB3YWxscGFwZXJ8ZW58MHx8MHx8fDA%3D') no-repeat center center fixed !important;
         background-size: cover !important;
         margin: 0;
         padding: 0;
         text-align: center;
         color: #fff;
       }
-      /* Optional overlay, by przyciemnić tło i poprawić kontrast */
+      
+      /* Optional overlay aby przyciemnić tło */
       body::before {
         content: "";
         position: fixed;
@@ -40,19 +39,17 @@
         background: rgba(0, 0, 0, 0.3);
         z-index: -1;
       }
-
+      
       .hidden {
         display: none !important;
       }
-
+      
       /* ============================================================================
          EKRAN STARTOWY
          ============================================================================
-         Nagłówek i przyciski – duże, estetyczne z cieniami i animacjami.
       ============================================================================ */
       #startScreen {
         padding: 40px 20px;
-        /* Jeśli chcesz również zmienić tło ekranu startowego (możesz usunąć, bo body już ustawia tło) */
       }
       
       #startScreen h1 {
@@ -85,9 +82,61 @@
       }
       
       /* ============================================================================
+         EKRAN WYBORU DRUŻYN
+         ============================================================================
+         Nowy ekran, który pojawia się po kliknięciu SZYBKI MECZ.
+      ============================================================================ */
+      #teamSelectScreen {
+        padding: 40px 20px;
+      }
+      
+      #teamSelectScreen h2 {
+        font-size: 36px;
+        margin-bottom: 20px;
+      }
+      
+      .team-select {
+        margin: 20px auto;
+        max-width: 500px;
+        text-align: left;
+      }
+      
+      .team-select label {
+        display: block;
+        font-size: 18px;
+        margin-bottom: 5px;
+      }
+      
+      .team-select select {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: none;
+        margin-bottom: 20px;
+      }
+      
+      #startMatchFromSelectBtn {
+        font-size: 20px;
+        padding: 14px 28px;
+        cursor: pointer;
+        background: rgba(255,255,255,0.95);
+        border: none;
+        border-radius: 12px;
+        transition: background 0.3s, transform 0.2s;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+        margin-top: 10px;
+      }
+      
+      #startMatchFromSelectBtn:hover {
+        background: rgba(255,255,255,1);
+        transform: translateY(-3px);
+        box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+      }
+      
+      /* ============================================================================
          EKRAN GRY
          ============================================================================
-         Stylizacja wyniku, canvas (boisko) z cieniami i zaokrągleniami.
       ============================================================================ */
       #gameScreen {
         padding: 20px;
@@ -103,7 +152,7 @@
       }
       
       canvas {
-        background-color: #228B22; /* Odcień zieleni przypominający murawę */
+        background-color: #228B22; /* odcień murawy */
         border: 4px solid #fff;
         border-radius: 16px;
         display: block;
@@ -130,7 +179,6 @@
       /* ============================================================================
          MODALE – Baza zawodników & Wybór języka
          ============================================================================
-         Modale z gradientowym overlay i efektami fadeIn.
       ============================================================================ */
       .modal {
         position: fixed;
@@ -158,7 +206,7 @@
         max-width: 500px;
         border-radius: 16px;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
-        color: #333; /* Ustawiamy ciemny kolor tekstu, aby kontrastował z jasnym tłem modala */
+        color: #333;
       }
       
       .modal-content h2 {
@@ -192,9 +240,8 @@
       }
       
       /* ============================================================================
-         MODAL: PRZEWIJANIE LISTY ZAWODNIKÓW
+         MODAL: Lista zawodników - przewijanie
          ============================================================================
-         Lista zawodników, która będzie przewijalna, jeśli jej zawartość przekroczy 300px.
       ============================================================================ */
       #playerList {
         max-height: 300px;
@@ -202,13 +249,16 @@
         scrollbar-width: thin;
         scrollbar-color: #185c28 #ffffff;
       }
+      
       #playerList::-webkit-scrollbar {
         width: 8px;
       }
+      
       #playerList::-webkit-scrollbar-thumb {
         background: #185c28;
         border-radius: 5px;
       }
+      
       #playerList::-webkit-scrollbar-track {
         background: #ffffff;
       }
@@ -220,6 +270,7 @@
          ============================================================ -->
     <div id="startScreen">
       <h1>MiniSoccer ⚽</h1>
+      <!-- Zamiast bezpośredniego startu meczu, teraz przechodzimy do wyboru drużyn -->
       <button id="startMatchBtn">SZYBKI MECZ</button>
       <div class="start-options">
         <button id="btnPlayerDB">Baza zawodników</button>
@@ -229,8 +280,29 @@
     </div>
     
     <!-- ============================================================
+         EKRAN WYBORU DRUŻYN
+         ============================================================
+         Po kliknięciu SZYBKI MECZ, zamiast natychmiastowego startu meczu,
+         pojawi się ekran wyboru drużyn.
+    -->
+    <div id="teamSelectScreen" class="hidden">
+      <h2>Wybierz drużyny</h2>
+      <div class="team-select">
+        <label for="homeTeamSelect">Drużyna Domowa:</label>
+        <select id="homeTeamSelect"></select>
+      </div>
+      <div class="team-select">
+        <label for="awayTeamSelect">Drużyna Gościa:</label>
+        <select id="awayTeamSelect"></select>
+      </div>
+      <button id="startMatchFromSelectBtn">Rozpocznij Mecz</button>
+    </div>
+    
+    <!-- ============================================================
          EKRAN GRY
-         ============================================================ -->
+         ============================================================
+         Tutaj będzie wyświetlana rozgrywka.
+    -->
     <div id="gameScreen" class="hidden">
       <div id="scoreboardContainer">
         <h2 id="scoreboard">Gole: 0</h2>
@@ -241,7 +313,8 @@
     
     <!-- ============================================================
          MODAL: Baza zawodników
-         ============================================================ -->
+         ============================================================
+      -->
     <div id="playerDBModal" class="modal hidden">
       <div class="modal-content">
         <h2>Baza zawodników</h2>
@@ -261,7 +334,8 @@
     
     <!-- ============================================================
          MODAL: Wybór języka
-         ============================================================ -->
+         ============================================================
+      -->
     <div id="languageModal" class="modal hidden">
       <div class="modal-content">
         <h2>Wybór języka</h2>
@@ -274,12 +348,12 @@
     
     <!-- ============================================================
          JAVASCRIPT – LOGIKA GRY I OBSŁUGA INTERFEJSU
-         ============================================================ -->
+         ============================================================
+      -->
     <script>
       /**************************************
        * CZĘŚĆ A: OBSŁUGA WYBORU JĘZYKA
        **************************************/
-      // Globalny obiekt wyniku
       let score = { goals: 0 };
       
       function updateLanguageContent(lang) {
@@ -334,25 +408,25 @@
         document.getElementById("scoreboard").innerText = translations[lang].scoreboard + score.goals;
       
         const playerDBHeader = document.querySelector("#playerDBModal .modal-content h2");
-        if (playerDBHeader) playerDBHeader.innerText = translations[lang].playerDBModalHeader;
+        if(playerDBHeader) playerDBHeader.innerText = translations[lang].playerDBModalHeader;
         const addPlayerHeader = document.querySelector("#playerDBModal .modal-content h3");
-        if (addPlayerHeader) addPlayerHeader.innerText = translations[lang].addPlayerFormHeader;
+        if(addPlayerHeader) addPlayerHeader.innerText = translations[lang].addPlayerFormHeader;
         document.getElementById("playerName").setAttribute("placeholder", translations[lang].playerNamePlaceholder);
         document.getElementById("playerTeam").setAttribute("placeholder", translations[lang].playerTeamPlaceholder);
         document.getElementById("playerRating").setAttribute("placeholder", translations[lang].playerRatingPlaceholder);
         const addPlayerBtn = document.querySelector("#addPlayerForm button[type=submit]");
-        if (addPlayerBtn) addPlayerBtn.innerText = translations[lang].addPlayerButton;
+        if(addPlayerBtn) addPlayerBtn.innerText = translations[lang].addPlayerButton;
         document.getElementById("closePlayerDBBtn").innerText = translations[lang].closePlayerDB;
       
         const langModalHeader = document.querySelector("#languageModal .modal-content h2");
-        if (langModalHeader) langModalHeader.innerText = translations[lang].languageModalHeader;
+        if(langModalHeader) langModalHeader.innerText = translations[lang].languageModalHeader;
         const langModalText = document.querySelector("#languageModal .modal-content p");
-        if (langModalText) langModalText.innerText = translations[lang].languageModalText;
+        if(langModalText) langModalText.innerText = translations[lang].languageModalText;
         document.getElementById("closeLanguageModalBtn").innerText = translations[lang].closeLanguageModal;
         const langOptionPL = document.querySelector('.langOption[data-lang="pl"]');
-        if (langOptionPL) langOptionPL.innerText = lang === "pl" ? "Polski" : "Polish";
+        if(langOptionPL) langOptionPL.innerText = lang === "pl" ? "Polski" : "Polish";
         const langOptionEN = document.querySelector('.langOption[data-lang="en"]');
-        if (langOptionEN) langOptionEN.innerText = lang === "pl" ? "Angielski" : "English";
+        if(langOptionEN) langOptionEN.innerText = lang === "pl" ? "Angielski" : "English";
       }
       
       function setLanguage(langCode) {
@@ -485,8 +559,8 @@
           const dx = ball.x - player.x;
           const dy = ball.y - player.y;
           const dist = Math.hypot(dx, dy) || 1;
-          ball.dx = (dx / dist) * 7;
-          ball.dy = (dy / dist) * 7;
+          ball.dx = (dx/dist) * 7;
+          ball.dy = (dy/dist) * 7;
         }
       }
       
@@ -619,14 +693,82 @@
       }
       
       /**************************************
-       * CZĘŚĆ F: INICJALIZACJA ZDARZEŃ PO ŁADOWANIU DOM
+       * CZĘŚĆ F: WYBOR DRUŻYN - INICJALIZACJA SELECTÓW
        **************************************/
+      // Dane top 5 lig i 6 klubów z każdej.
+      const teamsData = {
+        "Premier League": ["Manchester United", "Manchester City", "Liverpool", "Chelsea", "Arsenal", "Tottenham Hotspur"],
+        "La Liga": ["Real Madrid", "Barcelona", "Atletico Madrid", "Sevilla", "Valencia", "Villarreal"],
+        "Serie A": ["Juventus", "Inter Milan", "AC Milan", "Napoli", "Roma", "Lazio"],
+        "Bundesliga": ["Bayern Munich", "Borussia Dortmund", "RB Leipzig", "Bayer Leverkusen", "Eintracht Frankfurt", "Borussia Mönchengladbach"],
+        "Ligue 1": ["Paris Saint-Germain", "Marseille", "Lyon", "Monaco", "Lille", "Nice"]
+      };
+      
+      // Funkcja uzupełniająca selecty z drużynami
+      function populateTeamSelects() {
+        const homeSelect = document.getElementById("homeTeamSelect");
+        const awaySelect = document.getElementById("awayTeamSelect");
+        // Wyczyść zawartość selectów
+        homeSelect.innerHTML = "";
+        awaySelect.innerHTML = "";
+        
+        // Iteruj po kluczach teamsData (ligach)
+        for (let league in teamsData) {
+          const optGroupHome = document.createElement("optgroup");
+          optGroupHome.label = league;
+          const optGroupAway = document.createElement("optgroup");
+          optGroupAway.label = league;
+          
+          teamsData[league].forEach(club => {
+            const optHome = document.createElement("option");
+            optHome.value = club;
+            optHome.innerText = club;
+            optGroupHome.appendChild(optHome);
+            
+            const optAway = document.createElement("option");
+            optAway.value = club;
+            optAway.innerText = club;
+            optGroupAway.appendChild(optAway);
+          });
+          
+          homeSelect.appendChild(optGroupHome);
+          awaySelect.appendChild(optGroupAway);
+        }
+      }
+      
+      /**************************************
+       * CZĘŚĆ G: INICJALIZACJA ZDARZEŃ PO ŁADOWANIU DOM
+       **************************************/
+      let canvas, ctx, ball, fieldPlayers, goalkeeper;
+      let isDragging = false, draggingPlayerIndex = null, dragStart = { x: 0, y: 0 }, dragCurrent = { x: 0, y: 0 };
+      let gameAnimating = false;
+      
       document.addEventListener("DOMContentLoaded", () => {
         console.log("DOM załadowany");
       
+        // Po kliknięciu SZYBKI MECZ, przechodzimy do ekranu wyboru drużyn
         document.getElementById("startMatchBtn").addEventListener("click", () => {
-          console.log("Kliknięto SZYBKI MECZ");
+          console.log("Przejście do wyboru drużyn");
           document.getElementById("startScreen").classList.add("hidden");
+          // Wypełniamy listy wyboru drużyn
+          populateTeamSelects();
+          document.getElementById("teamSelectScreen").classList.remove("hidden");
+        });
+      
+        // Po kliknięciu "Rozpocznij Mecz" na ekranie wyboru drużyn
+        document.getElementById("startMatchFromSelectBtn").addEventListener("click", () => {
+          const homeTeam = document.getElementById("homeTeamSelect").value;
+          const awayTeam = document.getElementById("awayTeamSelect").value;
+          if (homeTeam === awayTeam) {
+            alert("Wybierz dwie różne drużyny!");
+            return;
+          }
+          console.log("Wybrane drużyny:", homeTeam, "-", awayTeam);
+          // Możesz zapisać te wartości globalnie lub wyświetlić jako część interfejsu gry
+          // Na potrzeby przykładu, umieścimy je na scoreboard
+          document.getElementById("scoreboard").innerText = homeTeam + " - " + awayTeam + " | Gole: 0";
+          // Przechodzimy do ekranu gry
+          document.getElementById("teamSelectScreen").classList.add("hidden");
           document.getElementById("gameScreen").classList.remove("hidden");
           initGame();
           addCanvasEvents();
@@ -634,6 +776,7 @@
           requestAnimationFrame(gameLoop);
         });
       
+        // Pozostałe przyciski
         document.getElementById("backToStartBtn").addEventListener("click", () => {
           console.log("Powrót do Menu");
           gameAnimating = false;
@@ -666,7 +809,7 @@
       
         const langOptions = document.getElementsByClassName("langOption");
         for (let i = 0; i < langOptions.length; i++) {
-          langOptions[i].addEventListener("click", function() {
+          langOptions[i].addEventListener("click", function () {
             const lang = this.getAttribute("data-lang");
             setLanguage(lang);
           });
