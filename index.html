@@ -15,7 +15,262 @@
          ============================================================================
          Tło ustawione na obraz stadionu/murawy; overlay zapewnia lepszy kontrast.
       ============================================================================ */
+      @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MiniSoccer - Szybki Mecz</title>
+    <!-- Łącze do czcionki Nunito -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ============================================================================
+         GLOBALNE STYLE – DESIGN W PIŁKARSKIM KLIMACIE
+         Tło ustawione na podany obraz stadionu/murawy; overlay zapewnia kontrast.
+      ============================================================================ */
       @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
+      body {
+        font-family: "Nunito", sans-serif;
+        background: url("https://images.unsplash.com/photo-1430232324554-8f4aebd06683?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Zm9vdGJhbGwlMjB3YWxscGFwZXJ8ZW58MHx8MHx8fDA%3D") no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        color: #fff;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: -1;
+      }
+      .hidden { display: none !important; }
+      
+      /* ========================================================================
+         EKRAN STARTOWY
+      ======================================================================== */
+      #startScreen {
+        padding: 40px 20px;
+      }
+      #startScreen h1 {
+        font-size: 56px;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      }
+      #startScreen button {
+        font-size: 20px;
+        padding: 15px 30px;
+        margin: 15px;
+        border: none;
+        border-radius: 10px;
+        background-color: rgba(255,255,255,0.8);
+        cursor: pointer;
+        color: #333;
+        box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+      }
+      #startScreen button:hover {
+        background-color: #fff;
+        transform: scale(1.05);
+        box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+      }
+      
+      /* ========================================================================
+         EKRAN WYBORU DRUŻYN – INTERFEJS W STYLU FIFA
+         (Poziome przewijanie kafelków)
+      ======================================================================== */
+      #teamSelectScreen {
+        padding: 40px 20px;
+      }
+      #teamSelectScreen h2 {
+        font-size: 40px;
+        margin-bottom: 20px;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+      }
+      .team-section {
+        margin: 30px auto;
+        max-width: 800px;
+        text-align: left;
+      }
+      .team-section h3 {
+        font-size: 28px;
+        margin-bottom: 15px;
+        padding-left: 10px;
+      }
+      .team-container {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        padding: 10px;
+        scrollbar-width: thin;
+      }
+      .team-container::-webkit-scrollbar { height: 8px; }
+      .team-container::-webkit-scrollbar-thumb {
+        background: #ffd700;
+        border-radius: 4px;
+      }
+      .team-option {
+        cursor: pointer;
+        text-align: center;
+        border: 2px solid rgba(255,255,255,0.5);
+        border-radius: 12px;
+        width: 150px;
+        padding: 10px;
+        transition: all 0.3s ease;
+        flex: 0 0 auto;
+      }
+      .team-option.selected {
+        border-color: #ffd700;
+        transform: scale(1.1);
+        background-color: rgba(255,255,255,0.2);
+      }
+      .team-option img {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 10px;
+        display: block;
+      }
+      .league-header {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 10px;
+        padding-left: 10px;
+      }
+      .league-header img {
+        width: 30px;
+        height: 30px;
+      }
+      #startMatchFromSelectBtn {
+        font-size: 20px;
+        padding: 15px 30px;
+        margin-top: 30px;
+        cursor: pointer;
+        background-color: rgba(255,255,255,0.9);
+        border: none;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+      }
+      #startMatchFromSelectBtn:hover {
+        background-color: #fff;
+        transform: scale(1.05);
+        box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+      }
+      
+      /* ========================================================================
+         EKRAN WYBORU ZAWODNIKÓW (dla gospodarzy)
+      ======================================================================== */
+      #playerSelectScreen {
+        padding: 40px 20px;
+      }
+      #playerSelectScreen h2 {
+        font-size: 40px;
+        margin-bottom: 20px;
+      }
+      .position-group {
+        margin: 20px auto;
+        max-width: 600px;
+        text-align: left;
+      }
+      .position-group label {
+        font-size: 24px;
+        margin-bottom: 10px;
+        display: block;
+      }
+      .position-group select {
+        width: 100%;
+        padding: 10px;
+        font-size: 18px;
+        border-radius: 8px;
+        border: none;
+        margin-bottom: 20px;
+      }
+      #confirmLineupBtn {
+        font-size: 20px;
+        padding: 15px 30px;
+        cursor: pointer;
+        background-color: rgba(255,255,255,0.9);
+        border: none;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+      }
+      #confirmLineupBtn:hover {
+        background-color: #fff;
+        transform: scale(1.05);
+      }
+      
+      /* ========================================================================
+         EKRAN GRY
+      ======================================================================== */
+      #gameScreen {
+        padding: 20px;
+      }
+      #scoreboardContainer {
+        margin-bottom: 20px;
+      }
+      #scoreboard {
+        font-size: 28px;
+        font-weight: bold;
+      }
+      canvas {
+        background-color: #228B22;
+        border: 4px solid #fff;
+        border-radius: 16px;
+        margin: 0 auto;
+        display: block;
+        box-shadow: 0px 8px 16px rgba(0,0,0,0.35);
+      }
+      #backToStartBtn {
+        font-size: 18px;
+        padding: 15px 30px;
+        margin-top: 20px;
+        cursor: pointer;
+        background: rgba(255,255,255,0.9);
+        border: none;
+        border-radius: 10px;
+        transition: background 0.3s;
+        box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+      }
+      #backToStartBtn:hover {
+        background: rgba(255,255,255,1);
+      }
+      
+      /* ========================================================================
+         MODALE – Baza zawodników, Wybór języka
+      ======================================================================== */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        animation: fadeIn 0.3s;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      .modal-content {
+        background: #fff;
+        padding: 30px;
+        width: 90%;
+        max-width: 500px;
+        border-radius: 16px;
+        box-shadow: 0 8px 16
       body {
         font-family: "Nunito", sans-serif;
         background: url("https://images.unsplash.com/photo-1430232324554-8f4aebd06683?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Zm9vdGJhbGwlMjB3YWxscGFwZXJ8ZW58MHx8MHx8fDA%3D")
