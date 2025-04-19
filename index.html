@@ -10,11 +10,10 @@
       rel="stylesheet"
     />
     <style>
-      /* ============================================================================
+      /* ===========================================================================
          GLOBALNE STYLE – DESIGN W PIŁKARSKIM KLIMACIE
-         ============================================================================
-         Tło ustawione na obraz stadionu/murawy; dodany overlay.
-      ============================================================================ */
+         Ustawienie tła na podany obraz stadionu/murawy, z overlayem dla kontrastu.
+      =========================================================================== */
       @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
       
       body {
@@ -31,11 +30,10 @@
       body::before {
         content: "";
         position: fixed;
-        top: 0;
-        left: 0;
+        top: 0; left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.3);
+        background: rgba(0,0,0,0.3);
         z-index: -1;
       }
       
@@ -43,9 +41,9 @@
         display: none !important;
       }
       
-      /* ============================================================================
+      /* ===========================================================================
          EKRAN STARTOWY
-      ============================================================================ */
+      =========================================================================== */
       #startScreen {
         padding: 40px 20px;
       }
@@ -75,9 +73,11 @@
         box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
       }
       
-      /* ============================================================================
+      /* ===========================================================================
          EKRAN WYBORU DRUŻYN – INTERFEJS W STYLU FIFA
-      ============================================================================ */
+         UŻYWAMY POZIOMEGO PRZEWIJANIA: 
+         Każda sekcja (Drużyna Domowa i Drużyna Gościa) posiada kontener z overflow-x.
+      =========================================================================== */
       #teamSelectScreen {
         padding: 40px 20px;
       }
@@ -97,13 +97,25 @@
       .team-section h3 {
         font-size: 28px;
         margin-bottom: 15px;
+        padding-left: 10px;
       }
       
+      /* Kontenery z opcjami – teraz poziomy scroll */
       .team-container {
         display: flex;
-        flex-wrap: wrap;
         gap: 20px;
-        justify-content: center;
+        overflow-x: auto;
+        padding: 10px;
+        scrollbar-width: thin;
+      }
+      
+      .team-container::-webkit-scrollbar {
+        height: 8px;
+      }
+      
+      .team-container::-webkit-scrollbar-thumb {
+        background: #ffd700;
+        border-radius: 4px;
       }
       
       .team-option {
@@ -114,11 +126,12 @@
         width: 150px;
         padding: 10px;
         transition: all 0.3s ease;
+        flex: 0 0 auto;
       }
       
       .team-option.selected {
         border-color: #ffd700;
-        transform: scale(1.05);
+        transform: scale(1.1);
         background-color: rgba(255,255,255,0.2);
       }
       
@@ -134,6 +147,7 @@
         align-items: center;
         gap: 5px;
         margin-bottom: 10px;
+        padding-left: 10px;
       }
       
       .league-header img {
@@ -159,9 +173,9 @@
         box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
       }
       
-      /* ============================================================================
+      /* ===========================================================================
          EKRAN GRY
-      ============================================================================ */
+      =========================================================================== */
       #gameScreen {
         padding: 20px;
       }
@@ -200,9 +214,9 @@
         background: rgba(255,255,255,1);
       }
       
-      /* ============================================================================
-         MODALE – Baza zawodników, Wybór języka
-      ============================================================================ */
+      /* ===========================================================================
+         MODALE – Baza zawodników | Wybór języka
+      =========================================================================== */
       .modal {
         position: fixed;
         top: 0;
@@ -262,9 +276,9 @@
         box-sizing: border-box;
       }
       
-      /* ============================================================================
+      /* ===========================================================================
          MODAL: Lista zawodników – przewijana
-      ============================================================================ */
+      =========================================================================== */
       #playerList {
         max-height: 300px;
         overflow-y: auto;
@@ -287,7 +301,7 @@
     </style>
   </head>
   <body>
-    <!-- Ekran startowy -->
+    <!-- EKRAN STARTOWY -->
     <div id="startScreen">
       <h1>MiniSoccer ⚽</h1>
       <button id="startMatchBtn">SZYBKI MECZ</button>
@@ -298,27 +312,27 @@
       </div>
     </div>
     
-    <!-- Ekran wyboru drużyn (styl FIFA) -->
+    <!-- EKRAN WYBORU DRUŻYN (styl FIFA) -->
     <div id="teamSelectScreen" class="hidden">
       <h2>Wybierz Drużyny</h2>
       <!-- Drużyna Domowa -->
       <div class="team-section" id="homeTeamSection">
         <h3>Drużyna Domowa</h3>
         <div id="homeTeamContainer" class="team-container">
-          <!-- Kafelki będą dodawane dynamicznie -->
+          <!-- Kafelki zostaną wygenerowane dynamicznie -->
         </div>
       </div>
       <!-- Drużyna Gościa -->
       <div class="team-section" id="awayTeamSection">
         <h3>Drużyna Gościa</h3>
         <div id="awayTeamContainer" class="team-container">
-          <!-- Kafelki będą dodawane dynamicznie -->
+          <!-- Kafelki zostaną wygenerowane dynamicznie -->
         </div>
       </div>
       <button id="startMatchFromSelectBtn">Rozpocznij Mecz</button>
     </div>
     
-    <!-- Ekran gry -->
+    <!-- EKRAN GRY -->
     <div id="gameScreen" class="hidden">
       <div id="scoreboardContainer">
         <h2 id="scoreboard">Gole: 0</h2>
@@ -327,7 +341,7 @@
       <button id="backToStartBtn">Powrót do Menu</button>
     </div>
     
-    <!-- Modal: Baza zawodników -->
+    <!-- MODAL: Baza zawodników -->
     <div id="playerDBModal" class="modal hidden">
       <div class="modal-content">
         <h2>Baza zawodników</h2>
@@ -345,7 +359,7 @@
       </div>
     </div>
     
-    <!-- Modal: Wybór języka -->
+    <!-- MODAL: Wybór języka -->
     <div id="languageModal" class="modal hidden">
       <div class="modal-content">
         <h2>Wybór języka</h2>
@@ -361,15 +375,12 @@
       (function () {
         "use strict";
         
-        ////////////////////////////////
         // GLOBALNE ZMIENNE I KONSTANTY
-        ////////////////////////////////
         let score = { goals: 0 };
         let canvas, ctx, ball, fieldPlayers, goalkeeper;
         let gameAnimating = false;
         let isDragging = false, draggingPlayerIndex = null, dragStart = { x: 0, y: 0 }, dragCurrent = { x: 0, y: 0 };
         let selectedHomeTeam = null, selectedAwayTeam = null;
-        
         const PLAYER_RADIUS = 16,
               GOALKEEPER_RADIUS = 18,
               FRICTION = 0.98,
@@ -377,68 +388,7 @@
               DRAG_IMPULSE_SCALE = 0.2;
         
         ////////////////////////////////
-        // DANE DRUŻYN I LIG (loga)
-        ////////////////////////////////
-        const teamsData = {
-          "Premier League": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
-            teams: [
-              { name: "Manchester United", logo: "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg" },
-              { name: "Manchester City", logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" },
-              { name: "Liverpool", logo: "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" },
-              { name: "Chelsea", logo: "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg" },
-              { name: "Arsenal", logo: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" },
-              { name: "Tottenham Hotspur", logo: "https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg" }
-            ]
-          },
-          "La Liga": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/9/90/LaLiga.svg",
-            teams: [
-              { name: "Real Madrid", logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" },
-              { name: "Barcelona", logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" },
-              { name: "Atletico Madrid", logo: "https://upload.wikimedia.org/wikipedia/en/f/f4/Atletico_Madrid.svg" },
-              { name: "Sevilla", logo: "https://upload.wikimedia.org/wikipedia/en/3/3f/Sevilla_FC_logo.svg" },
-              { name: "Valencia", logo: "https://upload.wikimedia.org/wikipedia/en/c/c2/Valencia_CF.svg" },
-              { name: "Villarreal", logo: "https://upload.wikimedia.org/wikipedia/en/3/32/Villarreal_CF_logo.svg" }
-            ]
-          },
-          "Serie A": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/d/d2/Serie_A_logo_%282019%29.svg",
-            teams: [
-              { name: "Juventus", logo: "https://upload.wikimedia.org/wikipedia/en/3/3e/Juventus_FC_2017_logo.svg" },
-              { name: "Inter Milan", logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg" },
-              { name: "AC Milan", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d0/AC_Milan_logo.svg" },
-              { name: "Napoli", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2d/SSC_Napoli.svg" },
-              { name: "Roma", logo: "https://upload.wikimedia.org/wikipedia/en/f/f7/A.S._Roma_logo.svg" },
-              { name: "Lazio", logo: "https://upload.wikimedia.org/wikipedia/en/2/20/S.S._Lazio.svg" }
-            ]
-          },
-          "Bundesliga": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/commons/d/df/Bundesliga_logo_%282017%29.svg",
-            teams: [
-              { name: "Bayern Munich", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1f/FC_Bayern_München_logo_%282017%29.svg" },
-              { name: "Borussia Dortmund", logo: "https://upload.wikimedia.org/wikipedia/commons/6/67/Borussia_Dortmund_logo.svg" },
-              { name: "RB Leipzig", logo: "https://upload.wikimedia.org/wikipedia/en/0/04/RB_Leipzig.svg" },
-              { name: "Bayer Leverkusen", logo: "https://upload.wikimedia.org/wikipedia/en/3/33/Bayer_04_Leverkusen_logo.svg" },
-              { name: "Eintracht Frankfurt", logo: "https://upload.wikimedia.org/wikipedia/en/9/91/Eintracht_Frankfurt.svg" },
-              { name: "Borussia Mönchengladbach", logo: "https://upload.wikimedia.org/wikipedia/commons/6/65/Borussia_M%C3%B6nchengladbach_logo.svg" }
-            ]
-          },
-          "Ligue 1": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/fd/Ligue_1.svg",
-            teams: [
-              { name: "Paris Saint-Germain", logo: "https://upload.wikimedia.org/wikipedia/en/9/9e/Paris_Saint-Germain_F.C..svg" },
-              { name: "Marseille", logo: "https://upload.wikimedia.org/wikipedia/en/5/58/OM.svg" },
-              { name: "Lyon", logo: "https://upload.wikimedia.org/wikipedia/en/c/c2/Olympique_Lyonnais.svg" },
-              { name: "Monaco", logo: "https://upload.wikimedia.org/wikipedia/en/4/4b/AS_Monaco_FC.svg" },
-              { name: "Lille", logo: "https://upload.wikimedia.org/wikipedia/en/c/c8/LOSC_Lille.svg" },
-              { name: "Nice", logo: "https://upload.wikimedia.org/wikipedia/en/2/27/OGCNice.svg" }
-            ]
-          }
-        };
-        
-        ////////////////////////////////
-        // FUNKCJE OBSŁUGUJĄCE WYBÓR JĘZYKA (Modal)
+        // FUNKCJE OBSŁUGUJĄCE WYBÓR JĘZYKA
         ////////////////////////////////
         function updateLanguageContent(lang) {
           const translations = {
@@ -481,7 +431,6 @@
               closeLanguageModal: "Close"
             }
           };
-          
           document.querySelector("#startScreen h1").innerText = translations[lang].header;
           document.getElementById("startMatchBtn").innerText = translations[lang].startMatchBtn;
           document.getElementById("btnPlayerDB").innerText = translations[lang].btnPlayerDB;
@@ -656,9 +605,7 @@
           requestAnimationFrame(gameLoop);
         }
         
-        ////////////////////////////////
-        // OBSŁUGA PRZECIĄGANIA (CANVAS)
-        ////////////////////////////////
+        // OBSŁUGA PRZECIĄGANIA NA CANVASIE
         function canvasMouseDown(e) {
           const rect = canvas.getBoundingClientRect();
           const mx = e.clientX - rect.left;
@@ -698,9 +645,7 @@
           canvas.addEventListener("mouseup", canvasMouseUp);
         }
         
-        ////////////////////////////////
         // MODALE
-        ////////////////////////////////
         function toggleModal(modalId, show) {
           const modal = document.getElementById(modalId);
           if (show) modal.classList.remove("hidden");
@@ -713,7 +658,7 @@
           });
         });
         
-        // Baza zawodników – uproszczona lista
+        // Lista zawodników – uproszczona
         const defaultPlayers = [
           { name: "Lionel Messi", team: "Paris Saint-Germain", rating: 94 },
           { name: "Cristiano Ronaldo", team: "Manchester United", rating: 93 },
@@ -735,7 +680,7 @@
         }
         
         ////////////////////////////////
-        // WYBÓR DRUŻYN – OBSŁUGA INTERFEJSU W STYLU FIFA
+        // WYBÓR DRUŻYN – INTERFEJS W STYLU FIFA
         ////////////////////////////////
         function populateTeamSelections() {
           const homeContainer = document.getElementById("homeTeamContainer");
@@ -758,7 +703,6 @@
             leagueHeaderHome.appendChild(leagueLogoHome);
             leagueHeaderHome.appendChild(leagueNameHome);
             leagueDivHome.appendChild(leagueHeaderHome);
-            
             let teamContainerHome = document.createElement("div");
             teamContainerHome.classList.add("team-container");
             teamsData[league].teams.forEach(team => {
@@ -788,7 +732,6 @@
             leagueHeaderAway.appendChild(leagueLogoAway);
             leagueHeaderAway.appendChild(leagueNameAway);
             leagueDivAway.appendChild(leagueHeaderAway);
-            
             let teamContainerAway = document.createElement("div");
             teamContainerAway.classList.add("team-container");
             teamsData[league].teams.forEach(team => {
@@ -814,74 +757,12 @@
         document.addEventListener("DOMContentLoaded", () => {
           console.log("DOM załadowany");
           
-          // Ekran startowy – przycisk SZYBKI MECZ przechodzi do ekranu wyboru drużyn
+          // Przycisk "SZYBKI MECZ" – przejście do ekranu wyboru drużyn
           document.getElementById("startMatchBtn").addEventListener("click", () => {
             document.getElementById("startScreen").classList.add("hidden");
             document.getElementById("teamSelectScreen").classList.remove("hidden");
             populateTeamSelections();
           });
           
-          // Ekran wyboru drużyn – przycisk Rozpocznij Mecz
-          document.getElementById("startMatchFromSelectBtn").addEventListener("click", () => {
-            if (!selectedHomeTeam || !selectedAwayTeam) {
-              alert("Wybierz obie drużyny!");
-              return;
-            }
-            if (selectedHomeTeam === selectedAwayTeam) {
-              alert("Wybierz dwie różne drużyny!");
-              return;
-            }
-            console.log("Wybrane drużyny:", selectedHomeTeam, "-", selectedAwayTeam);
-            document.getElementById("scoreboard").innerText = selectedHomeTeam + " - " + selectedAwayTeam + " | Gole: 0";
-            document.getElementById("teamSelectScreen").classList.add("hidden");
-            document.getElementById("gameScreen").classList.remove("hidden");
-            initGame();
-            addCanvasEvents();
-            gameAnimating = true;
-            requestAnimationFrame(gameLoop);
-          });
-          
-          // Przycisk Powrót do Menu (z ekranu gry)
-          document.getElementById("backToStartBtn").addEventListener("click", () => {
-            console.log("Powrót do Menu");
-            gameAnimating = false;
-            document.getElementById("gameScreen").classList.add("hidden");
-            document.getElementById("startScreen").classList.remove("hidden");
-          });
-          
-          // Przyciski modali
-          document.getElementById("btnPlayerDB").addEventListener("click", () => {
-            console.log("Kliknięto Baza zawodników");
-            renderPlayerList();
-            toggleModal("playerDBModal", true);
-          });
-          
-          document.getElementById("btnLanguage").addEventListener("click", () => {
-            console.log("Kliknięto Język");
-            toggleModal("languageModal", true);
-          });
-          
-          document.getElementById("btnSettings").addEventListener("click", () => {
-            alert("Opcja ustawień – do implementacji!");
-          });
-          
-          document.getElementById("closePlayerDBBtn").addEventListener("click", () => {
-            toggleModal("playerDBModal", false);
-          });
-          
-          document.getElementById("closeLanguageModalBtn").addEventListener("click", () => {
-            toggleModal("languageModal", false);
-          });
-          
-          const langOptions = document.getElementsByClassName("langOption");
-          for (let i = 0; i < langOptions.length; i++) {
-            langOptions[i].addEventListener("click", function () {
-              const lang = this.getAttribute("data-lang");
-              setLanguage(lang);
-            });
-          }
-        });
-      })();
-    </script>
-  </body>
-</html>
+          // Przycisk "Rozpocznij Mecz" na ekranie wyboru drużyn
+          document.getElementById("startMatch
