@@ -4,17 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>MiniSoccer - Szybki Mecz</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Nunito", sans-serif;
         background-color: #f4f4f4;
         margin: 0;
         padding: 0;
         text-align: center;
       }
-      .hidden {
-        display: none;
-      }
+      .hidden { display: none; }
       button {
         font-size: 18px;
         padding: 10px 20px;
@@ -25,9 +27,7 @@
         border-radius: 5px;
         cursor: pointer;
       }
-      button:hover {
-        background-color: #0056b3;
-      }
+      button:hover { background-color: #0056b3; }
       #gameCanvas {
         background-color: #eee;
         border: 2px solid #333;
@@ -45,14 +45,14 @@
 
     <!-- Ekran wyboru drużyn -->
     <div id="teamSelectScreen" class="hidden">
-      <h2>Wybierz drużyny</h2>
+      <h2>Wybierz drużynę</h2>
       <div id="teamList"></div>
       <button id="proceedToLineupBtn">Dalej</button>
     </div>
 
-    <!-- Ekran wyboru składu -->
+    <!-- Ekran wyboru zawodników/składu -->
     <div id="playerSelectScreen" class="hidden">
-      <h2>Wybierz skład</h2>
+      <h2>Wybrany skład drużyny</h2>
       <div id="playerList"></div>
       <button id="confirmLineupBtn">Zatwierdź skład</button>
     </div>
@@ -69,19 +69,322 @@
       (function () {
         "use strict";
 
+        // Baza drużyn z danymi zawodników – klucze odpowiadają nazwom drużyn
         const teamsData = {
-          "Manchester City": { /* Zawodnicy Manchester City */ },
-          "Liverpool FC": { /* Zawodnicy Liverpool FC */ },
-          "Arsenal FC": { /* Zawodnicy Arsenal FC */ },
-          "Newcastle United": { /* Zawodnicy Newcastle United */ },
-          "Aston Villa": { /* Zawodnicy Aston Villa */ },
-          "Chelsea FC": { /* Zawodnicy Chelsea FC */ },
-          "Real Madrid CF": { /* Zawodnicy Real Madrid */ },
-          "FC Barcelona": { /* Zawodnicy FC Barcelona */ },
-          "Atlético Madrid": { /* Zawodnicy Atlético Madrid */ },
-          "Real Sociedad": { /* Zawodnicy Real Sociedad */ },
-          "Real Betis": { /* Zawodnicy Real Betis */ },
-          "Sevilla FC": { /* Zawodnicy Sevilla FC */ }
+          "Manchester City": {
+            "Bramkarze": [
+              { name: "Ederson", rating: 90 },
+              { name: "Stefan Ortega", rating: 80 }
+            ],
+            "Obrońcy": [
+              { name: "Rúben Dias", rating: 88 },
+              { name: "John Stones", rating: 83 },
+              { name: "Nathan Aké", rating: 82 },
+              { name: "Joško Gvardiol", rating: 86 },
+              { name: "Manuel Akanji", rating: 81 }
+            ],
+            "Pomocnicy": [
+              { name: "Kevin De Bruyne", rating: 92 },
+              { name: "Rodri", rating: 88 },
+              { name: "İlkay Gündoğan", rating: 85 },
+              { name: "Bernardo Silva", rating: 87 },
+              { name: "Mateo Kovačić", rating: 83 }
+            ],
+            "Napastnicy": [
+              { name: "Erling Haaland", rating: 96 },
+              { name: "Jack Grealish", rating: 84 },
+              { name: "Jérémy Doku", rating: 82 },
+              { name: "Phil Foden", rating: 86 }
+            ]
+          },
+          "Liverpool FC": {
+            "Bramkarze": [
+              { name: "Alisson", rating: 88 },
+              { name: "Caoimhín Kelleher", rating: 79 }
+            ],
+            "Obrońcy": [
+              { name: "Virgil van Dijk", rating: 89 },
+              { name: "Trent Alexander‑Arnold", rating: 88 },
+              { name: "Andrew Robertson", rating: 85 },
+              { name: "Ibrahima Konaté", rating: 83 },
+              { name: "Joël Matip", rating: 81 }
+            ],
+            "Pomocnicy": [
+              { name: "Mohamed Salah", rating: 94 },
+              { name: "Alexis Mac Allister", rating: 83 },
+              { name: "Dominik Szoboszlai", rating: 85 },
+              { name: "Curtis Jones", rating: 80 },
+              { name: "Wataru Endō", rating: 78 }
+            ],
+            "Napastnicy": [
+              { name: "Darwin Núñez", rating: 84 },
+              { name: "Luis Díaz", rating: 86 },
+              { name: "Diogo Jota", rating: 84 },
+              { name: "Cody Gakpo", rating: 82 }
+            ]
+          },
+          "Arsenal FC": {
+            "Bramkarze": [
+              { name: "Aaron Ramsdale", rating: 86 },
+              { name: "David Raya", rating: 84 }
+            ],
+            "Obrońcy": [
+              { name: "William Saliba", rating: 87 },
+              { name: "Ben White", rating: 82 },
+              { name: "Gabriel Magalhães", rating: 84 },
+              { name: "Oleksandr Zinchenko", rating: 83 },
+              { name: "Takehiro Tomiyasu", rating: 81 }
+            ],
+            "Pomocnicy": [
+              { name: "Martin Ødegaard", rating: 90 },
+              { name: "Declan Rice", rating: 88 },
+              { name: "Thomas Partey", rating: 84 },
+              { name: "Kai Havertz", rating: 82 },
+              { name: "Jorginho", rating: 80 }
+            ],
+            "Napastnicy": [
+              { name: "Bukayo Saka", rating: 94 },
+              { name: "Gabriel Jesus", rating: 85 },
+              { name: "Leandro Trossard", rating: 84 },
+              { name: "Eddie Nketiah", rating: 81 }
+            ]
+          },
+          "Newcastle United": {
+            "Bramkarze": [
+              { name: "Nick Pope", rating: 87 },
+              { name: "Martin Dúbravka", rating: 80 }
+            ],
+            "Obrońcy": [
+              { name: "Kieran Trippier", rating: 85 },
+              { name: "Sven Botman", rating: 83 },
+              { name: "Fabian Schär", rating: 82 },
+              { name: "Dan Burn", rating: 79 },
+              { name: "Tino Livramento", rating: 78 }
+            ],
+            "Pomocnicy": [
+              { name: "Bruno Guimarães", rating: 88 },
+              { name: "Sandro Tonali", rating: 86 },
+              { name: "Joelinton", rating: 83 },
+              { name: "Sean Longstaff", rating: 80 },
+              { name: "Joe Willock", rating: 79 }
+            ],
+            "Napastnicy": [
+              { name: "Alexander Isak", rating: 87 },
+              { name: "Callum Wilson", rating: 84 },
+              { name: "Harvey Barnes", rating: 82 },
+              { name: "Anthony Gordon", rating: 80 }
+            ]
+          },
+          "Aston Villa": {
+            "Bramkarze": [
+              { name: "Emiliano Martínez", rating: 88 },
+              { name: "Robin Olsen", rating: 78 }
+            ],
+            "Obrońcy": [
+              { name: "Pau Torres", rating: 84 },
+              { name: "Matty Cash", rating: 82 },
+              { name: "Ezri Konsa", rating: 82 },
+              { name: "Diego Carlos", rating: 80 },
+              { name: "Lucas Digne", rating: 81 }
+            ],
+            "Pomocnicy": [
+              { name: "Douglas Luiz", rating: 86 },
+              { name: "John McGinn", rating: 85 },
+              { name: "Youri Tielemans", rating: 83 },
+              { name: "Boubacar Kamara", rating: 82 },
+              { name: "Jacob Ramsey", rating: 81 }
+            ],
+            "Napastnicy": [
+              { name: "Ollie Watkins", rating: 87 },
+              { name: "Moussa Diaby", rating: 85 },
+              { name: "Jhon Durán", rating: 84 },
+              { name: "Leon Bailey", rating: 81 }
+            ]
+          },
+          "Chelsea FC": {
+            "Bramkarze": [
+              { name: "Robert Sánchez", rating: 85 },
+              { name: "Đorđe Petrović", rating: 80 }
+            ],
+            "Obrońcy": [
+              { name: "Reece James", rating: 87 },
+              { name: "Thiago Silva", rating: 84 },
+              { name: "Levi Colwill", rating: 83 },
+              { name: "Benoît Badiashile", rating: 82 },
+              { name: "Marc Cucurella", rating: 81 }
+            ],
+            "Pomocnicy": [
+              { name: "Enzo Fernández", rating: 87 },
+              { name: "Moisés Caicedo", rating: 86 },
+              { name: "Conor Gallagher", rating: 84 },
+              { name: "Carney Chukwuemeka", rating: 80 },
+              { name: "Lesley Ugochukwu", rating: 78 }
+            ],
+            "Napastnicy": [
+              { name: "Nicolas Jackson", rating: 85 },
+              { name: "Mykhailo Mudryk", rating: 82 },
+              { name: "Noni Madueke", rating: 82 },
+              { name: "Armando Broja", rating: 79 }
+            ]
+          },
+          "Real Madrid CF": {
+            "Bramkarze": [
+              { name: "Thibaut Courtois", rating: 90 },
+              { name: "Andriy Lunin", rating: 83 }
+            ],
+            "Obrońcy": [
+              { name: "Dani Carvajal", rating: 85 },
+              { name: "Éder Militão", rating: 86 },
+              { name: "David Alaba", rating: 85 },
+              { name: "Antonio Rüdiger", rating: 86 },
+              { name: "Fran García", rating: 82 }
+            ],
+            "Pomocnicy": [
+              { name: "Luka Modrić", rating: 87 },
+              { name: "Toni Kroos", rating: 86 },
+              { name: "Eduardo Camavinga", rating: 85 },
+              { name: "Aurélien Tchouaméni", rating: 85 },
+              { name: "Federico Valverde", rating: 86 }
+            ],
+            "Napastnicy": [
+              { name: "Vinícius Júnior", rating: 89 },
+              { name: "Rodrygo", rating: 86 },
+              { name: "Joselu", rating: 83 },
+              { name: "Brahim Díaz", rating: 84 }
+            ]
+          },
+          "FC Barcelona": {
+            "Bramkarze": [
+              { name: "Marc‑André ter Stegen", rating: 89 },
+              { name: "Iñaki Peña", rating: 81 }
+            ],
+            "Obrońcy": [
+              { name: "Jules Koundé", rating: 85 },
+              { name: "Ronald Araújo", rating: 87 },
+              { name: "Andreas Christensen", rating: 84 },
+              { name: "Alejandro Balde", rating: 83 },
+              { name: "João Cancelo", rating: 86 },
+              { name: "Marcos Alonso", rating: 80 },
+              { name: "Sergi Roberto", rating: 80 }
+            ],
+            "Pomocnicy": [
+              { name: "Frenkie de Jong", rating: 87 },
+              { name: "Pedri", rating: 86 },
+              { name: "Gavi", rating: 85 },
+              { name: "İlkay Gündoğan", rating: 86 },
+              { name: "Oriol Romeu", rating: 82 }
+            ],
+            "Napastnicy": [
+              { name: "Robert Lewandowski", rating: 88 },
+              { name: "Raphinha", rating: 85 },
+              { name: "Ferran Torres", rating: 84 },
+              { name: "Lamine Yamal", rating: 83 }
+            ]
+          },
+          "Atlético Madrid": {
+            "Bramkarze": [
+              { name: "Jan Oblak", rating: 88 },
+              { name: "Ivo Grbić", rating: 81 }
+            ],
+            "Obrońcy": [
+              { name: "José María Giménez", rating: 85 },
+              { name: "Stefan Savić", rating: 84 },
+              { name: "Mario Hermoso", rating: 83 },
+              { name: "César Azpilicueta", rating: 83 },
+              { name: "Reinildo Mandava", rating: 82 }
+            ],
+            "Pomocnicy": [
+              { name: "Koke", rating: 85 },
+              { name: "Rodrigo De Paul", rating: 84 },
+              { name: "Saúl Ñíguez", rating: 83 },
+              { name: "Thomas Lemar", rating: 83 },
+              { name: "Pablo Barrios", rating: 81 }
+            ],
+            "Napastnicy": [
+              { name: "Antoine Griezmann", rating: 88 },
+              { name: "Álvaro Morata", rating: 85 },
+              { name: "Ángel Correa", rating: 84 },
+              { name: "Memphis Depay", rating: 84 }
+            ]
+          },
+          "Real Sociedad": {
+            "Bramkarze": [
+              { name: "Álex Remiro", rating: 85 },
+              { name: "Andoni Zubiaurre", rating: 80 }
+            ],
+            "Obrońcy": [
+              { name: "Robin Le Normand", rating: 84 },
+              { name: "Igor Zubeldia", rating: 83 },
+              { name: "Aritz Elustondo", rating: 83 },
+              { name: "Diego Rico", rating: 82 },
+              { name: "Jon Pacheco", rating: 81 }
+            ],
+            "Pomocnicy": [
+              { name: "Mikel Merino", rating: 85 },
+              { name: "Martín Zubimendi", rating: 84 },
+              { name: "Brais Méndez", rating: 84 },
+              { name: "Takefusa Kubo", rating: 85 },
+              { name: "Ander Barrenetxea", rating: 82 }
+            ],
+            "Napastnicy": [
+              { name: "Umar Sadiq", rating: 83 },
+              { name: "Mikel Oyarzabal", rating: 86 },
+              { name: "Portu", rating: 82 },
+              { name: "Álex Berenguer", rating: 81 }
+            ]
+          },
+          "Real Betis": {
+            "Bramkarze": [
+              { name: "Adrián San Miguel", rating: 82 },
+              { name: "Fran Vieites", rating: 78 }
+            ],
+            "Obrońcy": [
+              { name: "Marc Bartra", rating: 88 },
+              { name: "Ricardo Rodríguez", rating: 88 },
+              { name: "Germán Pezzella", rating: 83 },
+              { name: "Álex Moreno", rating: 82 },
+              { name: "Zouhair Feddal", rating: 82 }
+            ],
+            "Pomocnicy": [
+              { name: "Sergio Canales", rating: 86 },
+              { name: "William Carvalho", rating: 87 },
+              { name: "Guido Rodríguez", rating: 83 },
+              { name: "Carles Aleñá", rating: 83 },
+              { name: "Nabil Fekir", rating: 84 }
+            ],
+            "Napastnicy": [
+              { name: "Cédric Bakambu", rating: 87 },
+              { name: "Chimy Ávila", rating: 87 },
+              { name: "Willian José", rating: 83 },
+              { name: "Juanmi", rating: 82 }
+            ]
+          },
+          "Sevilla FC": {
+            "Bramkarze": [
+              { name: "Álvaro Fernández", rating: 85 },
+              { name: "Ørjan Nyland", rating: 82 }
+            ],
+            "Obrońcy": [
+              { name: "Jesús Navas", rating: 82 },
+              { name: "Diego Carlos", rating: 84 },
+              { name: "Loïc Badé", rating: 83 },
+              { name: "Marcão", rating: 83 },
+              { name: "Tanguy Nianzou", rating: 82 }
+            ],
+            "Pomocnicy": [
+              { name: "Joan Jordán", rating: 85 },
+              { name: "Fernando Reges", rating: 84 },
+              { name: "Papu Gómez", rating: 83 },
+              { name: "Nemanja Gudelj", rating: 82 },
+              { name: "Lucas Ocampos", rating: 84 }
+            ],
+            "Napastnicy": [
+              { name: "Youssef En‑Nesyri", rating: 84 },
+              { name: "Erik Lamela", rating: 82 },
+              { name: "Munir El Haddadi", rating: 82 },
+              { name: "Rafa Mir", rating: 81 }
+            ]
+          }
         };
 
         let currentScreen = "startScreen";
@@ -99,7 +402,10 @@
           for (let team in teamsData) {
             const btn = document.createElement("button");
             btn.textContent = team;
+            btn.classList.add("team-btn");
             btn.addEventListener("click", () => {
+              document.querySelectorAll(".team-btn").forEach(b => b.classList.remove("selected"));
+              btn.classList.add("selected");
               selectedTeam = team;
               console.log("Wybrano drużynę:", team);
             });
@@ -112,14 +418,14 @@
           const playerList = document.getElementById("playerList");
           playerList.innerHTML = "";
           const teamPlayers = teamsData[selectedTeam];
+          // Wykorzystujemy dane z teamsData, chociaż można skorzystać też z playerDatabase
           for (let position in teamPlayers) {
             const header = document.createElement("h3");
             header.textContent = position;
             playerList.appendChild(header);
-
-            teamPlayers[position].forEach((player) => {
+            teamPlayers[position].forEach(player => {
               const p = document.createElement("p");
-              p.textContent = `${player.name} (${player.rating})`;
+              p.textContent = `${player.name} - ${player.rating}`;
               playerList.appendChild(p);
             });
           }
