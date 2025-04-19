@@ -2,23 +2,15 @@
 <html lang="pl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>MiniSoccer - Szybki Mecz</title>
-    <!-- Łącze do czcionki Nunito -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
     <style>
-      /* ============================================================================
-         GLOBALNE STYLE – DESIGN W PIŁKARSKIM KLIMACIE
-         Tło ustawione na zdjęcie stadionu/murawy; overlay zapewnia poprawny kontrast.
-      ============================================================================ */
+      /* GLOBALNE STYLE – DESIGN W PIŁKARSKIM KLIMACIE */
       @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
       body {
         font-family: "Nunito", sans-serif;
-        background: url("https://images.unsplash.com/photo-1430232324554-8f4aebd06683?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Zm9vdGJhbGwlMjB3YWxscGFwZXJ8ZW58MHx8MHx8fDA%3D")
-          no-repeat center center fixed;
+        background: url("https://images.unsplash.com/photo-1430232324554-8f4aebd06683?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3") no-repeat center center fixed;
         background-size: cover;
         margin: 0;
         padding: 0;
@@ -32,17 +24,13 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.3);
+        background: rgba(0,0,0,0.3);
         z-index: -1;
       }
       .hidden { display: none !important; }
       
-      /* ========================================================================
-         EKRAN STARTOWY
-      ======================================================================== */
-      #startScreen {
-        padding: 40px 20px;
-      }
+      /* EKRAN STARTOWY */
+      #startScreen { padding: 40px 20px; }
       #startScreen h1 {
         font-size: 56px;
         margin-bottom: 30px;
@@ -66,10 +54,7 @@
         box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
       }
       
-      /* ========================================================================
-         EKRAN WYBORU DRUŻYN – INTERFEJS W STYLU FIFA
-         (Poziomo przewijane kafelki)
-      ======================================================================== */
+      /* EKRAN WYBORU DRUŻYN – INTERFEJS W STYLU FIFA */
       #teamSelectScreen { padding: 40px 20px; }
       #teamSelectScreen h2 {
         font-size: 40px;
@@ -147,10 +132,7 @@
         box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
       }
       
-      /* ========================================================================
-         EKRAN WYBORU ZAWODNIKÓW (Dla gospodarzy)
-         Umożliwia ręczny wybór składu – pozycje: Bramkarze, Obrońcy, Pomocnicy, Skrzydłowi, Napastnicy.
-      ======================================================================== */
+      /* EKRAN WYBORU ZAWODNIKÓW (dla gospodarzy) */
       #playerSelectScreen { padding: 40px 20px; }
       #playerSelectScreen h2 { font-size: 40px; margin-bottom: 20px; }
       .position-group {
@@ -186,9 +168,7 @@
         transform: scale(1.05);
       }
       
-      /* ========================================================================
-         EKRAN GRY
-      ======================================================================== */
+      /* EKRAN GRY */
       #gameScreen { padding: 20px; }
       #scoreboardContainer { margin-bottom: 20px; }
       #scoreboard { font-size: 28px; font-weight: bold; }
@@ -213,13 +193,13 @@
       }
       #backToStartBtn:hover { background: rgba(255,255,255,1); }
       
-      /* ========================================================================
-         MODALE – Baza zawodników, Wybór języka
-      ======================================================================== */
+      /* MODALE – Baza zawodników, Wybór języka */
       .modal {
         position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         background: rgba(0,0,0,0.6);
         display: flex;
         align-items: center;
@@ -237,10 +217,7 @@
         box-shadow: 0 8px 16px rgba(0,0,0,0.35);
         color: #333;
       }
-      .modal-content h2 {
-        margin-top: 0;
-        font-size: 28px;
-      }
+      .modal-content h2 { margin-top: 0; font-size: 28px; }
       .modal-content button {
         background: rgba(255,255,255,0.9);
         border: none;
@@ -263,10 +240,7 @@
         width: 100%;
         box-sizing: border-box;
       }
-      
-      /* ========================================================================
-         MODAL: Lista zawodników – przewijana
-      ======================================================================== */
+      /* MODAL: Lista zawodników – przewijana */
       #playerList {
         max-height: 300px;
         overflow-y: auto;
@@ -281,6 +255,7 @@
       #playerList::-webkit-scrollbar-track { background: #ffffff; }
     </style>
   </head>
+  
   <body>
     <!-- EKRAN STARTOWY -->
     <div id="startScreen">
@@ -300,20 +275,35 @@
       <div class="team-section" id="homeTeamSection">
         <h3>Drużyna Domowa</h3>
         <div id="homeTeamContainer" class="team-container">
-          <!-- Kafelki generowane dynamicznie -->
+          <!-- Przykładowe kafelki: -->
+          <div class="team-option" data-team="Manchester United">
+            <img src="https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg" alt="Manchester United" />
+            <p>Manchester United</p>
+          </div>
+          <div class="team-option" data-team="Real Madrid">
+            <img src="https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" alt="Real Madrid" />
+            <p>Real Madrid</p>
+          </div>
         </div>
       </div>
       <!-- Drużyna Gościa -->
       <div class="team-section" id="awayTeamSection">
         <h3>Drużyna Gościa</h3>
         <div id="awayTeamContainer" class="team-container">
-          <!-- Kafelki generowane dynamicznie -->
+          <div class="team-option" data-team="Manchester City">
+            <img src="https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" alt="Manchester City" />
+            <p>Manchester City</p>
+          </div>
+          <div class="team-option" data-team="Barcelona">
+            <img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" alt="Barcelona" />
+            <p>Barcelona</p>
+          </div>
         </div>
       </div>
       <button id="startMatchFromSelectBtn">Rozpocznij Mecz</button>
     </div>
     
-    <!-- EKRAN WYBORU ZAWODNIKÓW (Dla gospodarzy) -->
+    <!-- EKRAN WYBORU ZAWODNIKÓW (dla gospodarzy) -->
     <div id="playerSelectScreen" class="hidden">
       <h2>Wybierz swój skład</h2>
       <div class="position-group">
@@ -324,11 +314,11 @@
       </div>
       <div class="position-group">
         <label for="select-obroncy">Obrońcy:</label>
-        <select id="select-obroncy" multiple size="4"></select>
+        <select id="select-obroncy" multiple size="3"></select>
       </div>
       <div class="position-group">
         <label for="select-pomocnicy">Pomocnicy:</label>
-        <select id="select-pomocnicy" multiple size="4"></select>
+        <select id="select-pomocnicy" multiple size="3"></select>
       </div>
       <div class="position-group">
         <label for="select-skrzydlowi">Skrzydłowi:</label>
@@ -396,71 +386,50 @@
               BALL_COLLISION_IMPULSE = 7,
               DRAG_IMPULSE_SCALE = 0.2;
         
-        ////////////////////////////////
-        // DANE DRUŻYN I LIG (LOGA i nazwy)
-        ////////////////////////////////
+        // DANE DRUŻYN I LIG (LOGA)
         const teamsData = {
           "Premier League": {
             leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
             teams: [
               { name: "Manchester United", logo: "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg" },
-              { name: "Manchester City", logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" },
-              { name: "Liverpool", logo: "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" },
-              { name: "Chelsea", logo: "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg" },
-              { name: "Arsenal", logo: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" },
-              { name: "Tottenham Hotspur", logo: "https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg" }
+              { name: "Manchester City", logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" }
             ]
           },
           "La Liga": {
             leagueLogo: "https://upload.wikimedia.org/wikipedia/en/9/90/LaLiga.svg",
             teams: [
               { name: "Real Madrid", logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" },
-              { name: "Barcelona", logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" },
-              { name: "Atlético Madrid", logo: "https://upload.wikimedia.org/wikipedia/en/f/f4/Atletico_Madrid.svg" },
-              { name: "Sevilla", logo: "https://upload.wikimedia.org/wikipedia/en/3/3f/Sevilla_FC_logo.svg" },
-              { name: "Valencia", logo: "https://upload.wikimedia.org/wikipedia/en/c/c2/Valencia_CF.svg" },
-              { name: "Villarreal", logo: "https://upload.wikimedia.org/wikipedia/en/3/32/Villarreal_CF_logo.svg" }
+              { name: "Barcelona", logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" }
             ]
           },
           "Serie A": {
             leagueLogo: "https://upload.wikimedia.org/wikipedia/en/d/d2/Serie_A_logo_%282019%29.svg",
             teams: [
-              { name: "Juventus", logo: "https://upload.wikimedia.org/wikipedia/en/3/3e/Juventus_FC_2017_logo.svg" },
-              { name: "Inter Milan", logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg" },
-              { name: "AC Milan", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d0/AC_Milan_logo.svg" },
-              { name: "Napoli", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2d/SSC_Napoli.svg" },
-              { name: "Roma", logo: "https://upload.wikimedia.org/wikipedia/en/f/f7/A.S._Roma_logo.svg" },
-              { name: "Lazio", logo: "https://upload.wikimedia.org/wikipedia/en/2/20/S.S._Lazio.svg" }
+              { name: "Juventus", logo: "https://upload.wikimedia.org/wikipedia/en/3/3e/Juventus_FC_2017_logo.svg" }
+              // Dodaj pozostałe kluby
             ]
           },
           "Bundesliga": {
             leagueLogo: "https://upload.wikimedia.org/wikipedia/commons/d/df/Bundesliga_logo_%282017%29.svg",
             teams: [
-              { name: "Bayern Munich", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1f/FC_Bayern_München_logo_%282017%29.svg" },
-              { name: "Borussia Dortmund", logo: "https://upload.wikimedia.org/wikipedia/commons/6/67/Borussia_Dortmund_logo.svg" },
-              { name: "RB Leipzig", logo: "https://upload.wikimedia.org/wikipedia/en/0/04/RB_Leipzig.svg" }
-              // Uzupełnij pozostałe drużyny odpowiednio...
+              { name: "Bayern Munich", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1f/FC_Bayern_München_logo_%282017%29.svg" }
+              // Dodaj pozostałe kluby
             ]
           },
           "Ligue 1": {
             leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/fd/Ligue_1.svg",
             teams: [
-              { name: "Paris Saint-Germain", logo: "https://upload.wikimedia.org/wikipedia/en/9/9e/Paris_Saint-Germain_F.C..svg" },
-              { name: "Marseille", logo: "https://upload.wikimedia.org/wikipedia/en/5/58/OM.svg" },
-              { name: "Lyon", logo: "https://upload.wikimedia.org/wikipedia/en/c/c2/Olympique_Lyonnais.svg" }
-              // Uzupełnij pozostałe drużyny...
+              { name: "Paris Saint-Germain", logo: "https://upload.wikimedia.org/wikipedia/en/9/9e/Paris_Saint-Germain_F.C..svg" }
+              // Dodaj pozostałe kluby
             ]
           }
         };
         
-        ////////////////////////////////
         // PRZYKŁADOWA BAZA ZAWODNIKÓW (playerDatabase)
-        // Struktura: playerDatabase[clubName] = { "Bramkarze": [ {name, rating}, ... ], "Obrońcy": [...], etc. }
-        ////////////////////////////////
         const samplePlayerDatabase = {
           "Manchester United": {
             "Bramkarze": [ { name: "David de Gea", rating: 87 }, { name: "Dean Henderson", rating: 83 } ],
-            "Obrońcy": [ { name: "Diogo Dalot", rating: 82 }, { name: "Lisandro Martínez", rating: 83 }, { name: "Luke Shaw", rating: 79 } ],
+            "Obrońcy": [ { name: "Diogo Dalot", rating: 82 }, { name: "Lisandro Martínez", rating: 83 } ],
             "Pomocnicy": [ { name: "Bruno Fernandes", rating: 88 }, { name: "Paul Pogba", rating: 85 } ],
             "Skrzydłowi": [ { name: "Amad Diallo", rating: 80 }, { name: "Alejandro Garnacho", rating: 81 } ],
             "Napastnicy": [ { name: "Rasmus Højlund", rating: 70 }, { name: "Mason Greenwood", rating: 76 } ]
@@ -486,13 +455,11 @@
             "Skrzydłowi": [ { name: "Ferran Torres", rating: 82 }, { name: "Raphinha", rating: 81 } ],
             "Napastnicy": [ { name: "Robert Lewandowski", rating: 88 } ]
           }
-          // Dodaj dane dla pozostałych klubów z Serie A, Bundesligi, Ligue 1
         };
-        // Używamy przykładowej bazy
         const playerDatabase = samplePlayerDatabase;
         
         ////////////////////////////////
-        // FUNKCJE OBSŁUGUJĄCE WYBÓR JĘZYKA (Modal)
+        // FUNKCJE OBSŁUGUJĄCE WYBÓR JĘZYKA
         ////////////////////////////////
         function updateLanguageContent(lang) {
           const translations = {
@@ -575,17 +542,14 @@
         ////////////////////////////////
         // WYBÓR SKŁADU DLA GOSPODARZY – OBSŁUGA FORMULARZA
         ////////////////////////////////
-        // Wypełniamy <select> dla każdej pozycji na podstawie playerDatabase[clubName]
         function populatePlayerSelects(club) {
-          // Pozycje
           const positions = ["Bramkarze", "Obrońcy", "Pomocnicy", "Skrzydłowi", "Napastnicy"];
           positions.forEach(pos => {
             const selectEl = document.getElementById("select-" + pos.toLowerCase());
-            // Czyścimy select
             selectEl.innerHTML = '<option value="">-- Wybierz ' + pos.slice(0, -1) + 'a --</option>';
             if (playerDatabase[club] && playerDatabase[club][pos]) {
               playerDatabase[club][pos].forEach(player => {
-                const option = document.createElement("option");
+                let option = document.createElement("option");
                 option.value = player.name;
                 option.text = `${player.name} - ${player.rating}`;
                 selectEl.appendChild(option);
@@ -594,13 +558,12 @@
           });
         }
         
-        // Dla drużyny gości – AI wybiera zawodnika o najwyższym overallu z każdej pozycji
+        // Dla drużyny gości – wybieramy najlepszych zawodników (AI)
         function generateGuestLineup(club) {
           let lineup = {};
           const positions = ["Bramkarze", "Obrońcy", "Pomocnicy", "Skrzydłowi", "Napastnicy"];
           positions.forEach(pos => {
             if (playerDatabase[club] && playerDatabase[club][pos]) {
-              // Wybieramy zawodnika z najwyższym ratingiem
               let best = playerDatabase[club][pos].reduce((prev, curr) => {
                 return (curr.rating > prev.rating) ? curr : prev;
               }, playerDatabase[club][pos][0]);
@@ -611,19 +574,12 @@
         }
         
         ////////////////////////////////
-        // TRYB MECZU – OBSŁUGA GRY
+        // INICJALIZACJA TRYBU MECZU – OBSŁUGA GRY
         ////////////////////////////////
         function initGame() {
           canvas = document.getElementById("gameCanvas");
           ctx = canvas.getContext("2d");
-          ball = {
-            x: canvas.width * 0.55,
-            y: canvas.height / 2,
-            radius: 8,
-            dx: 2,
-            dy: 1.5
-          };
-          // Przykładowa pozycja zawodników na boisku
+          ball = { x: canvas.width * 0.55, y: canvas.height / 2, radius: 8, dx: 2, dy: 1.5 };
           fieldPlayers = [
             { x: canvas.width * 0.25, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
             { x: canvas.width * 0.25, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
@@ -651,7 +607,6 @@
           ctx.fillStyle = "white";
           ctx.fill();
           ctx.closePath();
-          
           fieldPlayers.forEach(player => {
             ctx.beginPath();
             ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
@@ -659,13 +614,11 @@
             ctx.fill();
             ctx.closePath();
           });
-          
           ctx.beginPath();
           ctx.arc(goalkeeper.x, goalkeeper.y, goalkeeper.radius, 0, Math.PI * 2);
           ctx.fillStyle = "black";
           ctx.fill();
           ctx.closePath();
-          
           if (isDragging && draggingPlayerIndex !== null) {
             ctx.save();
             ctx.setLineDash([5, 5]);
@@ -691,18 +644,9 @@
           ball.y += ball.dy;
           ball.dx *= FRICTION;
           ball.dy *= FRICTION;
-          if (ball.y - ball.radius < 10) {
-            ball.y = 10 + ball.radius;
-            ball.dy *= -1;
-          }
-          if (ball.y + ball.radius > canvas.height - 10) {
-            ball.y = canvas.height - 10 - ball.radius;
-            ball.dy *= -1;
-          }
-          if (ball.x + ball.radius > canvas.width) {
-            score.goals++;
-            resetBall();
-          }
+          if (ball.y - ball.radius < 10) { ball.y = 10 + ball.radius; ball.dy *= -1; }
+          if (ball.y + ball.radius > canvas.height - 10) { ball.y = canvas.height - 10 - ball.radius; ball.dy *= -1; }
+          if (ball.x + ball.radius > canvas.width) { score.goals++; resetBall(); }
         }
         
         function resetBall() {
@@ -713,18 +657,16 @@
         }
         
         function circleCollision(c1, c2) {
-          const dx = c1.x - c2.x;
-          const dy = c1.y - c2.y;
+          const dx = c1.x - c2.x, dy = c1.y - c2.y;
           return Math.hypot(dx, dy) < (c1.radius + c2.radius);
         }
         
         function handlePlayerBallCollision(player) {
           if (circleCollision(player, ball)) {
-            const dx = ball.x - player.x;
-            const dy = ball.y - player.y;
+            const dx = ball.x - player.x, dy = ball.y - player.y;
             const dist = Math.hypot(dx, dy) || 1;
-            ball.dx = (dx / dist) * BALL_COLLISION_IMPULSE;
-            ball.dy = (dy / dist) * BALL_COLLISION_IMPULSE;
+            ball.dx = (dx/dist) * BALL_COLLISION_IMPULSE;
+            ball.dy = (dy/dist) * BALL_COLLISION_IMPULSE;
           }
         }
         
@@ -747,8 +689,7 @@
         // OBSŁUGA PRZECIĄGANIA NA CANVASIE
         function canvasMouseDown(e) {
           const rect = canvas.getBoundingClientRect();
-          const mx = e.clientX - rect.left;
-          const my = e.clientY - rect.top;
+          const mx = e.clientX - rect.left, my = e.clientY - rect.top;
           for (let i = 0; i < fieldPlayers.length; i++) {
             const p = fieldPlayers[i];
             if (Math.hypot(mx - p.x, my - p.y) < p.radius) {
@@ -770,8 +711,7 @@
         
         function canvasMouseUp(e) {
           if (!isDragging || draggingPlayerIndex === null) return;
-          const dx = dragStart.x - dragCurrent.x;
-          const dy = dragStart.y - dragCurrent.y;
+          const dx = dragStart.x - dragCurrent.x, dy = dragStart.y - dragCurrent.y;
           fieldPlayers[draggingPlayerIndex].vx = dx * DRAG_IMPULSE_SCALE;
           fieldPlayers[draggingPlayerIndex].vy = dy * DRAG_IMPULSE_SCALE;
           isDragging = false;
@@ -791,148 +731,176 @@
           else modal.classList.add("hidden");
         }
         document.querySelectorAll(".modal").forEach(modal => {
-          modal.addEventListener("click", function (e) {
-            if (e.target === modal) modal.classList.add("hidden");
+          modal.addEventListener("click", function(e) { if (e.target === modal) modal.classList.add("hidden"); });
+        });
+        
+        ////////////////////////////////
+        // INICJALIZACJA WYBORU DRUŻYN – INTERFEJS (styl FIFA)
+        ////////////////////////////////
+        function populateTeamSelections() {
+          const homeContainer = document.getElementById("homeTeamContainer");
+          const awayContainer = document.getElementById("awayTeamContainer");
+          homeContainer.innerHTML = "";
+          awayContainer.innerHTML = "";
+          selectedHomeTeam = null;
+          selectedAwayTeam = null;
+          for (let league in teamsData) {
+            // Dla gospodarzy
+            let leagueDivHome = document.createElement("div");
+            leagueDivHome.classList.add("league-section");
+            let leagueHeaderHome = document.createElement("div");
+            leagueHeaderHome.classList.add("league-header");
+            let leagueLogoHome = document.createElement("img");
+            leagueLogoHome.src = teamsData[league].leagueLogo;
+            let leagueNameHome = document.createElement("span");
+            leagueNameHome.innerText = league;
+            leagueHeaderHome.appendChild(leagueLogoHome);
+            leagueHeaderHome.appendChild(leagueNameHome);
+            leagueDivHome.appendChild(leagueHeaderHome);
+            let teamContainerHome = document.createElement("div");
+            teamContainerHome.classList.add("team-container");
+            teamsData[league].teams.forEach(team => {
+              let teamDiv = document.createElement("div");
+              teamDiv.classList.add("team-option");
+              teamDiv.dataset.team = team.name;
+              teamDiv.innerHTML = `<img src="${team.logo}" alt="${team.name}"><p>${team.name}</p>`;
+              teamDiv.addEventListener("click", function () {
+                teamContainerHome.querySelectorAll(".team-option").forEach(el => el.classList.remove("selected"));
+                this.classList.add("selected");
+                selectedHomeTeam = team.name;
+              });
+              teamContainerHome.appendChild(teamDiv);
+            });
+            leagueDivHome.appendChild(teamContainerHome);
+            homeContainer.appendChild(leagueDivHome);
+            
+            // Dla gości
+            let leagueDivAway = document.createElement("div");
+            leagueDivAway.classList.add("league-section");
+            let leagueHeaderAway = document.createElement("div");
+            leagueHeaderAway.classList.add("league-header");
+            let leagueLogoAway = document.createElement("img");
+            leagueLogoAway.src = teamsData[league].leagueLogo;
+            let leagueNameAway = document.createElement("span");
+            leagueNameAway.innerText = league;
+            leagueHeaderAway.appendChild(leagueLogoAway);
+            leagueHeaderAway.appendChild(leagueNameAway);
+            leagueDivAway.appendChild(leagueHeaderAway);
+            let teamContainerAway = document.createElement("div");
+            teamContainerAway.classList.add("team-container");
+            teamsData[league].teams.forEach(team => {
+              let teamDiv = document.createElement("div");
+              teamDiv.classList.add("team-option");
+              teamDiv.dataset.team = team.name;
+              teamDiv.innerHTML = `<img src="${team.logo}" alt="${team.name}"><p>${team.name}</p>`;
+              teamDiv.addEventListener("click", function () {
+                teamContainerAway.querySelectorAll(".team-option").forEach(el => el.classList.remove("selected"));
+                this.classList.add("selected");
+                selectedAwayTeam = team.name;
+              });
+              teamContainerAway.appendChild(teamDiv);
+            });
+            leagueDivAway.appendChild(teamContainerAway);
+            awayContainer.appendChild(leagueDivAway);
+          }
+        }
+        
+        ////////////////////////////////
+        // INICJALIZACJA WYBORU SKŁADU (dla gospodarzy)
+        ////////////////////////////////
+        function openPlayerSelectScreen() {
+          // Ukrywamy ekran wyboru drużyn i przechodzimy do wyboru składów
+          document.getElementById("teamSelectScreen").classList.add("hidden");
+          document.getElementById("playerSelectScreen").classList.remove("hidden");
+          // Wypełniamy selecty dla drużyny gospodarzy
+          populatePlayerSelects(selectedHomeTeam);
+        }
+        
+        ////////////////////////////////
+        // INICJALIZACJA ZDARZEŃ PO ZAŁADOWANIU DOM
+        ////////////////////////////////
+        document.addEventListener("DOMContentLoaded", () => {
+          console.log("DOM załadowany");
+          
+          // Ekran startowy – kliknięcie "SZYBKI MECZ"
+          document.getElementById("startMatchBtn").addEventListener("click", () => {
+            document.getElementById("startScreen").classList.add("hidden");
+            document.getElementById("teamSelectScreen").classList.remove("hidden");
+            populateTeamSelections();
+          });
+          
+          // Ekran wyboru drużyn – kliknięcie "Rozpocznij Mecz"
+          document.getElementById("startMatchFromSelectBtn").addEventListener("click", () => {
+            if (!selectedHomeTeam || !selectedAwayTeam) {
+              alert("Wybierz obie drużyny!");
+              return;
+            }
+            if (selectedHomeTeam === selectedAwayTeam) {
+              alert("Wybierz dwie różne drużyny!");
+              return;
+            }
+            // Dla gości generujemy skład AI
+            guestLineup = generateGuestLineup(selectedAwayTeam);
+            // Przechodzimy do ekranu wyboru składu (dla gospodarzy)
+            openPlayerSelectScreen();
+          });
+          
+          // Ekran wyboru składu – kliknięcie "Zatwierdź skład"
+          document.getElementById("confirmLineupBtn").addEventListener("click", () => {
+            // Zapisujemy wybranych zawodników z formularzy
+            const positions = ["Bramkarze", "Obrońcy", "Pomocnicy", "Skrzydłowi", "Napastnicy"];
+            positions.forEach(pos => {
+              const selectEl = document.getElementById("select-" + pos.toLowerCase());
+              if (selectEl.multiple) {
+                homeLineup[pos] = Array.from(selectEl.selectedOptions).map(opt => opt.value);
+              } else {
+                homeLineup[pos] = selectEl.value;
+              }
+            });
+            // Przejście do trybu gry
+            document.getElementById("playerSelectScreen").classList.add("hidden");
+            document.getElementById("gameScreen").classList.remove("hidden");
+            initGame();
+            addCanvasEvents();
+            gameAnimating = true;
+            requestAnimationFrame(gameLoop);
+            console.log("Skład gospodarzy:", homeLineup);
+            console.log("Skład gości (AI):", guestLineup);
+          });
+          
+          // Przycisk "Powrót do Menu" na ekranie gry
+          document.getElementById("backToStartBtn").addEventListener("click", () => {
+            gameAnimating = false;
+            document.getElementById("gameScreen").classList.add("hidden");
+            document.getElementById("startScreen").classList.remove("hidden");
+          });
+          
+          // Modale – Baza zawodników i Wybór języka
+          document.getElementById("btnPlayerDB").addEventListener("click", () => {
+            renderPlayerList();
+            toggleModal("playerDBModal", true);
+          });
+          document.getElementById("btnLanguage").addEventListener("click", () => {
+            toggleModal("languageModal", true);
+          });
+          document.getElementById("btnSettings").addEventListener("click", () => {
+            alert("Opcja ustawień – do implementacji!");
+          });
+          document.getElementById("closePlayerDBBtn").addEventListener("click", () => {
+            toggleModal("playerDBModal", false);
+          });
+          document.getElementById("closeLanguageModalBtn").addEventListener("click", () => {
+            toggleModal("languageModal", false);
+          });
+          Array.from(document.getElementsByClassName("langOption")).forEach(btn => {
+            btn.addEventListener("click", function () {
+              const lang = this.getAttribute("data-lang");
+              setLanguage(lang);
+            });
           });
         });
         
-        // FUNKCJE OBSŁUGUJĄCE WYBÓR JĘZYKA (MODAL)
-        function updateLanguageContent(lang) {
-          const translations = {
-            pl: {
-              header: "MiniSoccer ⚽",
-              startMatchBtn: "SZYBKI MECZ",
-              btnPlayerDB: "Baza zawodników",
-              btnLanguage: "Język",
-              btnSettings: "Ustawienia",
-              backToStartBtn: "Powrót do Menu",
-              scoreboard: "Gole: ",
-              playerDBModalHeader: "Baza zawodników",
-              addPlayerFormHeader: "Dodaj zawodnika",
-              playerNamePlaceholder: "Imię i nazwisko",
-              playerTeamPlaceholder: "Drużyna",
-              playerRatingPlaceholder: "Ocena",
-              addPlayerButton: "Dodaj",
-              closePlayerDB: "Zamknij",
-              languageModalHeader: "Wybór języka",
-              languageModalText: "Wybierz język interfejsu:",
-              closeLanguageModal: "Zamknij"
-            },
-            en: {
-              header: "MiniSoccer ⚽",
-              startMatchBtn: "Quick Match",
-              btnPlayerDB: "Player Database",
-              btnLanguage: "Language",
-              btnSettings: "Settings",
-              backToStartBtn: "Back to Menu",
-              scoreboard: "Goals: ",
-              playerDBModalHeader: "Player Database",
-              addPlayerFormHeader: "Add Player",
-              playerNamePlaceholder: "Name",
-              playerTeamPlaceholder: "Team",
-              playerRatingPlaceholder: "Rating",
-              addPlayerButton: "Add",
-              closePlayerDB: "Close",
-              languageModalHeader: "Language Selection",
-              languageModalText: "Select the interface language:",
-              closeLanguageModal: "Close"
-            }
-          };
-          document.querySelector("#startScreen h1").innerText = translations[lang].header;
-          document.getElementById("startMatchBtn").innerText = translations[lang].startMatchBtn;
-          document.getElementById("btnPlayerDB").innerText = translations[lang].btnPlayerDB;
-          document.getElementById("btnLanguage").innerText = translations[lang].btnLanguage;
-          document.getElementById("btnSettings").innerText = translations[lang].btnSettings;
-          document.getElementById("backToStartBtn").innerText = translations[lang].backToStartBtn;
-          document.getElementById("scoreboard").innerText = translations[lang].scoreboard + score.goals;
-          
-          const playerDBHeader = document.querySelector("#playerDBModal .modal-content h2");
-          if (playerDBHeader) playerDBHeader.innerText = translations[lang].playerDBModalHeader;
-          const addPlayerHeader = document.querySelector("#playerDBModal .modal-content h3");
-          if (addPlayerHeader) addPlayerHeader.innerText = translations[lang].addPlayerFormHeader;
-          document.getElementById("playerName").setAttribute("placeholder", translations[lang].playerNamePlaceholder);
-          document.getElementById("playerTeam").setAttribute("placeholder", translations[lang].playerTeamPlaceholder);
-          document.getElementById("playerRating").setAttribute("placeholder", translations[lang].playerRatingPlaceholder);
-          const addPlayerBtn = document.querySelector("#addPlayerForm button[type=submit]");
-          if (addPlayerBtn) addPlayerBtn.innerText = translations[lang].addPlayerButton;
-          document.getElementById("closePlayerDBBtn").innerText = translations[lang].closePlayerDB;
-          
-          const langModalHeader = document.querySelector("#languageModal .modal-content h2");
-          if (langModalHeader) langModalHeader.innerText = translations[lang].languageModalHeader;
-          const langModalText = document.querySelector("#languageModal .modal-content p");
-          if (langModalText) langModalText.innerText = translations[lang].languageModalText;
-          document.getElementById("closeLanguageModalBtn").innerText = translations[lang].closeLanguageModal;
-          const langOptionPL = document.querySelector('.langOption[data-lang="pl"]');
-          if (langOptionPL) langOptionPL.innerText = lang === "pl" ? "Polski" : "Polish";
-          const langOptionEN = document.querySelector('.langOption[data-lang="en"]');
-          if (langOptionEN) langOptionEN.innerText = lang === "pl" ? "Angielski" : "English";
-        }
-        
-        function setLanguage(langCode) {
-          localStorage.setItem("siteLanguage", langCode);
-          updateLanguageContent(langCode);
-          toggleModal("languageModal", false);
-          alert("Ustawiono język: " + (langCode === "pl" ? "Polski" : "English"));
-        }
-        
-        ////////////////////////////////
-        // WYBÓR SKŁADU DLA GOSPODARZY – OBSŁUGA FORMULARZA
-        ////////////////////////////////
-        function populatePlayerSelects(club) {
-          // zakładamy, że club to nazwa klubu gospodarzy (np. "Manchester United")
-          const positions = ["Bramkarze", "Obrońcy", "Pomocnicy", "Skrzydłowi", "Napastnicy"];
-          positions.forEach(pos => {
-            const selectEl = document.getElementById("select-" + pos.toLowerCase());
-            selectEl.innerHTML = '<option value="">-- Wybierz ' + pos.slice(0, -1) + 'a --</option>';
-            if (playerDatabase[club] && playerDatabase[club][pos]) {
-              playerDatabase[club][pos].forEach(player => {
-                const option = document.createElement("option");
-                option.value = player.name;
-                option.text = `${player.name} - ${player.rating}`;
-                selectEl.appendChild(option);
-              });
-            }
-          });
-        }
-        
-        // Dla drużyny gości: AI wybiera zawodnika o najwyższym ratingu z każdej pozycji
-        function generateGuestLineup(club) {
-          let lineup = {};
-          const positions = ["Bramkarze", "Obrońcy", "Pomocnicy", "Skrzydłowi", "Napastnicy"];
-          positions.forEach(pos => {
-            if (playerDatabase[club] && playerDatabase[club][pos]) {
-              let best = playerDatabase[club][pos].reduce((prev, curr) => {
-                return (curr.rating > prev.rating) ? curr : prev;
-              }, playerDatabase[club][pos][0]);
-              lineup[pos] = best.name;
-            }
-          });
-          return lineup;
-        }
-        
-        ////////////////////////////////
-        // INICJALIZACJA TRYBU MECZU – OBSŁUGA GRY
-        ////////////////////////////////
-        function initGame() {
-          canvas = document.getElementById("gameCanvas");
-          ctx = canvas.getContext("2d");
-          ball = {
-            x: canvas.width * 0.55,
-            y: canvas.height / 2,
-            radius: 8,
-            dx: 2,
-            dy: 1.5
-          };
-          fieldPlayers = [
-            { x: canvas.width * 0.25, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
-            { x: canvas.width * 0.25, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
-            { x: canvas.width * 0.25, y: canvas.height * 0.7, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
-            { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 }
-          ];
-          goalkeeper = { x: 60, y: canvas.height / 2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0 };
-          score.goals = 0;
-        }
-     });
+      })();
     </script>
   </body>
 </html>
