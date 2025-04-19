@@ -10,74 +10,49 @@
       rel="stylesheet"
     />
     <style>
-     /* ================================
-   EKRAN STARTOWY - PIŁKARSKIE TŁO
-   ================================ */
-#startScreen {
-  padding: 40px 20px;
-  background: linear-gradient(to bottom, #3c8c40 0%, #185c28 100%);
-  background-image: url('https://images.unsplash.com/photo-1430232324554-8f4aebd06683?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Zm9vdGJhbGwlMjB3YWxscGFwZXJ8ZW58MHx8MHx8fDA%3D'); /* Zamień na prawdziwy link */
-  background-size: cover;
-  background-position: center;
-}
-
-#startScreen h1 {
-  font-size: 56px;
-  color: #fff;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-}
-
-/* ================================
-   BAZA ZAWODNIKÓW - PRZEWIJANIE LISTY
-   ================================ */
-#playerList {
-  max-height: 300px; /* Ograniczona wysokość, aby wymusić przewijanie */
-  overflow-y: auto; /* Pozwala przewijać listę myszką */
-  scrollbar-width: thin;
-  scrollbar-color: #185c28 #ffffff;
-}
-
-/* Stylizacja paska przewijania dla WebKit (Chrome, Edge, Safari) */
-#playerList::-webkit-scrollbar {
-  width: 8px;
-}
-
-#playerList::-webkit-scrollbar-thumb {
-  background: #185c28; /* Kolor przewijania */
-  border-radius: 5px;
-}
-
-#playerList::-webkit-scrollbar-track {
-  background: #ffffff;
-}
       /* ============================================================================
          GLOBALNE STYLE – GRAFICZNY DESIGN (AESTHETIC STYLE)
          ============================================================================
-         Używamy gradientowego tła, łagodnych cieni, zaokrąglonych elementów i
-         płynnych przejść, by nadać interfejsowi nowoczesny i przyjemny wygląd.
+         Ustawiamy tło całego dokumentu na obrazek stadionu – styl piłkarski.
+         Możesz podmienić URL na inny obrazek z Unsplash lub innego źródła.
       ============================================================================ */
       @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
-      
+
       body {
         font-family: 'Nunito', sans-serif;
-        background: linear-gradient(135deg, #f6d365, #fda085);
+        /* Tło stadium – zmień URL, jeśli znajdziesz lepszy obraz */
+        background: url('https://images.unsplash.com/photo-1592772874906-d7ef885f9b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80')
+                    no-repeat center center fixed !important;
+        background-size: cover !important;
         margin: 0;
         padding: 0;
         text-align: center;
-        color: #333;
+        color: #fff;
       }
-      
+      /* Optional overlay, by przyciemnić tło i poprawić kontrast */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: -1;
+      }
+
       .hidden {
         display: none !important;
       }
-      
+
       /* ============================================================================
          EKRAN STARTOWY
          ============================================================================
-         Duży nagłówek, przyciski o modernistycznym wyglądzie z cieniem i animacjami.
+         Nagłówek i przyciski – duże, estetyczne z cieniami i animacjami.
       ============================================================================ */
       #startScreen {
         padding: 40px 20px;
+        /* Jeśli chcesz również zmienić tło ekranu startowego (możesz usunąć, bo body już ustawia tło) */
       }
       
       #startScreen h1 {
@@ -92,7 +67,7 @@
         padding: 14px 28px;
         margin: 10px;
         cursor: pointer;
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(255,255,255,0.95);
         border: none;
         border-radius: 12px;
         transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
@@ -100,7 +75,7 @@
       }
       
       #startScreen button:hover {
-        background: rgba(255, 255, 255, 1);
+        background: rgba(255,255,255,1);
         transform: translateY(-3px);
         box-shadow: 0 5px 10px rgba(0,0,0,0.3);
       }
@@ -112,7 +87,7 @@
       /* ============================================================================
          EKRAN GRY
          ============================================================================
-         Prezentujemy wynik, boisko (canvas) z cieniami i zaokrąglonymi rogami.
+         Stylizacja wyniku, canvas (boisko) z cieniami i zaokrągleniami.
       ============================================================================ */
       #gameScreen {
         padding: 20px;
@@ -128,7 +103,7 @@
       }
       
       canvas {
-        background-color: #228B22;  /* odcień zieleni – boisko */
+        background-color: #228B22; /* Odcień zieleni przypominający murawę */
         border: 4px solid #fff;
         border-radius: 16px;
         display: block;
@@ -153,10 +128,9 @@
       }
       
       /* ============================================================================
-         MODALE – Baza zawodników oraz Wybór języka
+         MODALE – Baza zawodników & Wybór języka
          ============================================================================
-         Modale mają efekt fadeIn, zaokrąglone rogi oraz cieniowanie, co nadaje im
-         nowoczesny, estetyczny wygląd.
+         Modale z gradientowym overlay i efektami fadeIn.
       ============================================================================ */
       .modal {
         position: fixed;
@@ -184,6 +158,7 @@
         max-width: 500px;
         border-radius: 16px;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+        color: #333; /* Ustawiamy ciemny kolor tekstu, aby kontrastował z jasnym tłem modala */
       }
       
       .modal-content h2 {
@@ -215,11 +190,33 @@
         width: 100%;
         box-sizing: border-box;
       }
+      
+      /* ============================================================================
+         MODAL: PRZEWIJANIE LISTY ZAWODNIKÓW
+         ============================================================================
+         Lista zawodników, która będzie przewijalna, jeśli jej zawartość przekroczy 300px.
+      ============================================================================ */
+      #playerList {
+        max-height: 300px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #185c28 #ffffff;
+      }
+      #playerList::-webkit-scrollbar {
+        width: 8px;
+      }
+      #playerList::-webkit-scrollbar-thumb {
+        background: #185c28;
+        border-radius: 5px;
+      }
+      #playerList::-webkit-scrollbar-track {
+        background: #ffffff;
+      }
     </style>
   </head>
   <body>
     <!-- ============================================================
-         EKRAN STARTOWY – przyciski umożliwiające przejście do trybu gry i otwarcie modali
+         EKRAN STARTOWY
          ============================================================ -->
     <div id="startScreen">
       <h1>MiniSoccer ⚽</h1>
@@ -232,7 +229,7 @@
     </div>
     
     <!-- ============================================================
-         EKRAN GRY – prosty tryb meczowy z canvas
+         EKRAN GRY
          ============================================================ -->
     <div id="gameScreen" class="hidden">
       <div id="scoreboardContainer">
@@ -243,7 +240,7 @@
     </div>
     
     <!-- ============================================================
-         MODAL: Baza zawodników – lista zawodników oraz formularz dodawania
+         MODAL: Baza zawodników
          ============================================================ -->
     <div id="playerDBModal" class="modal hidden">
       <div class="modal-content">
@@ -263,7 +260,7 @@
     </div>
     
     <!-- ============================================================
-         MODAL: Wybór języka – umożliwia zmianę języka interfejsu
+         MODAL: Wybór języka
          ============================================================ -->
     <div id="languageModal" class="modal hidden">
       <div class="modal-content">
@@ -327,18 +324,15 @@
           }
         };
       
-        // Ekran startowy
         document.querySelector("#startScreen h1").innerText = translations[lang].header;
         document.getElementById("startMatchBtn").innerText = translations[lang].startMatchBtn;
         document.getElementById("btnPlayerDB").innerText = translations[lang].btnPlayerDB;
         document.getElementById("btnLanguage").innerText = translations[lang].btnLanguage;
         document.getElementById("btnSettings").innerText = translations[lang].btnSettings;
       
-        // Ekran gry
         document.getElementById("backToStartBtn").innerText = translations[lang].backToStartBtn;
         document.getElementById("scoreboard").innerText = translations[lang].scoreboard + score.goals;
       
-        // Modal Bazy zawodników
         const playerDBHeader = document.querySelector("#playerDBModal .modal-content h2");
         if (playerDBHeader) playerDBHeader.innerText = translations[lang].playerDBModalHeader;
         const addPlayerHeader = document.querySelector("#playerDBModal .modal-content h3");
@@ -350,7 +344,6 @@
         if (addPlayerBtn) addPlayerBtn.innerText = translations[lang].addPlayerButton;
         document.getElementById("closePlayerDBBtn").innerText = translations[lang].closePlayerDB;
       
-        // Modal Wyboru języka
         const langModalHeader = document.querySelector("#languageModal .modal-content h2");
         if (langModalHeader) langModalHeader.innerText = translations[lang].languageModalHeader;
         const langModalText = document.querySelector("#languageModal .modal-content p");
@@ -363,7 +356,6 @@
       }
       
       function setLanguage(langCode) {
-        // Jeśli nie chcesz korzystać z localStorage, tę linię możesz pominąć
         localStorage.setItem("siteLanguage", langCode);
         updateLanguageContent(langCode);
         toggleModal("languageModal", false);
@@ -373,7 +365,6 @@
       /**************************************
        * CZĘŚĆ B: LOGIKA GRY – TRYB "SZYBKI MECZ"
        **************************************/
-      // Definicje stałych – promienie zawodników
       const PLAYER_RADIUS = 16;
       const GOALKEEPER_RADIUS = 18;
       score.goals = 0;
@@ -382,7 +373,6 @@
         canvas = document.getElementById("gameCanvas");
         ctx = canvas.getContext("2d");
       
-        // Inicjalizacja piłki – umieszczona centralnie, lekko na prawo
         ball = {
           x: canvas.width * 0.55,
           y: canvas.height / 2,
@@ -391,7 +381,6 @@
           dy: 1.5
         };
       
-        // Inicjalizacja 4 outfield graczy – przykładowe pozycje na lewej połowie
         fieldPlayers = [
           { x: canvas.width * 0.25, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
           { x: canvas.width * 0.25, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
@@ -399,7 +388,6 @@
           { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 }
         ];
       
-        // Bramkarz – statyczny, blisko lewej krawędzi
         goalkeeper = { x: 60, y: canvas.height / 2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0 };
       
         score.goals = 0;
@@ -437,9 +425,9 @@
         ctx.fill();
         ctx.closePath();
       
-        if(isDragging && draggingPlayerIndex !== null) {
+        if (isDragging && draggingPlayerIndex !== null) {
           ctx.save();
-          ctx.setLineDash([5,5]);
+          ctx.setLineDash([5, 5]);
           ctx.strokeStyle = "red";
           ctx.lineWidth = 2;
           const p = fieldPlayers[draggingPlayerIndex];
@@ -464,16 +452,16 @@
         ball.dx *= FRICTION;
         ball.dy *= FRICTION;
       
-        if(ball.y - ball.radius < 10) {
+        if (ball.y - ball.radius < 10) {
           ball.y = 10 + ball.radius;
           ball.dy *= -1;
         }
-        if(ball.y + ball.radius > canvas.height - 10) {
+        if (ball.y + ball.radius > canvas.height - 10) {
           ball.y = canvas.height - 10 - ball.radius;
           ball.dy *= -1;
         }
       
-        if(ball.x + ball.radius > canvas.width) {
+        if (ball.x + ball.radius > canvas.width) {
           score.goals++;
           resetBall();
         }
@@ -493,12 +481,12 @@
       }
       
       function handlePlayerBallCollision(player) {
-        if(circleCollision(player, ball)) {
+        if (circleCollision(player, ball)) {
           const dx = ball.x - player.x;
           const dy = ball.y - player.y;
           const dist = Math.hypot(dx, dy) || 1;
-          ball.dx = (dx/dist) * 7;
-          ball.dy = (dy/dist) * 7;
+          ball.dx = (dx / dist) * 7;
+          ball.dy = (dy / dist) * 7;
         }
       }
       
@@ -510,7 +498,7 @@
       }
       
       function gameLoop() {
-        if(!gameAnimating) return;
+        if (!gameAnimating) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawField();
         updatePositions();
@@ -532,9 +520,9 @@
         const rect = canvas.getBoundingClientRect();
         const mx = e.clientX - rect.left;
         const my = e.clientY - rect.top;
-        for(let i = 0; i < fieldPlayers.length; i++){
+        for (let i = 0; i < fieldPlayers.length; i++) {
           const p = fieldPlayers[i];
-          if(Math.hypot(mx - p.x, my - p.y) < p.radius) {
+          if (Math.hypot(mx - p.x, my - p.y) < p.radius) {
             draggingPlayerIndex = i;
             isDragging = true;
             dragStart = { x: p.x, y: p.y };
@@ -545,14 +533,14 @@
       }
       
       function canvasMouseMove(e) {
-        if(!isDragging) return;
+        if (!isDragging) return;
         const rect = canvas.getBoundingClientRect();
         dragCurrent.x = e.clientX - rect.left;
         dragCurrent.y = e.clientY - rect.top;
       }
       
       function canvasMouseUp(e) {
-        if(!isDragging || draggingPlayerIndex === null) return;
+        if (!isDragging || draggingPlayerIndex === null) return;
         const dx = dragStart.x - dragCurrent.x;
         const dy = dragStart.y - dragCurrent.y;
         fieldPlayers[draggingPlayerIndex].vx = dx * 0.2;
@@ -572,13 +560,13 @@
        **************************************/
       function toggleModal(modalId, show) {
         const modal = document.getElementById(modalId);
-        if(show) modal.classList.remove("hidden");
+        if (show) modal.classList.remove("hidden");
         else modal.classList.add("hidden");
       }
       
       document.querySelectorAll(".modal").forEach(modal => {
         modal.addEventListener("click", function(e) {
-          if(e.target === modal) {
+          if (e.target === modal) {
             modal.classList.add("hidden");
           }
         });
@@ -636,7 +624,6 @@
       document.addEventListener("DOMContentLoaded", () => {
         console.log("DOM załadowany");
       
-        // Przyciski na ekranie startowym
         document.getElementById("startMatchBtn").addEventListener("click", () => {
           console.log("Kliknięto SZYBKI MECZ");
           document.getElementById("startScreen").classList.add("hidden");
@@ -654,7 +641,6 @@
           document.getElementById("startScreen").classList.remove("hidden");
         });
       
-        // Modale
         document.getElementById("btnPlayerDB").addEventListener("click", () => {
           console.log("Kliknięto Baza zawodników");
           renderPlayerList();
