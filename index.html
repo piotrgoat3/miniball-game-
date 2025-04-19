@@ -9,1036 +9,149 @@
       rel="stylesheet"
     />
     <style>
-      /* GLOBALNE STYLE – DESIGN W PIŁKARSKIM KLIMACIE */
-      @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
+      /* Style globalne */
       body {
         font-family: "Nunito", sans-serif;
-        background: url("https://images.unsplash.com/photo-1430232324554-8f4aebd06683?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3") no-repeat center center fixed;
-        background-size: cover;
+        background-color: #f4f4f4;
         margin: 0;
         padding: 0;
         text-align: center;
-        color: #fff;
       }
-      body::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.3);
-        z-index: -1;
+      .hidden {
+        display: none;
       }
-      .hidden { display: none !important; }
-      
-      /* EKRAN STARTOWY */
-      #startScreen { padding: 40px 20px; }
-      #startScreen h1 {
-        font-size: 56px;
-        margin-bottom: 30px;
-        text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-      }
-      #startScreen button {
-        font-size: 20px;
-        padding: 15px 30px;
-        margin: 15px;
-        border: none;
-        border-radius: 10px;
-        background-color: rgba(255,255,255,0.8);
-        color: #333;
-        cursor: pointer;
-        box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
-        transition: all 0.3s ease;
-      }
-      #startScreen button:hover {
-        background-color: #fff;
-        transform: scale(1.05);
-        box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
-      }
-      
-      /* EKRAN WYBORU DRUŻYN – STYL FIFA */
-      #teamSelectScreen { padding: 40px 20px; }
-      #teamSelectScreen h2 {
-        font-size: 40px;
-        margin-bottom: 20px;
-        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
-      }
-      .team-section {
-        margin: 30px auto;
-        max-width: 800px;
-        text-align: left;
-      }
-      .team-section h3 {
-        font-size: 28px;
-        margin-bottom: 15px;
-        padding-left: 10px;
-      }
-      .team-container {
-        display: flex;
-        gap: 20px;
-        overflow-x: auto;
-        padding: 10px;
-        scrollbar-width: thin;
-      }
-      .team-container::-webkit-scrollbar { height: 8px; }
-      .team-container::-webkit-scrollbar-thumb {
-        background: #ffd700;
-        border-radius: 4px;
-      }
-      .team-option {
-        flex: 0 0 auto;
-        cursor: pointer;
-        text-align: center;
-        border: 2px solid rgba(255,255,255,0.5);
-        border-radius: 12px;
-        width: 150px;
-        padding: 10px;
-        transition: all 0.3s ease;
-      }
-      .team-option.selected {
-        border-color: #ffd700;
-        transform: scale(1.1);
-        background-color: rgba(255,255,255,0.2);
-      }
-      .team-option img {
-        width: 80px;
-        height: 80px;
-        display: block;
-        margin: 0 auto 10px;
-      }
-      .league-header {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        margin-bottom: 10px;
-        padding-left: 10px;
-      }
-      .league-header img {
-        width: 30px;
-        height: 30px;
-      }
-      #startMatchFromSelectBtn {
-        font-size: 20px;
-        padding: 15px 30px;
-        margin-top: 30px;
-        cursor: pointer;
-        background-color: rgba(255,255,255,0.9);
-        border: none;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
-      }
-      #startMatchFromSelectBtn:hover {
-        background-color: #fff;
-        transform: scale(1.05);
-        box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
-      }
-      
-      /* EKRAN WYBORU ZAWODNIKÓW */
-      #playerSelectScreen { padding: 40px 20px; }
-      #playerSelectScreen h2 { font-size: 40px; margin-bottom: 20px; }
-      .position-group {
-        margin: 20px auto;
-        max-width: 600px;
-        text-align: left;
-      }
-      .position-group label {
-        font-size: 24px;
-        margin-bottom: 10px;
-        display: block;
-      }
-      .position-group select {
-        width: 100%;
-        padding: 10px;
+      button {
         font-size: 18px;
-        border-radius: 8px;
-        border: none;
-        margin-bottom: 20px;
-      }
-      #confirmLineupBtn {
-        font-size: 20px;
-        padding: 15px 30px;
-        cursor: pointer;
-        background-color: rgba(255,255,255,0.9);
-        border: none;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
-      }
-      #confirmLineupBtn:hover {
-        background-color: #fff;
-        transform: scale(1.05);
-      }
-      
-      /* EKRAN GRY */
-      #gameScreen { padding: 20px; }
-      #scoreboardContainer { margin-bottom: 20px; }
-      #scoreboard { font-size: 28px; font-weight: bold; }
-      canvas {
-        background-color: #228B22;
-        border: 4px solid #fff;
-        border-radius: 16px;
-        display: block;
-        margin: 0 auto;
-        box-shadow: 0px 8px 16px rgba(0,0,0,0.35);
-      }
-      #backToStartBtn {
-        font-size: 18px;
-        padding: 15px 30px;
-        margin-top: 20px;
-        cursor: pointer;
-        background: rgba(255,255,255,0.9);
-        border: none;
-        border-radius: 10px;
-        transition: background 0.3s;
-        box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
-      }
-      #backToStartBtn:hover { background: rgba(255,255,255,1); }
-      
-      /* MODALE – Baza zawodników, Wybór języka */
-      .modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 100;
-        animation: fadeIn 0.3s;
-      }
-      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-      .modal-content {
-        background: #fff;
-        padding: 30px;
-        width: 90%;
-        max-width: 500px;
-        border-radius: 16px;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.35);
-        color: #333;
-      }
-      .modal-content h2 { margin-top: 0; font-size: 28px; }
-      .modal-content button {
-        background: rgba(255,255,255,0.9);
-        border: none;
-        border-radius: 6px;
         padding: 10px 20px;
-        margin-top: 10px;
-        transition: background 0.3s, transform 0.2s;
-        box-shadow: 0px 2px 4px rgba(0,0,0,0.25);
+        margin: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
         cursor: pointer;
       }
-      .modal-content button:hover {
-        background: rgba(255,255,255,1);
-        transform: translateY(-2px);
+      button:hover {
+        background-color: #0056b3;
       }
-      input {
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        padding: 10px;
-        margin: 5px 0;
-        width: 100%;
-        box-sizing: border-box;
+      h1, h2, p {
+        color: #333;
       }
-      /* MODAL: Lista zawodników – przewijana */
-      #playerList {
-        max-height: 300px;
-        overflow-y: auto;
-        scrollbar-width: thin;
-        scrollbar-color: #185c28 #ffffff;
+      #gameCanvas {
+        background-color: #eee;
+        border: 2px solid #333;
+        display: block;
+        margin: auto;
       }
-      #playerList::-webkit-scrollbar { width: 8px; }
-      #playerList::-webkit-scrollbar-thumb {
-        background: #185c28;
-        border-radius: 5px;
-      }
-      #playerList::-webkit-scrollbar-track { background: #ffffff; }
     </style>
   </head>
   <body>
-    <!-- EKRAN STARTOWY -->
+    <!-- Ekran startowy -->
     <div id="startScreen">
-      <h1>MiniSoccer ⚽</h1>
-      <button id="startMatchBtn">SZYBKI MECZ</button>
-      <div class="start-options">
-        <button id="btnPlayerDB">Baza zawodników</button>
-        <button id="btnLanguage">Język</button>
-        <button id="btnSettings">Ustawienia</button>
-      </div>
+      <h1>MiniSoccer - Szybki Mecz</h1>
+      <button id="startMatchBtn">Rozpocznij mecz</button>
     </div>
-    
-    <!-- EKRAN WYBORU DRUŻYN -->
+
+    <!-- Ekran wyboru drużyn -->
     <div id="teamSelectScreen" class="hidden">
-      <h2>Wybierz Drużyny</h2>
-      <!-- Drużyna Domowa -->
-      <div class="team-section" id="homeTeamSection">
-        <h3>Drużyna Domowa</h3>
-        <div id="homeTeamContainer" class="team-container">
-          <div class="team-option" data-team="Manchester United">
-            <img src="https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg" alt="Manchester United" />
-            <p>Manchester United</p>
-          </div>
-          <div class="team-option" data-team="Real Madrid">
-            <img src="https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" alt="Real Madrid" />
-            <p>Real Madrid</p>
-          </div>
-          <div class="team-option" data-team="Manchester City">
-            <img src="https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" alt="Manchester City" />
-            <p>Manchester City</p>
-          </div>
-          <div class="team-option" data-team="Liverpool FC">
-            <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" alt="Liverpool FC" />
-            <p>Liverpool FC</p>
-          </div>
-          <div class="team-option" data-team="Arsenal FC">
-            <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" alt="Arsenal FC" />
-            <p>Arsenal FC</p>
-          </div>
-          <div class="team-option" data-team="Newcastle United">
-            <img src="https://upload.wikimedia.org/wikipedia/en/1/14/Newcastle_United_FC.svg" alt="Newcastle United" />
-            <p>Newcastle United</p>
-          </div>
-          <div class="team-option" data-team="Aston Villa">
-            <img src="https://upload.wikimedia.org/wikipedia/en/9/9a/Aston_Villa_FC.svg" alt="Aston Villa" />
-            <p>Aston Villa</p>
-          </div>
-          <div class="team-option" data-team="Chelsea FC">
-            <img src="https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg" alt="Chelsea FC" />
-            <p>Chelsea FC</p>
-          </div>
-          <div class="team-option" data-team="FC Barcelona">
-            <img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" alt="FC Barcelona" />
-            <p>FC Barcelona</p>
-          </div>
-          <div class="team-option" data-team="Atlético Madrid">
-            <img src="https://upload.wikimedia.org/wikipedia/en/f/f4/Atletico_Madrid.svg" alt="Atlético Madrid" />
-            <p>Atlético Madrid</p>
-          </div>
-          <div class="team-option" data-team="Real Sociedad">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/65/Real_Sociedad_logo.svg" alt="Real Sociedad" />
-            <p>Real Sociedad</p>
-          </div>
-          <div class="team-option" data-team="Real Betis">
-            <img src="https://upload.wikimedia.org/wikipedia/en/4/41/Real_Betis_logo.svg" alt="Real Betis" />
-            <p>Real Betis</p>
-          </div>
-          <div class="team-option" data-team="Sevilla FC">
-            <img src="https://upload.wikimedia.org/wikipedia/en/5/5d/Sevilla_FC.svg" alt="Sevilla FC" />
-            <p>Sevilla FC</p>
-          </div>
-        </div>
-      </div>
-      <!-- Drużyna Gościa -->
-      <div class="team-section" id="awayTeamSection">
-        <h3>Drużyna Gościa</h3>
-        <div id="awayTeamContainer" class="team-container">
-          <div class="team-option" data-team="Manchester City">
-            <img src="https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" alt="Manchester City" />
-            <p>Manchester City</p>
-          </div>
-          <div class="team-option" data-team="Liverpool FC">
-            <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" alt="Liverpool FC" />
-            <p>Liverpool FC</p>
-          </div>
-          <div class="team-option" data-team="Arsenal FC">
-            <img src="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" alt="Arsenal FC" />
-            <p>Arsenal FC</p>
-          </div>
-          <div class="team-option" data-team="Chelsea FC">
-            <img src="https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg" alt="Chelsea FC" />
-            <p>Chelsea FC</p>
-          </div>
-          <div class="team-option" data-team="Real Madrid CF">
-            <img src="https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" alt="Real Madrid CF" />
-            <p>Real Madrid CF</p>
-          </div>
-          <div class="team-option" data-team="FC Barcelona">
-            <img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" alt="FC Barcelona" />
-            <p>FC Barcelona</p>
-          </div>
-          <div class="team-option" data-team="Atlético Madrid">
-            <img src="https://upload.wikimedia.org/wikipedia/en/f/f4/Atletico_Madrid.svg" alt="Atlético Madrid" />
-            <p>Atlético Madrid</p>
-          </div>
-          <div class="team-option" data-team="Real Sociedad">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/65/Real_Sociedad_logo.svg" alt="Real Sociedad" />
-            <p>Real Sociedad</p>
-          </div>
-          <div class="team-option" data-team="Real Betis">
-            <img src="https://upload.wikimedia.org/wikipedia/en/4/41/Real_Betis_logo.svg" alt="Real Betis" />
-            <p>Real Betis</p>
-          </div>
-          <div class="team-option" data-team="Sevilla FC">
-            <img src="https://upload.wikimedia.org/wikipedia/en/5/5d/Sevilla_FC.svg" alt="Sevilla FC" />
-            <p>Sevilla FC</p>
-          </div>
-        </div>
-      </div>
-      <button id="startMatchFromSelectBtn">Rozpocznij Mecz</button>
+      <h2>Wybierz drużyny</h2>
+      <button class="team-btn" data-team="Manchester United">Manchester United</button>
+      <button class="team-btn" data-team="Real Madrid">Real Madrid</button>
+      <button class="team-btn" data-team="FC Barcelona">FC Barcelona</button>
+      <button class="team-btn" data-team="Liverpool FC">Liverpool FC</button>
     </div>
-    
-    <!-- EKRAN WYBORU ZAWODNIKÓW (dla gospodarzy) -->
+
+    <!-- Ekran wyboru składu -->
     <div id="playerSelectScreen" class="hidden">
-      <h2>Wybierz swój skład</h2>
-      <div class="position-group">
-        <label for="select-bramkarze">Bramkarze:</label>
-        <select id="select-bramkarze">
-          <option value="">-- Wybierz bramkarza --</option>
-        </select>
-      </div>
-      <div class="position-group">
-        <label for="select-obroncy">Obrońcy:</label>
-        <select id="select-obroncy" multiple size="3"></select>
-      </div>
-      <div class="position-group">
-        <label for="select-pomocnicy">Pomocnicy:</label>
-        <select id="select-pomocnicy" multiple size="3"></select>
-      </div>
-      <div class="position-group">
-        <label for="select-skrzydlowi">Skrzydłowi:</label>
-        <select id="select-skrzydlowi" multiple size="2"></select>
-      </div>
-      <div class="position-group">
-        <label for="select-napastnicy">Napastnicy:</label>
-        <select id="select-napastnicy" multiple size="2"></select>
-      </div>
+      <h2>Wybierz skład</h2>
+      <p>Wybierz zawodników dla swojej drużyny.</p>
+      <!-- Tu mogą być rozwijane listy z wyborem zawodników -->
       <button id="confirmLineupBtn">Zatwierdź skład</button>
     </div>
-    
-    <!-- EKRAN GRY -->
+
+    <!-- Ekran gry -->
     <div id="gameScreen" class="hidden">
-      <div id="scoreboardContainer">
-        <h2 id="scoreboard">Gole: 0</h2>
-      </div>
-      <canvas id="gameCanvas" width="800" height="500"></canvas>
-      <button id="backToStartBtn">Powrót do Menu</button>
+      <h2>Rozgrywka</h2>
+      <canvas id="gameCanvas" width="800" height="400"></canvas>
+      <p id="scoreboard">Wynik: 0</p>
+      <button id="backToStartBtn">Powrót do menu</button>
     </div>
-    
-    <!-- MODAL: Baza zawodników -->
-    <div id="playerDBModal" class="modal hidden">
-      <div class="modal-content">
-        <h2>Baza zawodników</h2>
-        <div id="playerList"><!-- Lista zawodników --></div>
-        <h3>Dodaj zawodnika</h3>
-        <form id="addPlayerForm">
-          <input type="text" id="playerName" placeholder="Imię i nazwisko" required />
-          <input type="text" id="playerTeam" placeholder="Drużyna" required />
-          <input type="number" id="playerRating" placeholder="Ocena" required min="0" max="100" />
-          <button type="submit">Dodaj</button>
-        </form>
-        <button id="closePlayerDBBtn">Zamknij</button>
-      </div>
-    </div>
-    
-    <!-- MODAL: Wybór języka -->
-    <div id="languageModal" class="modal hidden">
-      <div class="modal-content">
-        <h2>Wybór języka</h2>
-        <p>Wybierz język interfejsu:</p>
-        <button class="langOption" data-lang="pl">Polski</button>
-        <button class="langOption" data-lang="en">English</button>
-        <button id="closeLanguageModalBtn">Zamknij</button>
-      </div>
-    </div>
-    
-    <!-- JAVASCRIPT – OPRAWIONE W IIFE -->
+
+    <!-- Skrypty -->
     <script>
       (function () {
         "use strict";
-        
-        // GLOBALNE ZMIENNE I KONSTANTY
-        let score = { goals: 0 };
-        let canvas, ctx, ball, fieldPlayers, goalkeeper;
-        let gameAnimating = false;
-        let isDragging = false, draggingPlayerIndex = null, dragStart = { x: 0, y: 0 }, dragCurrent = { x: 0, y: 0 };
-        let selectedHomeTeam = null, selectedAwayTeam = null;
-        let homeLineup = {}, guestLineup = {};
-        
-        const PLAYER_RADIUS = 16,
-              GOALKEEPER_RADIUS = 18,
-              FRICTION = 0.98,
-              BALL_COLLISION_IMPULSE = 7,
-              DRAG_IMPULSE_SCALE = 0.2;
-        
-        // DANE DRUŻYN I LIG (LOGA)
-        const teamsData = {
-          "Premier League": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
-            teams: [
-              { name: "Manchester United", logo: "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg" },
-              { name: "Manchester City", logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" }
-            ]
-          },
-          "La Liga": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/9/90/LaLiga.svg",
-            teams: [
-              { name: "Real Madrid", logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" },
-              { name: "Barcelona", logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" }
-            ]
-          },
-          "Serie A": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/d/d2/Serie_A_logo_%282019%29.svg",
-            teams: [
-              { name: "Juventus", logo: "https://upload.wikimedia.org/wikipedia/en/3/3e/Juventus_FC_2017_logo.svg" }
-            ]
-          },
-          "Bundesliga": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/commons/d/df/Bundesliga_logo_%282017%29.svg",
-            teams: [
-              { name: "Bayern Munich", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1f/FC_Bayern_München_logo_%282017%29.svg" }
-            ]
-          },
-          "Ligue 1": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/fd/Ligue_1.svg",
-            teams: [
-              { name: "Paris Saint-Germain", logo: "https://upload.wikimedia.org/wikipedia/en/9/9e/Paris_Saint-Germain_F.C..svg" }
-            ]
-          }
-        };
-        
-        // BAZA ZAWODNIKÓW – wg Wikipedii
-        const playerDatabase = {
-          "Manchester City": {
-            "Bramkarze": [
-              { name: "Ederson", rating: 90 },
-              { name: "Stefan Ortega", rating: 80 }
-            ],
-            "Obrońcy": [
-              { name: "Rúben Dias", rating: 88 },
-              { name: "John Stones", rating: 83 },
-              { name: "Nathan Aké", rating: 82 },
-              { name: "Joško Gvardiol", rating: 86 },
-              { name: "Manuel Akanji", rating: 81 }
-            ],
-            "Pomocnicy": [
-              { name: "Kevin De Bruyne", rating: 92 },
-              { name: "Rodri", rating: 88 },
-              { name: "İlkay Gündoğan", rating: 85 },
-              { name: "Bernardo Silva", rating: 87 },
-              { name: "Mateo Kovačić", rating: 83 }
-            ],
-            "Napastnicy": [
-              { name: "Erling Haaland", rating: 96 },
-              { name: "Jack Grealish", rating: 84 },
-              { name: "Jérémy Doku", rating: 82 },
-              { name: "Phil Foden", rating: 86 }
-            ]
-          },
-          "Liverpool FC": {
-            "Bramkarze": [
-              { name: "Alisson", rating: 88 },
-              { name: "Caoimhín Kelleher", rating: 79 }
-            ],
-            "Obrońcy": [
-              { name: "Virgil van Dijk", rating: 89 },
-              { name: "Trent Alexander‑Arnold", rating: 88 },
-              { name: "Andrew Robertson", rating: 85 },
-              { name: "Ibrahima Konaté", rating: 83 },
-              { name: "Joël Matip", rating: 81 }
-            ],
-            "Pomocnicy": [
-              { name: "Mohamed Salah", rating: 94 },
-              { name: "Alexis Mac Allister", rating: 83 },
-              { name: "Dominik Szoboszlai", rating: 85 },
-              { name: "Curtis Jones", rating: 80 },
-              { name: "Wataru Endō", rating: 78 }
-            ],
-            "Napastnicy": [
-              { name: "Darwin Núñez", rating: 84 },
-              { name: "Luis Díaz", rating: 86 },
-              { name: "Diogo Jota", rating: 84 },
-              { name: "Cody Gakpo", rating: 82 }
-            ]
-          },
-          "Arsenal FC": {
-            "Bramkarze": [
-              { name: "Aaron Ramsdale", rating: 86 },
-              { name: "David Raya", rating: 84 }
-            ],
-            "Obrońcy": [
-              { name: "William Saliba", rating: 87 },
-              { name: "Ben White", rating: 82 },
-              { name: "Gabriel Magalhães", rating: 84 },
-              { name: "Oleksandr Zinchenko", rating: 83 },
-              { name: "Takehiro Tomiyasu", rating: 81 }
-            ],
-            "Pomocnicy": [
-              { name: "Martin Ødegaard", rating: 90 },
-              { name: "Declan Rice", rating: 88 },
-              { name: "Thomas Partey", rating: 84 },
-              { name: "Kai Havertz", rating: 82 },
-              { name: "Jorginho", rating: 80 }
-            ],
-            "Napastnicy": [
-              { name: "Bukayo Saka", rating: 94 },
-              { name: "Gabriel Jesus", rating: 85 },
-              { name: "Leandro Trossard", rating: 84 },
-              { name: "Eddie Nketiah", rating: 81 }
-            ]
-          },
-          "Newcastle United": {
-            "Bramkarze": [
-              { name: "Nick Pope", rating: 87 },
-              { name: "Martin Dúbravka", rating: 80 }
-            ],
-            "Obrońcy": [
-              { name: "Kieran Trippier", rating: 85 },
-              { name: "Sven Botman", rating: 83 },
-              { name: "Fabian Schär", rating: 82 },
-              { name: "Dan Burn", rating: 79 },
-              { name: "Tino Livramento", rating: 78 }
-            ],
-            "Pomocnicy": [
-              { name: "Bruno Guimarães", rating: 88 },
-              { name: "Sandro Tonali", rating: 86 },
-              { name: "Joelinton", rating: 83 },
-              { name: "Sean Longstaff", rating: 80 },
-              { name: "Joe Willock", rating: 79 }
-            ],
-            "Napastnicy": [
-              { name: "Alexander Isak", rating: 87 },
-              { name: "Callum Wilson", rating: 84 },
-              { name: "Harvey Barnes", rating: 82 },
-              { name: "Anthony Gordon", rating: 80 }
-            ]
-          },
-          "Aston Villa": {
-            "Bramkarze": [
-              { name: "Emiliano Martínez", rating: 88 },
-              { name: "Robin Olsen", rating: 78 }
-            ],
-            "Obrońcy": [
-              { name: "Pau Torres", rating: 84 },
-              { name: "Matty Cash", rating: 82 },
-              { name: "Ezri Konsa", rating: 82 },
-              { name: "Diego Carlos", rating: 80 },
-              { name: "Lucas Digne", rating: 81 }
-            ],
-            "Pomocnicy": [
-              { name: "Douglas Luiz", rating: 86 },
-              { name: "John McGinn", rating: 85 },
-              { name: "Youri Tielemans", rating: 83 },
-              { name: "Boubacar Kamara", rating: 82 },
-              { name: "Jacob Ramsey", rating: 81 }
-            ],
-            "Napastnicy": [
-              { name: "Ollie Watkins", rating: 87 },
-              { name: "Moussa Diaby", rating: 85 },
-              { name: "Jhon Durán", rating: 84 },
-              { name: "Leon Bailey", rating: 81 }
-            ]
-          },
-          "Chelsea FC": {
-            "Bramkarze": [
-              { name: "Robert Sánchez", rating: 85 },
-              { name: "Đorđe Petrović", rating: 80 }
-            ],
-            "Obrońcy": [
-              { name: "Reece James", rating: 87 },
-              { name: "Thiago Silva", rating: 84 },
-              { name: "Levi Colwill", rating: 83 },
-              { name: "Benoît Badiashile", rating: 82 },
-              { name: "Marc Cucurella", rating: 81 }
-            ],
-            "Pomocnicy": [
-              { name: "Enzo Fernández", rating: 87 },
-              { name: "Moisés Caicedo", rating: 86 },
-              { name: "Conor Gallagher", rating: 84 },
-              { name: "Carney Chukwuemeka", rating: 80 },
-              { name: "Lesley Ugochukwu", rating: 78 }
-            ],
-            "Napastnicy": [
-              { name: "Nicolas Jackson", rating: 85 },
-              { name: "Mykhailo Mudryk", rating: 82 },
-              { name: "Noni Madueke", rating: 82 },
-              { name: "Armando Broja", rating: 79 }
-            ]
-          },
-          "Real Madrid CF": {
-            "Bramkarze": [
-              { name: "Thibaut Courtois", rating: 90 },
-              { name: "Andriy Lunin", rating: 83 }
-            ],
-            "Obrońcy": [
-              { name: "Dani Carvajal", rating: 85 },
-              { name: "Éder Militão", rating: 86 },
-              { name: "David Alaba", rating: 85 },
-              { name: "Antonio Rüdiger", rating: 86 },
-              { name: "Fran García", rating: 82 }
-            ],
-            "Pomocnicy": [
-              { name: "Luka Modrić", rating: 87 },
-              { name: "Toni Kroos", rating: 86 },
-              { name: "Eduardo Camavinga", rating: 85 },
-              { name: "Aurélien Tchouaméni", rating: 85 },
-              { name: "Federico Valverde", rating: 86 }
-            ],
-            "Napastnicy": [
-              { name: "Vinícius Júnior", rating: 89 },
-              { name: "Rodrygo", rating: 86 },
-              { name: "Joselu", rating: 83 },
-              { name: "Brahim Díaz", rating: 84 }
-            ]
-          },
-          "FC Barcelona": {
-            "Bramkarze": [
-              { name: "Marc‑André ter Stegen", rating: 89 },
-              { name: "Iñaki Peña", rating: 81 }
-            ],
-            "Obrońcy": [
-              { name: "Jules Koundé", rating: 85 },
-              { name: "Ronald Araújo", rating: 87 },
-              { name: "Andreas Christensen", rating: 84 },
-              { name: "Alejandro Balde", rating: 83 },
-              { name: "João Cancelo", rating: 86 },
-              { name: "Marcos Alonso", rating: 80 },
-              { name: "Sergi Roberto", rating: 80 }
-            ],
-            "Pomocnicy": [
-              { name: "Frenkie de Jong", rating: 87 },
-              { name: "Pedri", rating: 86 },
-              { name: "Gavi", rating: 85 },
-              { name: "İlkay Gündoğan", rating: 86 },
-              { name: "Oriol Romeu", rating: 82 }
-            ],
-            "Napastnicy": [
-              { name: "Robert Lewandowski", rating: 88 },
-              { name: "Raphinha", rating: 85 },
-              { name: "Ferran Torres", rating: 84 },
-              { name: "Lamine Yamal", rating: 83 }
-            ]
-          },
-          "Atlético Madrid": {
-            "Bramkarze": [
-              { name: "Jan Oblak", rating: 88 },
-              { name: "Ivo Grbić", rating: 81 }
-            ],
-            "Obrońcy": [
-              { name: "José María Giménez", rating: 85 },
-              { name: "Stefan Savić", rating: 84 },
-              { name: "Mario Hermoso", rating: 83 },
-              { name: "César Azpilicueta", rating: 83 },
-              { name: "Reinildo Mandava", rating: 82 }
-            ],
-            "Pomocnicy": [
-              { name: "Koke", rating: 85 },
-              { name: "Rodrigo De Paul", rating: 84 },
-              { name: "Saúl Ñíguez", rating: 83 },
-              { name: "Thomas Lemar", rating: 83 },
-              { name: "Pablo Barrios", rating: 81 }
-            ],
-            "Napastnicy": [
-              { name: "Antoine Griezmann", rating: 88 },
-              { name: "Álvaro Morata", rating: 85 },
-              { name: "Ángel Correa", rating: 84 },
-              { name: "Memphis Depay", rating: 84 }
-            ]
-          },
-          "Real Sociedad": {
-            "Bramkarze": [
-              { name: "Álex Remiro", rating: 85 },
-              { name: "Andoni Zubiaurre", rating: 80 }
-            ],
-            "Obrońcy": [
-              { name: "Robin Le Normand", rating: 84 },
-              { name: "Igor Zubeldia", rating: 83 },
-              { name: "Aritz Elustondo", rating: 83 },
-              { name: "Diego Rico", rating: 82 },
-              { name: "Jon Pacheco", rating: 81 }
-            ],
-            "Pomocnicy": [
-              { name: "Mikel Merino", rating: 85 },
-              { name: "Martín Zubimendi", rating: 84 },
-              { name: "Brais Méndez", rating: 84 },
-              { name: "Takefusa Kubo", rating: 85 },
-              { name: "Ander Barrenetxea", rating: 82 }
-            ],
-            "Napastnicy": [
-              { name: "Umar Sadiq", rating: 83 },
-              { name: "Mikel Oyarzabal", rating: 86 },
-              { name: "Portu", rating: 82 },
-              { name: "Álex Berenguer", rating: 81 }
-            ]
-          },
-          "Real Betis": {
-            "Bramkarze": [
-              { name: "Adrián San Miguel", rating: 82 },
-              { name: "Fran Vieites", rating: 78 }
-            ],
-            "Obrońcy": [
-              { name: "Marc Bartra", rating: 88 },
-              { name: "Ricardo Rodríguez", rating: 88 },
-              { name: "Germán Pezzella", rating: 83 },
-              { name: "Álex Moreno", rating: 82 },
-              { name: "Zouhair Feddal", rating: 82 }
-            ],
-            "Pomocnicy": [
-              { name: "Sergio Canales", rating: 86 },
-              { name: "William Carvalho", rating: 87 },
-              { name: "Guido Rodríguez", rating: 83 },
-              { name: "Carles Aleñá", rating: 83 },
-              { name: "Nabil Fekir", rating: 84 }
-            ],
-            "Napastnicy": [
-              { name: "Cédric Bakambu", rating: 87 },
-              { name: "Chimy Ávila", rating: 87 },
-              { name: "Willian José", rating: 83 },
-              { name: "Juanmi", rating: 82 }
-            ]
-          },
-          "Sevilla FC": {
-            "Bramkarze": [
-              { name: "Álvaro Fernández", rating: 85 },
-              { name: "Ørjan Nyland", rating: 82 }
-            ],
-            "Obrońcy": [
-              { name: "Jesús Navas", rating: 82 },
-              { name: "Diego Carlos", rating: 84 },
-              { name: "Loïc Badé", rating: 83 },
-              { name: "Marcão", rating: 83 },
-              { name: "Tanguy Nianzou", rating: 82 }
-            ],
-            "Pomocnicy": [
-              { name: "Joan Jordán", rating: 85 },
-              { name: "Fernando Reges", rating: 84 },
-              { name: "Papu Gómez", rating: 83 },
-              { name: "Nemanja Gudelj", rating: 82 },
-              { name: "Lucas Ocampos", rating: 84 }
-            ],
-            "Napastnicy": [
-              { name: "Youssef En‑Nesyri", rating: 84 },
-              { name: "Erik Lamela", rating: 82 },
-              { name: "Munir El Haddadi", rating: 82 },
-              { name: "Rafa Mir", rating: 81 }
-            ]
-          }
-        };
-        
-        ////////////////////////////////
-        // FUNKCJE OBSŁUGUJĄCE WYBÓR JĘZYKA (MODAL)
-        ////////////////////////////////
-        function updateLanguageContent(lang) {
-          const translations = {
-            pl: {
-              header: "MiniSoccer ⚽",
-              startMatchBtn: "SZYBKI MECZ",
-              btnPlayerDB: "Baza zawodników",
-              btnLanguage: "Język",
-              btnSettings: "Ustawienia",
-              backToStartBtn: "Powrót do Menu",
-              scoreboard: "Gole: ",
-              playerDBModalHeader: "Baza zawodników",
-              addPlayerFormHeader: "Dodaj zawodnika",
-              playerNamePlaceholder: "Imię i nazwisko",
-              playerTeamPlaceholder: "Drużyna",
-              playerRatingPlaceholder: "Ocena",
-              addPlayerButton: "Dodaj",
-              closePlayerDB: "Zamknij",
-              languageModalHeader: "Wybór języka",
-              languageModalText: "Wybierz język interfejsu:",
-              closeLanguageModal: "Zamknij"
-            },
-            en: {
-              header: "MiniSoccer ⚽",
-              startMatchBtn: "Quick Match",
-              btnPlayerDB: "Player Database",
-              btnLanguage: "Language",
-              btnSettings: "Settings",
-              backToStartBtn: "Back to Menu",
-              scoreboard: "Goals: ",
-              playerDBModalHeader: "Player Database",
-              addPlayerFormHeader: "Add Player",
-              playerNamePlaceholder: "Name",
-              playerTeamPlaceholder: "Team",
-              playerRatingPlaceholder: "Rating",
-              addPlayerButton: "Add",
-              closePlayerDB: "Close",
-              languageModalHeader: "Language Selection",
-              languageModalText: "Select the interface language:",
-              closeLanguageModal: "Close"
-            }
-          };
-          document.querySelector("#startScreen h1").innerText = translations[lang].header;
-          document.getElementById("startMatchBtn").innerText = translations[lang].startMatchBtn;
-          document.getElementById("btnPlayerDB").innerText = translations[lang].btnPlayerDB;
-          document.getElementById("btnLanguage").innerText = translations[lang].btnLanguage;
-          document.getElementById("btnSettings").innerText = translations[lang].btnSettings;
-          document.getElementById("backToStartBtn").innerText = translations[lang].backToStartBtn;
-          document.getElementById("scoreboard").innerText = translations[lang].scoreboard + score.goals;
-          
-          const playerDBHeader = document.querySelector("#playerDBModal .modal-content h2");
-          if (playerDBHeader)
-            playerDBHeader.innerText = translations[lang].playerDBModalHeader;
-          const addPlayerHeader = document.querySelector("#playerDBModal .modal-content h3");
-          if (addPlayerHeader)
-            addPlayerHeader.innerText = translations[lang].addPlayerFormHeader;
-          document.getElementById("playerName").setAttribute("placeholder", translations[lang].playerNamePlaceholder);
-          document.getElementById("playerTeam").setAttribute("placeholder", translations[lang].playerTeamPlaceholder);
-          document.getElementById("playerRating").setAttribute("placeholder", translations[lang].playerRatingPlaceholder);
-          const addPlayerBtn = document.querySelector("#addPlayerForm button[type=submit]");
-          if (addPlayerBtn)
-            addPlayerBtn.innerText = translations[lang].addPlayerButton;
-          document.getElementById("closePlayerDBBtn").innerText = translations[lang].closePlayerDB;
-          
-          const langModalHeader = document.querySelector("#languageModal .modal-content h2");
-          if (langModalHeader)
-            langModalHeader.innerText = translations[lang].languageModalHeader;
-          const langModalText = document.querySelector("#languageModal .modal-content p");
-          if (langModalText)
-            langModalText.innerText = translations[lang].languageModalText;
-          document.getElementById("closeLanguageModalBtn").innerText = translations[lang].closeLanguageModal;
-          const langOptionPL = document.querySelector('.langOption[data-lang="pl"]');
-          if (langOptionPL)
-            langOptionPL.innerText = lang === "pl" ? "Polski" : "Polish";
-          const langOptionEN = document.querySelector('.langOption[data-lang="en"]');
-          if (langOptionEN)
-            langOptionEN.innerText = lang === "pl" ? "Angielski" : "English";
+
+        let currentScreen = "startScreen";
+        let score = 0;
+
+        // Funkcja przełączająca ekrany
+        function switchScreen(newScreen) {
+          document.getElementById(currentScreen).classList.add("hidden");
+          document.getElementById(newScreen).classList.remove("hidden");
+          currentScreen = newScreen;
         }
-        
-        function setLanguage(langCode) {
-          localStorage.setItem("siteLanguage", langCode);
-          updateLanguageContent(langCode);
-          toggleModal("languageModal", false);
-          alert("Ustawiono język: " + (langCode === "pl" ? "Polski" : "English"));
-        }
-        
-        ////////////////////////////////
-        // WYBÓR SKŁADU DLA GOSPODARZY – OBSŁUGA FORMULARZA
-        ////////////////////////////////
-        function populatePlayerSelects(club) {
-          const positions = ["Bramkarze", "Obrońcy", "Pomocnicy", "Skrzydłowi", "Napastnicy"];
-          positions.forEach(pos => {
-            const selectEl = document.getElementById("select-" + pos.toLowerCase());
-            selectEl.innerHTML = `<option value="">-- Wybierz ${pos.slice(0, -1)}a --</option>`;
-            if (playerDatabase[club] && playerDatabase[club][pos]) {
-              playerDatabase[club][pos].forEach(player => {
-                const option = document.createElement("option");
-                option.value = player.name;
-                option.text = `${player.name} - ${player.rating}`;
-                selectEl.appendChild(option);
-              });
-            }
+
+        // Obsługa ekranu startowego
+        document.getElementById("startMatchBtn").addEventListener("click", function () {
+          switchScreen("teamSelectScreen");
+        });
+
+        // Obsługa wyboru drużyn
+        document.querySelectorAll(".team-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            console.log("Wybrano drużynę: ", this.dataset.team);
+            switchScreen("playerSelectScreen");
           });
-        }
-        
-        // Dla drużyny gości – AI wybiera zawodnika o najwyższym ratingu
-        function generateGuestLineup(club) {
-          let lineup = {};
-          const positions = ["Bramkarze", "Obrońcy", "Pomocnicy", "Skrzydłowi", "Napastnicy"];
-          positions.forEach(pos => {
-            if (playerDatabase[club] && playerDatabase[club][pos]) {
-              let best = playerDatabase[club][pos].reduce((prev, curr) => (curr.rating > prev.rating ? curr : prev));
-              lineup[pos] = best.name;
-            }
-          });
-          return lineup;
-        }
-        
-        ////////////////////////////////
-        // INICJALIZACJA TRYBU MECZU – OBSŁUGA GRY
-        ////////////////////////////////
-        function initGame() {
-          canvas = document.getElementById("gameCanvas");
-          ctx = canvas.getContext("2d");
-          ball = { x: canvas.width * 0.55, y: canvas.height / 2, radius: 8, dx: 2, dy: 1.5 };
-          fieldPlayers = [
-            { x: canvas.width * 0.25, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
-            { x: canvas.width * 0.25, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
-            { x: canvas.width * 0.25, y: canvas.height * 0.7, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
-            { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 }
-          ];
-          goalkeeper = { x: 60, y: canvas.height / 2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0 };
-          score.goals = 0;
-        }
-        
-        function drawField() {
-          ctx.strokeStyle = "#fff";
-          ctx.lineWidth = 4;
-          ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-          ctx.fillStyle = "white";
-          ctx.fillRect(canvas.width - 10, canvas.height / 2 - 50, 10, 100);
-          ctx.fillStyle = "yellow";
-          ctx.fillRect(10, 0, canvas.width - 20, 10);
-          ctx.fillRect(10, canvas.height - 10, canvas.width - 20, 10);
-        }
-        
-        function drawGameObjects() {
-          ctx.beginPath();
-          ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-          ctx.fillStyle = "white";
-          ctx.fill();
-          ctx.closePath();
-          fieldPlayers.forEach(player => {
+        });
+
+        // Obsługa wyboru składu
+        document.getElementById("confirmLineupBtn").addEventListener("click", function () {
+          switchScreen("gameScreen");
+          initializeGame();
+        });
+
+        // Powrót do menu
+        document.getElementById("backToStartBtn").addEventListener("click", function () {
+          switchScreen("startScreen");
+        });
+
+        // Funkcja inicjalizująca grę
+        function initializeGame() {
+          const canvas = document.getElementById("gameCanvas");
+          const ctx = canvas.getContext("2d");
+          const ball = { x: canvas.width / 2, y: canvas.height / 2, radius: 10, dx: 2, dy: 2 };
+
+          function drawBall() {
             ctx.beginPath();
-            ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
-            ctx.fillStyle = "blue";
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "#007bff";
             ctx.fill();
             ctx.closePath();
-          });
-          ctx.beginPath();
-          ctx.arc(goalkeeper.x, goalkeeper.y, goalkeeper.radius, 0, Math.PI * 2);
-          ctx.fillStyle = "black";
-          ctx.fill();
-          ctx.closePath();
-          if (isDragging && draggingPlayerIndex !== null) {
-            ctx.save();
-            ctx.setLineDash([5, 5]);
-            ctx.strokeStyle = "red";
-            ctx.lineWidth = 2;
-            let p = fieldPlayers[draggingPlayerIndex];
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(dragCurrent.x, dragCurrent.y);
-            ctx.stroke();
-            ctx.restore();
           }
-        }
-        
-        function updatePositions() {
-          fieldPlayers.forEach(player => {
-            player.x += player.vx;
-            player.y += player.vy;
-            player.vx *= FRICTION;
-            player.vy *= FRICTION;
-          });
-          ball.x += ball.dx;
-          ball.y += ball.dy;
-          ball.dx *= FRICTION;
-          ball.dy *= FRICTION;
-          if (ball.y - ball.radius < 10) { ball.y = 10 + ball.radius; ball.dy *= -1; }
-          if (ball.y + ball.radius > canvas.height - 10) { ball.y = canvas.height - 10 - ball.radius; ball.dy *= -1; }
-          if (ball.x + ball.radius > canvas.width) { score.goals++; resetBall(); }
-        }
-        
-        function resetBall() {
-          ball.x = canvas.width / 2;
-          ball.y = canvas.height / 2;
-          ball.dx = 0;
-          ball.dy = 0;
-        }
-        
-        function circleCollision(c1, c2) {
-          const dx = c1.x - c2.x, dy = c1.y - c2.y;
-          return Math.hypot(dx, dy) < (c1.radius + c2.radius);
-        }
-        
-        function handlePlayerBallCollision(player) {
-          if (circleCollision(player, ball)) {
-            const dx = ball.x - player.x, dy = ball.y - player.y;
-            const dist = Math.hypot(dx, dy) || 1;
-            ball.dx = (dx / dist) * BALL_COLLISION_IMPULSE;
-            ball.dy = (dy / dist) * BALL_COLLISION_IMPULSE;
+
+          function updateBall() {
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            // Odbijanie od ścian
+            if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+              ball.dx *= -1;
+            }
+            if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
+              ball.dy *= -1;
+            }
           }
+
+          function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBall();
+            updateBall();
+            requestAnimationFrame(gameLoop);
+          }
+
+          gameLoop();
         }
-        
-        function checkCollisions() {
-          fieldPlayers.forEach(player => { handlePlayerBallCollision(player); });
-          handlePlayerBallCollision(goalkeeper);
-        }
-        
-        function gameLoop() {
-          if (!gameAnimating) return;
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
+      })();
+    </script>
+  </body>
+</html>
