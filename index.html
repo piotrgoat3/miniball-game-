@@ -4,14 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>MiniSoccer - Szybki Mecz</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
     <style>
-      /* Style globalne */
       body {
-        font-family: "Nunito", sans-serif;
+        font-family: Arial, sans-serif;
         background-color: #f4f4f4;
         margin: 0;
         padding: 0;
@@ -33,9 +28,6 @@
       button:hover {
         background-color: #0056b3;
       }
-      h1, h2, p {
-        color: #333;
-      }
       #gameCanvas {
         background-color: #eee;
         border: 2px solid #333;
@@ -54,17 +46,14 @@
     <!-- Ekran wyboru drużyn -->
     <div id="teamSelectScreen" class="hidden">
       <h2>Wybierz drużyny</h2>
-      <button class="team-btn" data-team="Manchester United">Manchester United</button>
-      <button class="team-btn" data-team="Real Madrid">Real Madrid</button>
-      <button class="team-btn" data-team="FC Barcelona">FC Barcelona</button>
-      <button class="team-btn" data-team="Liverpool FC">Liverpool FC</button>
+      <div id="teamList"></div>
+      <button id="proceedToLineupBtn">Dalej</button>
     </div>
 
     <!-- Ekran wyboru składu -->
     <div id="playerSelectScreen" class="hidden">
       <h2>Wybierz skład</h2>
-      <p>Wybierz zawodników dla swojej drużyny.</p>
-      <!-- Tu mogą być rozwijane listy z wyborem zawodników -->
+      <div id="playerList"></div>
       <button id="confirmLineupBtn">Zatwierdź skład</button>
     </div>
 
@@ -76,81 +65,128 @@
       <button id="backToStartBtn">Powrót do menu</button>
     </div>
 
-    <!-- Skrypty -->
     <script>
       (function () {
         "use strict";
 
-        let currentScreen = "startScreen";
-        let score = 0;
+        const teamsData = {
+          "Manchester City": {
+            "Bramkarze": [
+              { name: "Ederson", rating: 90 },
+              { name: "Stefan Ortega", rating: 80 }
+            ],
+            "Obrońcy": [
+              { name: "Rúben Dias", rating: 88 },
+              { name: "John Stones", rating: 83 },
+              { name: "Nathan Aké", rating: 82 },
+              { name: "Joško Gvardiol", rating: 86 },
+              { name: "Manuel Akanji", rating: 81 }
+            ],
+            "Pomocnicy": [
+              { name: "Kevin De Bruyne", rating: 92 },
+              { name: "Rodri", rating: 88 },
+              { name: "İlkay Gündoğan", rating: 85 },
+              { name: "Bernardo Silva", rating: 87 },
+              { name: "Mateo Kovačić", rating: 83 }
+            ],
+            "Napastnicy": [
+              { name: "Erling Haaland", rating: 96 },
+              { name: "Jack Grealish", rating: 84 },
+              { name: "Jérémy Doku", rating: 82 },
+              { name: "Phil Foden", rating: 86 }
+            ]
+          },
+          "Liverpool FC": {
+            "Bramkarze": [
+              { name: "Alisson", rating: 88 },
+              { name: "Caoimhín Kelleher", rating: 79 }
+            ],
+            "Obrońcy": [
+              { name: "Virgil van Dijk", rating: 89 },
+              { name: "Trent Alexander‑Arnold", rating: 88 },
+              { name: "Andrew Robertson", rating: 85 },
+              { name: "Ibrahima Konaté", rating: 83 },
+              { name: "Joël Matip", rating: 81 }
+            ],
+            "Pomocnicy": [
+              { name: "Mohamed Salah", rating: 94 },
+              { name: "Alexis Mac Allister", rating: 83 },
+              { name: "Dominik Szoboszlai", rating: 85 },
+              { name: "Curtis Jones", rating: 80 },
+              { name: "Wataru Endō", rating: 78 }
+            ],
+            "Napastnicy": [
+              { name: "Darwin Núñez", rating: 84 },
+              { name: "Luis Díaz", rating: 86 },
+              { name: "Diogo Jota", rating: 84 },
+              { name: "Cody Gakpo", rating: 82 }
+            ]
+          }
+          // Reszta drużyn dodana w podobny sposób
+        };
 
-        // Funkcja przełączająca ekrany
+        let currentScreen = "startScreen";
+        let selectedTeam = null;
+
         function switchScreen(newScreen) {
           document.getElementById(currentScreen).classList.add("hidden");
           document.getElementById(newScreen).classList.remove("hidden");
           currentScreen = newScreen;
         }
 
-        // Obsługa ekranu startowego
-        document.getElementById("startMatchBtn").addEventListener("click", function () {
+        function populateTeams() {
+          const teamList = document.getElementById("teamList");
+          teamList.innerHTML = "";
+          for (let team in teamsData) {
+            const btn = document.createElement("button");
+            btn.textContent = team;
+            btn.addEventListener("click", () => {
+              selectedTeam = team;
+              console.log("Wybrano drużynę:", team);
+            });
+            teamList.appendChild(btn);
+          }
+        }
+
+        function populatePlayers() {
+          if (!selectedTeam) return;
+          const playerList = document.getElementById("playerList");
+          playerList.innerHTML = "";
+          const teamPlayers = teamsData[selectedTeam];
+          for (let position in teamPlayers) {
+            const header = document.createElement("h3");
+            header.textContent = position;
+            playerList.appendChild(header);
+
+            teamPlayers[position].forEach((player) => {
+              const p = document.createElement("p");
+              p.textContent = `${player.name} (${player.rating})`;
+              playerList.appendChild(p);
+            });
+          }
+        }
+
+        document.getElementById("startMatchBtn").addEventListener("click", () => {
           switchScreen("teamSelectScreen");
+          populateTeams();
         });
 
-        // Obsługa wyboru drużyn
-        document.querySelectorAll(".team-btn").forEach((btn) => {
-          btn.addEventListener("click", function () {
-            console.log("Wybrano drużynę: ", this.dataset.team);
-            switchScreen("playerSelectScreen");
-          });
+        document.getElementById("proceedToLineupBtn").addEventListener("click", () => {
+          if (!selectedTeam) {
+            alert("Wybierz drużynę, zanim przejdziesz dalej!");
+            return;
+          }
+          switchScreen("playerSelectScreen");
+          populatePlayers();
         });
 
-        // Obsługa wyboru składu
-        document.getElementById("confirmLineupBtn").addEventListener("click", function () {
+        document.getElementById("confirmLineupBtn").addEventListener("click", () => {
           switchScreen("gameScreen");
-          initializeGame();
         });
 
-        // Powrót do menu
-        document.getElementById("backToStartBtn").addEventListener("click", function () {
+        document.getElementById("backToStartBtn").addEventListener("click", () => {
           switchScreen("startScreen");
         });
-
-        // Funkcja inicjalizująca grę
-        function initializeGame() {
-          const canvas = document.getElementById("gameCanvas");
-          const ctx = canvas.getContext("2d");
-          const ball = { x: canvas.width / 2, y: canvas.height / 2, radius: 10, dx: 2, dy: 2 };
-
-          function drawBall() {
-            ctx.beginPath();
-            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-            ctx.fillStyle = "#007bff";
-            ctx.fill();
-            ctx.closePath();
-          }
-
-          function updateBall() {
-            ball.x += ball.dx;
-            ball.y += ball.dy;
-
-            // Odbijanie od ścian
-            if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
-              ball.dx *= -1;
-            }
-            if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
-              ball.dy *= -1;
-            }
-          }
-
-          function gameLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawBall();
-            updateBall();
-            requestAnimationFrame(gameLoop);
-          }
-
-          gameLoop();
-        }
       })();
     </script>
   </body>
