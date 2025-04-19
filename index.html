@@ -10,6 +10,46 @@
       rel="stylesheet"
     />
     <style>
+     /* ================================
+   EKRAN STARTOWY - PIŁKARSKIE TŁO
+   ================================ */
+#startScreen {
+  padding: 40px 20px;
+  background: linear-gradient(to bottom, #3c8c40 0%, #185c28 100%);
+  background-image: url('https://example.com/grass-texture.jpg'); /* Zamień na prawdziwy link */
+  background-size: cover;
+  background-position: center;
+}
+
+#startScreen h1 {
+  font-size: 56px;
+  color: #fff;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* ================================
+   BAZA ZAWODNIKÓW - PRZEWIJANIE LISTY
+   ================================ */
+#playerList {
+  max-height: 300px; /* Ograniczona wysokość, aby wymusić przewijanie */
+  overflow-y: auto; /* Pozwala przewijać listę myszką */
+  scrollbar-width: thin;
+  scrollbar-color: #185c28 #ffffff;
+}
+
+/* Stylizacja paska przewijania dla WebKit (Chrome, Edge, Safari) */
+#playerList::-webkit-scrollbar {
+  width: 8px;
+}
+
+#playerList::-webkit-scrollbar-thumb {
+  background: #185c28; /* Kolor przewijania */
+  border-radius: 5px;
+}
+
+#playerList::-webkit-scrollbar-track {
+  background: #ffffff;
+}
       /* ============================================================================
          GLOBALNE STYLE – GRAFICZNY DESIGN (AESTHETIC STYLE)
          ============================================================================
