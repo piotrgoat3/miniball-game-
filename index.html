@@ -14,8 +14,7 @@
       /* Tło zmienione na zdjęcie stadionu */
       body {
         font-family: "Nunito", sans-serif;
-        background: url("https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80")
-          no-repeat center center fixed;
+        background: url("https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80") no-repeat center center fixed;
         background-size: cover;
         margin: 0;
         padding: 0;
@@ -35,9 +34,7 @@
       .hidden { display: none !important; }
       
       /* EKRAN STARTOWY */
-      #startScreen {
-        padding: 40px 20px;
-      }
+      #startScreen { padding: 40px 20px; }
       #startScreen h1 {
         font-size: 56px;
         margin-bottom: 30px;
@@ -197,14 +194,7 @@
         background: rgba(255,255,255,1);
         transform: translateY(-2px);
       }
-      input {
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        padding: 10px;
-        margin: 5px 0;
-        width: 100%;
-        box-sizing: border-box;
-      }
+      input { border: 1px solid #ccc; border-radius: 6px; padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
       #playerList {
         max-height: 300px;
         overflow-y: auto;
@@ -212,10 +202,7 @@
         scrollbar-color: #185c28 #ffffff;
       }
       #playerList::-webkit-scrollbar { width: 8px; }
-      #playerList::-webkit-scrollbar-thumb {
-        background: #185c28;
-        border-radius: 5px;
-      }
+      #playerList::-webkit-scrollbar-thumb { background: #185c28; border-radius: 5px; }
       #playerList::-webkit-scrollbar-track { background: #ffffff; }
     </style>
   </head>
@@ -234,12 +221,10 @@
     <!-- EKRAN WYBORU DRUŻYN -->
     <div id="teamSelectScreen" class="hidden">
       <h2>Wybierz Drużyny</h2>
-      <!-- Drużyna domowa -->
       <div class="team-section" id="homeTeamSection">
         <h3>Drużyna Domowa</h3>
         <div id="homeTeamContainer" class="team-container"></div>
       </div>
-      <!-- Drużyna przeciwna -->
       <div class="team-section" id="awayTeamSection">
         <h3>Drużyna Gościa</h3>
         <div id="awayTeamContainer" class="team-container"></div>
@@ -287,7 +272,7 @@
       (function () {
         "use strict";
         
-        /* GLOBALNE ZMIENNE I KONSTANTY */
+        // GLOBALNE ZMIENNE I KONSTANTY
         let score = { home: 0, away: 0 };
         let canvas, ctx, ball;
         let fieldPlayers = [];      // 4 zawodników drużyny domowej
@@ -301,9 +286,9 @@
         const PLAYER_RADIUS = 16,
               GOALKEEPER_RADIUS = 18,
               FRICTION = 0.98,
-              DRAG_IMPULSE_SCALE = 0.05; // Zmniejszona prędkość naciągnięcia
+              DRAG_IMPULSE_SCALE = 0.05;  // zmniejszona prędkość naciągnięcia
         
-        /* CZAS MECZU – MATCH_DURATION = 180 sekund (3:00) */
+        // CZAS MECZU – MATCH_DURATION = 180 sekund (3:00)
         const MATCH_DURATION = 180;
         let matchTime = MATCH_DURATION;
         let matchTimerInterval = null;
@@ -336,7 +321,7 @@
           document.getElementById("startScreen").classList.remove("hidden");
         }
         
-        /* BAZA DANYCH KLUBÓW – Oryginalna */
+        // BAZA DANYCH KLUBÓW – oryginalna
         const teamsData = {
           "Premier League": {
             leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
@@ -467,8 +452,8 @@
           ];
           
           // Bramkarze (1+1)
-          goalkeeper = { x: 60, y: canvas.height / 2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: homeColor };
-          goalkeeperAway = { x: canvas.width - 60, y: canvas.height / 2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: awayColor };
+          goalkeeper = { x: 60, y: canvas.height/2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: homeColor };
+          goalkeeperAway = { x: canvas.width - 60, y: canvas.height/2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: awayColor };
           
           score.home = 0;
           score.away = 0;
@@ -540,7 +525,7 @@
           ctx.fill();
           ctx.closePath();
           
-          // RYSOWANIE STRZAŁKI – teraz rysujemy od pozycji zawodnika w kierunku: p + (dragStart - dragCurrent)
+          // Rysowanie strzałki – teraz rysujemy od pozycji zawodnika do punktu p + (dragStart - dragCurrent)
           if (isDragging && draggingPlayerIndex !== null && dragStart && dragCurrent) {
             ctx.save();
             ctx.setLineDash([5, 5]);
@@ -647,7 +632,7 @@
           }
         }
         
-        /* RESET PIŁKI – zawsze respawnuje się na środku */
+        /* RESET PIŁKI (respawn w środku) */
         function resetBall() {
           ball.x = canvas.width / 2;
           ball.y = canvas.height / 2;
@@ -745,8 +730,8 @@
           canvas.addEventListener("mousedown", canvasMouseDown);
           canvas.addEventListener("mousemove", canvasMouseMove);
           canvas.addEventListener("mouseup", canvasMouseUp);
-          // Dodajemy też obsługę mouseup na całym oknie, aby zresetować przeciąganie, gdy użytkownik puści mysze poza canvasem
-          window.addEventListener("mouseup", canvasMouseUp);
+          // Zamiast globalnego window.mouseup, dodajemy listener dla opuszczenia obszaru canvasu
+          canvas.addEventListener("mouseleave", canvasMouseUp);
         }
         
         function populateTeamSelections() {
@@ -758,7 +743,6 @@
           selectedAwayTeam = null;
           
           for (let league in teamsData) {
-            // Drużyna domowa
             let leagueDivHome = document.createElement("div");
             leagueDivHome.className = "league-section";
             let leagueHeaderHome = document.createElement("div");
@@ -788,7 +772,6 @@
             leagueDivHome.appendChild(teamContainerHome);
             homeContainer.appendChild(leagueDivHome);
             
-            // Drużyna przeciwna
             let leagueDivAway = document.createElement("div");
             leagueDivAway.className = "league-section";
             let leagueHeaderAway = document.createElement("div");
@@ -802,59 +785,4 @@
             leagueDivAway.appendChild(leagueHeaderAway);
             
             let teamContainerAway = document.createElement("div");
-            teamContainerAway.className = "team-container";
-            teamsData[league].teams.forEach(team => {
-              let teamDiv = document.createElement("div");
-              teamDiv.className = "team-option";
-              teamDiv.dataset.team = team.name;
-              teamDiv.innerHTML = `<img src="${team.logo}" alt="${team.name}" /><p>${team.name}</p>`;
-              teamDiv.addEventListener("click", function () {
-                Array.from(teamContainerAway.children).forEach(el => el.classList.remove("selected"));
-                this.classList.add("selected");
-                selectedAwayTeam = team.name;
-              });
-              teamContainerAway.appendChild(teamDiv);
-            });
-            leagueDivAway.appendChild(teamContainerAway);
-            awayContainer.appendChild(leagueDivAway);
-          }
-        }
-        
-        document.addEventListener("DOMContentLoaded", () => {
-          document.getElementById("startMatchBtn").addEventListener("click", () => {
-            document.getElementById("startScreen").classList.add("hidden");
-            document.getElementById("teamSelectScreen").classList.remove("hidden");
-            populateTeamSelections();
-          });
-          
-          document.getElementById("startMatchFromSelectBtn").addEventListener("click", () => {
-            if (!selectedHomeTeam || !selectedAwayTeam) {
-              alert("Wybierz obie drużyny!");
-              return;
-            }
-            if (selectedHomeTeam === selectedAwayTeam) {
-              alert("Wybierz dwie różne drużyny!");
-              return;
-            }
-            console.log("Wybrane drużyny:", selectedHomeTeam, "-", selectedAwayTeam);
-            document.getElementById("teamSelectScreen").classList.add("hidden");
-            document.getElementById("gameScreen").classList.remove("hidden");
-            initGame();
-            addCanvasEvents();
-            startTimer();
-            gameAnimating = true;
-            requestAnimationFrame(gameLoop);
-          });
-          
-          document.getElementById("backToStartBtn").addEventListener("click", () => {
-            gameAnimating = false;
-            stopTimer();
-            document.getElementById("gameScreen").classList.add("hidden");
-            document.getElementById("startScreen").classList.remove("hidden");
-          });
-        });
-        
-      })();
-    </script>
-  </body>
-</html>
+            teamContainerAway.className = "team
