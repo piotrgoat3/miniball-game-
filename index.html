@@ -11,9 +11,11 @@
     />
     <style>
       /* GLOBALNE STYLE – DESIGN W PIŁKARSKIM KLIMACIE */
+      /* Zmieniono tło na zdjęcie stadionu */
       body {
         font-family: "Nunito", sans-serif;
-        background: url("https://images.unsplash.com/photo-1430232324554-8f4aebd06683?fm=jpg&q=60&w=3000") no-repeat center center fixed;
+        background: url("https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80")
+          no-repeat center center fixed;
         background-size: cover;
         margin: 0;
         padding: 0;
@@ -39,7 +41,7 @@
       #startScreen h1 {
         font-size: 56px;
         margin-bottom: 30px;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
       }
       #startScreen button {
         font-size: 20px;
@@ -133,15 +135,9 @@
       /* EKRAN GRY */
       #gameScreen { padding: 20px; }
       #scoreboardContainer { margin-bottom: 20px; }
-      #scoreboard {
-        font-size: 28px;
-        font-weight: bold;
-      }
-      /* Licznik czasu meczu */
-      #matchTimer {
-        font-size: 20px;
-        margin-top: 5px;
-      }
+      #scoreboard { font-size: 28px; font-weight: bold; }
+      /* Licznik czasu meczu – zaczynamy od 3:00 */
+      #matchTimer { font-size: 20px; margin-top: 5px; }
       canvas {
         background-color: #228B22;
         border: 4px solid #fff;
@@ -305,10 +301,10 @@
         const PLAYER_RADIUS = 16,
               GOALKEEPER_RADIUS = 18,
               FRICTION = 0.98,
-              BALL_COLLISION_IMPULSE = 7,
-              DRAG_IMPULSE_SCALE = 0.2;
+              // Zmniejszono prędkość naciąganych zawodników:
+              DRAG_IMPULSE_SCALE = 0.1;
               
-        /* KONSTANTA CZASU MECZU: 180 sekund = 3:00 */
+        /* CZAS MECZU – MATCH_DURATION = 180 sekund (3:00) */
         const MATCH_DURATION = 180;
         let matchTime = MATCH_DURATION;
         let matchTimerInterval = null;
@@ -401,8 +397,7 @@
           }
         };
         
-        /* Funkcja pomocnicza – zwraca kolor klubowy dla danego klubu.
-           Możesz tutaj ustalić dokładne przyporządkowanie lub zwrócić domyślny kolor. */
+        /* Funkcja pomocnicza – zwraca kolor klubowy dla danego klubu */
         function getTeamColor(teamName) {
           switch(teamName) {
             case "Manchester United": return "#DA291C";
@@ -558,6 +553,7 @@
           ctx.closePath();
           
           // Wskaźnik przeciągania dla zawodnika drużyny domowej
+          // Zmieniono – rysujemy strzałkę w kierunku, w którym zawodnik zostanie wypchnięty
           if (isDragging && draggingPlayerIndex !== null) {
             ctx.save();
             ctx.setLineDash([5, 5]);
@@ -566,7 +562,8 @@
             let p = fieldPlayers[draggingPlayerIndex];
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
-            ctx.lineTo(dragCurrent.x, dragCurrent.y);
+            // Nowy punkt końcowy: p.x + (dragStart - dragCurrent)
+            ctx.lineTo(p.x + (dragStart.x - dragCurrent.x), p.y + (dragStart.y - dragCurrent.y));
             ctx.stroke();
             ctx.restore();
           }
@@ -681,7 +678,7 @@
           return Math.hypot(dx, dy) < (c1.radius + c2.radius);
         }
         
-        // Funkcja zmienia jedynie prędkość piłki przy kolizji – nie ingeruje w kolor
+        // Funkcja odpowiedzialna za zmianę prędkości piłki przy kolizjach – nie zmienia koloru piłki
         function handlePlayerBallCollision(player) {
           if (circleCollision(player, ball)) {
             const dx = ball.x - player.x;
@@ -693,13 +690,13 @@
         }
         
         function checkCollisions() {
-          fieldPlayers.forEach(player => { handlePlayerBallCollision(player); });
-          fieldPlayersAway.forEach(player => { handlePlayerBallCollision(player); });
+          fieldPlayers.forEach(player => handlePlayerBallCollision(player));
+          fieldPlayersAway.forEach(player => handlePlayerBallCollision(player));
           handlePlayerBallCollision(goalkeeper);
           handlePlayerBallCollision(goalkeeperAway);
         }
         
-        /* PROSTE RUCHY AI – po ruchu gracza przeciwnicy z drużyny przeciwnej reagują na piłkę */
+        /* PROSTE RUCHY AI – po ruchu gracza, przeciwnicy reagują na piłkę */
         function aiMove() {
           fieldPlayersAway.forEach(player => {
             let dx = ball.x - player.x;
@@ -760,6 +757,7 @@
           fieldPlayers[draggingPlayerIndex].vy = dy * DRAG_IMPULSE_SCALE;
           isDragging = false;
           draggingPlayerIndex = null;
+          // Po ruchu gracza wykonujemy ruch AI
           aiMove();
         }
         
@@ -850,7 +848,7 @@
             populateTeamSelections();
           });
           
-          // "Rozpocznij Mecz" – weryfikacja wyboru i uruchomienie gry
+          // "Rozpocznij Mecz"
           document.getElementById("startMatchFromSelectBtn").addEventListener("click", () => {
             if (!selectedHomeTeam || !selectedAwayTeam) {
               alert("Wybierz obie drużyny!");
@@ -878,7 +876,7 @@
             document.getElementById("startScreen").classList.remove("hidden");
           });
         });
-        
+
       })();
     </script>
   </body>
