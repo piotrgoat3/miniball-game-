@@ -11,7 +11,7 @@
     />
     <style>
       /* GLOBALNE STYLE – DESIGN W PIŁKARSKIM KLIMACIE */
-      /* Zmieniono tło na zdjęcie stadionu */
+      /* Nowe tło – zdjęcie stadionu */
       body {
         font-family: "Nunito", sans-serif;
         background: url("https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80")
@@ -35,9 +35,7 @@
       .hidden { display: none !important; }
       
       /* EKRAN STARTOWY */
-      #startScreen {
-        padding: 40px 20px;
-      }
+      #startScreen { padding: 40px 20px; }
       #startScreen h1 {
         font-size: 56px;
         margin-bottom: 30px;
@@ -61,7 +59,7 @@
         box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
       }
       
-      /* EKRAN WYBORU DRUŻYN – W STYLU FIFA */
+      /* EKRAN WYBORU DRUŻYN */
       #teamSelectScreen { padding: 40px 20px; }
       #teamSelectScreen h2 {
         font-size: 40px;
@@ -136,7 +134,6 @@
       #gameScreen { padding: 20px; }
       #scoreboardContainer { margin-bottom: 20px; }
       #scoreboard { font-size: 28px; font-weight: bold; }
-      /* Licznik czasu meczu – zaczynamy od 3:00 */
       #matchTimer { font-size: 20px; margin-top: 5px; }
       canvas {
         background-color: #228B22;
@@ -159,7 +156,7 @@
       }
       #backToStartBtn:hover { background: rgba(255,255,255,1); }
       
-      /* MODALE – Baza zawodników, Wybór języka */
+      /* MODALE */
       .modal {
         position: fixed;
         top: 0;
@@ -296,13 +293,14 @@
         let goalkeeper, goalkeeperAway;  // Bramkarze (1+1)
         let gameAnimating = false;
         let isDragging = false, draggingPlayerIndex = null;
-        let dragStart = { x: 0, y: 0 }, dragCurrent = { x: 0, y: 0 };
+        let dragStart = { x: 0, y: 0 };
+        let dragCurrent = { x: 0, y: 0 };
         let selectedHomeTeam = null, selectedAwayTeam = null;
         const PLAYER_RADIUS = 16,
               GOALKEEPER_RADIUS = 18,
               FRICTION = 0.98,
-              // Zmniejszono prędkość naciąganych zawodników:
-              DRAG_IMPULSE_SCALE = 0.1;
+              // Zmniejszona wartość impulsu – teraz 0.05
+              DRAG_IMPULSE_SCALE = 0.05;
               
         /* CZAS MECZU – MATCH_DURATION = 180 sekund (3:00) */
         const MATCH_DURATION = 180;
@@ -333,12 +331,11 @@
           stopTimer();
           gameAnimating = false;
           alert("Koniec meczu! Wynik: " + selectedHomeTeam + " " + score.home + " : " + score.away + " " + selectedAwayTeam);
-          // Powrót do ekranu startowego
           document.getElementById("gameScreen").classList.add("hidden");
           document.getElementById("startScreen").classList.remove("hidden");
         }
         
-        /* BAZA DANYCH KLUBÓW – oryginalna */
+        /* BAZA DANYCH KLUBÓW – Oryginalna baza */
         const teamsData = {
           "Premier League": {
             leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
@@ -491,9 +488,7 @@
           
           // Bramki – rysowane poza głównym polem
           ctx.fillStyle = "white";
-          // Lewa bramka
           ctx.fillRect(0, canvas.height/2 - 50, 10, 100);
-          // Prawa bramka
           ctx.fillRect(canvas.width - 10, canvas.height/2 - 50, 10, 100);
           
           // Linie bramkowe – cienkie linie przy krawędziach (na wysokości bramek)
@@ -507,7 +502,7 @@
           ctx.lineTo(canvas.width - 10, canvas.height/2 + 50);
           ctx.stroke();
           
-          // Linie pola karnego – przykładowe wymiary
+          // Linie pola karnego
           ctx.strokeRect(10, canvas.height/2 - 80, 60, 160);
           ctx.strokeRect(canvas.width - 70, canvas.height/2 - 80, 60, 160);
         }
@@ -516,7 +511,7 @@
         function drawGameObjects() {
           // Piłka – zawsze biała
           ctx.beginPath();
-          ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+          ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
           ctx.fillStyle = ball.color;
           ctx.fill();
           ctx.closePath();
@@ -552,19 +547,23 @@
           ctx.fill();
           ctx.closePath();
           
-          // Wskaźnik przeciągania dla zawodnika drużyny domowej
-          // Zmieniono – rysujemy strzałkę w kierunku, w którym zawodnik zostanie wypchnięty
-          if (isDragging && draggingPlayerIndex !== null) {
+          // RYSOWANIE STRZAŁKI – jeśli przeciągamy (dodany dodatkowy warunek)
+          if (isDragging && draggingPlayerIndex !== null && dragStart && dragCurrent) {
             ctx.save();
             ctx.setLineDash([5, 5]);
             ctx.strokeStyle = "red";
             ctx.lineWidth = 2;
             let p = fieldPlayers[draggingPlayerIndex];
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            // Nowy punkt końcowy: p.x + (dragStart - dragCurrent)
-            ctx.lineTo(p.x + (dragStart.x - dragCurrent.x), p.y + (dragStart.y - dragCurrent.y));
-            ctx.stroke();
+            // Obliczamy punkt końcowy strzałki – dodajemy wektor (dragStart - dragCurrent) do pozycji zawodnika
+            let arrowEndX = p.x + (dragStart.x - dragCurrent.x);
+            let arrowEndY = p.y + (dragStart.y - dragCurrent.y);
+            // Sprawdzamy, czy wynik jest rozsądny (np. nie jest NaN)
+            if (!isNaN(arrowEndX) && !isNaN(arrowEndY)) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(arrowEndX, arrowEndY);
+              ctx.stroke();
+            }
             ctx.restore();
           }
         }
@@ -641,7 +640,7 @@
             ball.dy *= -1;
           }
           
-          // Sprawdzanie bramek – liczymy gola tylko, gdy środek piłki mieści się w zakresie bramki
+          // Sprawdzanie bramek – licz gole tylko, gdy środek piłki mieści się w zakresie bramki
           if (ball.x - ball.radius < 0) {
             if (ball.y >= canvas.height/2 - 50 && ball.y <= canvas.height/2 + 50) {
               score.away++;
@@ -662,7 +661,7 @@
           }
         }
         
-        /* RESET PIŁKI PO GOLE */
+        /* RESET PIŁKI PO GOLE – respawn w środku */
         function resetBall() {
           ball.x = canvas.width / 2;
           ball.y = canvas.height / 2;
@@ -678,7 +677,7 @@
           return Math.hypot(dx, dy) < (c1.radius + c2.radius);
         }
         
-        // Funkcja odpowiedzialna za zmianę prędkości piłki przy kolizjach – nie zmienia koloru piłki
+        // Funkcja ustawiająca prędkość piłki przy kolizjach – nie zmienia koloru
         function handlePlayerBallCollision(player) {
           if (circleCollision(player, ball)) {
             const dx = ball.x - player.x;
@@ -690,8 +689,8 @@
         }
         
         function checkCollisions() {
-          fieldPlayers.forEach(player => handlePlayerBallCollision(player));
-          fieldPlayersAway.forEach(player => handlePlayerBallCollision(player));
+          fieldPlayers.forEach(player => { handlePlayerBallCollision(player); });
+          fieldPlayersAway.forEach(player => { handlePlayerBallCollision(player); });
           handlePlayerBallCollision(goalkeeper);
           handlePlayerBallCollision(goalkeeperAway);
         }
@@ -757,7 +756,6 @@
           fieldPlayers[draggingPlayerIndex].vy = dy * DRAG_IMPULSE_SCALE;
           isDragging = false;
           draggingPlayerIndex = null;
-          // Po ruchu gracza wykonujemy ruch AI
           aiMove();
         }
         
@@ -841,14 +839,12 @@
         
         /* OBSŁUGA INTERFEJSU */
         document.addEventListener("DOMContentLoaded", () => {
-          // "SZYBKI MECZ" – przejście do wyboru drużyn
           document.getElementById("startMatchBtn").addEventListener("click", () => {
             document.getElementById("startScreen").classList.add("hidden");
             document.getElementById("teamSelectScreen").classList.remove("hidden");
             populateTeamSelections();
           });
           
-          // "Rozpocznij Mecz"
           document.getElementById("startMatchFromSelectBtn").addEventListener("click", () => {
             if (!selectedHomeTeam || !selectedAwayTeam) {
               alert("Wybierz obie drużyny!");
@@ -868,7 +864,6 @@
             requestAnimationFrame(gameLoop);
           });
           
-          // "Powrót do Menu"
           document.getElementById("backToStartBtn").addEventListener("click", () => {
             gameAnimating = false;
             stopTimer();
@@ -876,7 +871,7 @@
             document.getElementById("startScreen").classList.remove("hidden");
           });
         });
-
+        
       })();
     </script>
   </body>
