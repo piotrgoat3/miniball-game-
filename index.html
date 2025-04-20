@@ -14,7 +14,8 @@
       /* Tło zmienione na zdjęcie stadionu */
       body {
         font-family: "Nunito", sans-serif;
-        background: url("https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80") no-repeat center center fixed;
+        background: url("https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80")
+          no-repeat center center fixed;
         background-size: cover;
         margin: 0;
         padding: 0;
@@ -28,13 +29,15 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.3);
+        background: rgba(0,0,0,0.3);
         z-index: -1;
       }
       .hidden { display: none !important; }
       
       /* EKRAN STARTOWY */
-      #startScreen { padding: 40px 20px; }
+      #startScreen {
+        padding: 40px 20px;
+      }
       #startScreen h1 {
         font-size: 56px;
         margin-bottom: 30px;
@@ -194,7 +197,14 @@
         background: rgba(255,255,255,1);
         transform: translateY(-2px);
       }
-      input { border: 1px solid #ccc; border-radius: 6px; padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+      input {
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 10px;
+        margin: 5px 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
       #playerList {
         max-height: 300px;
         overflow-y: auto;
@@ -421,7 +431,6 @@
         function initGame() {
           canvas = document.getElementById("gameCanvas");
           ctx = canvas.getContext("2d");
-          // Piłka – zawsze biała
           ball = {
             x: canvas.width / 2,
             y: canvas.height / 2,
@@ -431,11 +440,9 @@
             color: "white"
           };
           
-          // Pobranie kolorów dla wybranych drużyn
           let homeColor = getTeamColor(selectedHomeTeam);
           let awayColor = getTeamColor(selectedAwayTeam);
           
-          // Drużyna domowa – 4 zawodników
           fieldPlayers = [
             { x: canvas.width * 0.25, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor },
             { x: canvas.width * 0.25, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor },
@@ -443,7 +450,6 @@
             { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor }
           ];
           
-          // Drużyna przeciwna – 4 zawodników
           fieldPlayersAway = [
             { x: canvas.width * 0.75, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor },
             { x: canvas.width * 0.75, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor },
@@ -451,7 +457,6 @@
             { x: canvas.width * 0.65, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor }
           ];
           
-          // Bramkarze (1+1)
           goalkeeper = { x: 60, y: canvas.height/2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: homeColor };
           goalkeeperAway = { x: canvas.width - 60, y: canvas.height/2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: awayColor };
           
@@ -459,7 +464,6 @@
           score.away = 0;
         }
         
-        /* RYSOWANIE BOISKA, BRAMEK, LINII ŚRODKOWEJ I POLA KARNEGO */
         function drawField() {
           ctx.strokeStyle = "#fff";
           ctx.lineWidth = 4;
@@ -489,7 +493,6 @@
           ctx.strokeRect(canvas.width - 70, canvas.height/2 - 80, 60, 160);
         }
         
-        /* RYSOWANIE OBIEKTÓW GRY */
         function drawGameObjects() {
           ctx.beginPath();
           ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
@@ -525,7 +528,8 @@
           ctx.fill();
           ctx.closePath();
           
-          // Rysowanie strzałki – teraz rysujemy od pozycji zawodnika do punktu p + (dragStart - dragCurrent)
+          // Rysowanie strzałki: rysujemy linię od pozycji zawodnika
+          // do punktu obliczonego jako p + (dragStart - dragCurrent)
           if (isDragging && draggingPlayerIndex !== null && dragStart && dragCurrent) {
             ctx.save();
             ctx.setLineDash([5, 5]);
@@ -544,7 +548,6 @@
           }
         }
         
-        /* AKTUALIZACJA POZYCJI OBIEKTÓW */
         function updatePositions() {
           fieldPlayers.forEach(player => {
             player.x += player.vx;
@@ -632,7 +635,6 @@
           }
         }
         
-        /* RESET PIŁKI (respawn w środku) */
         function resetBall() {
           ball.x = canvas.width / 2;
           ball.y = canvas.height / 2;
@@ -641,7 +643,6 @@
           ball.color = "white";
         }
         
-        /* DETEKCJA KOLIZJI */
         function circleCollision(c1, c2) {
           const dx = c1.x - c2.x;
           const dy = c1.y - c2.y;
@@ -659,8 +660,8 @@
         }
         
         function checkCollisions() {
-          fieldPlayers.forEach(player => handlePlayerBallCollision(player));
-          fieldPlayersAway.forEach(player => handlePlayerBallCollision(player));
+          fieldPlayers.forEach(player => { handlePlayerBallCollision(player); });
+          fieldPlayersAway.forEach(player => { handlePlayerBallCollision(player); });
           handlePlayerBallCollision(goalkeeper);
           handlePlayerBallCollision(goalkeeperAway);
         }
@@ -730,7 +731,6 @@
           canvas.addEventListener("mousedown", canvasMouseDown);
           canvas.addEventListener("mousemove", canvasMouseMove);
           canvas.addEventListener("mouseup", canvasMouseUp);
-          // Zamiast globalnego window.mouseup, dodajemy listener dla opuszczenia obszaru canvasu
           canvas.addEventListener("mouseleave", canvasMouseUp);
         }
         
@@ -785,4 +785,59 @@
             leagueDivAway.appendChild(leagueHeaderAway);
             
             let teamContainerAway = document.createElement("div");
-            teamContainerAway.className = "team
+            teamContainerAway.className = "team-container";
+            teamsData[league].teams.forEach(team => {
+              let teamDiv = document.createElement("div");
+              teamDiv.className = "team-option";
+              teamDiv.dataset.team = team.name;
+              teamDiv.innerHTML = `<img src="${team.logo}" alt="${team.name}" /><p>${team.name}</p>`;
+              teamDiv.addEventListener("click", function () {
+                Array.from(teamContainerAway.children).forEach(el => el.classList.remove("selected"));
+                this.classList.add("selected");
+                selectedAwayTeam = team.name;
+              });
+              teamContainerAway.appendChild(teamDiv);
+            });
+            leagueDivAway.appendChild(teamContainerAway);
+            awayContainer.appendChild(leagueDivAway);
+          }
+        }
+        
+        document.addEventListener("DOMContentLoaded", () => {
+          document.getElementById("startMatchBtn").addEventListener("click", () => {
+            document.getElementById("startScreen").classList.add("hidden");
+            document.getElementById("teamSelectScreen").classList.remove("hidden");
+            populateTeamSelections();
+          });
+          
+          document.getElementById("startMatchFromSelectBtn").addEventListener("click", () => {
+            if (!selectedHomeTeam || !selectedAwayTeam) {
+              alert("Wybierz obie drużyny!");
+              return;
+            }
+            if (selectedHomeTeam === selectedAwayTeam) {
+              alert("Wybierz dwie różne drużyny!");
+              return;
+            }
+            console.log("Wybrane drużyny:", selectedHomeTeam, "-", selectedAwayTeam);
+            document.getElementById("teamSelectScreen").classList.add("hidden");
+            document.getElementById("gameScreen").classList.remove("hidden");
+            initGame();
+            addCanvasEvents();
+            startTimer();
+            gameAnimating = true;
+            requestAnimationFrame(gameLoop);
+          });
+          
+          document.getElementById("backToStartBtn").addEventListener("click", () => {
+            gameAnimating = false;
+            stopTimer();
+            document.getElementById("gameScreen").classList.add("hidden");
+            document.getElementById("startScreen").classList.remove("hidden");
+          });
+        });
+        
+      })();
+    </script>
+  </body>
+</html>
