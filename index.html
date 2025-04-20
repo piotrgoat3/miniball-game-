@@ -11,7 +11,7 @@
     />
     <style>
       /* GLOBALNE STYLE – DESIGN W PIŁKARSKIM KLIMACIE */
-      /* Nowe tło – zdjęcie stadionu */
+      /* Tło zmienione na zdjęcie stadionu */
       body {
         font-family: "Nunito", sans-serif;
         background: url("https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80")
@@ -35,7 +35,9 @@
       .hidden { display: none !important; }
       
       /* EKRAN STARTOWY */
-      #startScreen { padding: 40px 20px; }
+      #startScreen {
+        padding: 40px 20px;
+      }
       #startScreen h1 {
         font-size: 56px;
         margin-bottom: 30px;
@@ -293,15 +295,14 @@
         let goalkeeper, goalkeeperAway;  // Bramkarze (1+1)
         let gameAnimating = false;
         let isDragging = false, draggingPlayerIndex = null;
-        let dragStart = { x: 0, y: 0 };
-        let dragCurrent = { x: 0, y: 0 };
+        let dragStart = { x: 0, y: 0 },
+            dragCurrent = { x: 0, y: 0 };
         let selectedHomeTeam = null, selectedAwayTeam = null;
         const PLAYER_RADIUS = 16,
               GOALKEEPER_RADIUS = 18,
               FRICTION = 0.98,
-              // Zmniejszona wartość impulsu – teraz 0.05
-              DRAG_IMPULSE_SCALE = 0.05;
-              
+              DRAG_IMPULSE_SCALE = 0.05; // Zmniejszona prędkość naciągnięcia
+        
         /* CZAS MECZU – MATCH_DURATION = 180 sekund (3:00) */
         const MATCH_DURATION = 180;
         let matchTime = MATCH_DURATION;
@@ -335,7 +336,7 @@
           document.getElementById("startScreen").classList.remove("hidden");
         }
         
-        /* BAZA DANYCH KLUBÓW – Oryginalna baza */
+        /* BAZA DANYCH KLUBÓW – Oryginalna */
         const teamsData = {
           "Premier League": {
             leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
@@ -475,23 +476,19 @@
         
         /* RYSOWANIE BOISKA, BRAMEK, LINII ŚRODKOWEJ I POLA KARNEGO */
         function drawField() {
-          // Obramowanie pola gry
           ctx.strokeStyle = "#fff";
           ctx.lineWidth = 4;
           ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
           
-          // Środkowa linia
           ctx.beginPath();
           ctx.moveTo(canvas.width/2, 10);
           ctx.lineTo(canvas.width/2, canvas.height - 10);
           ctx.stroke();
           
-          // Bramki – rysowane poza głównym polem
           ctx.fillStyle = "white";
           ctx.fillRect(0, canvas.height/2 - 50, 10, 100);
           ctx.fillRect(canvas.width - 10, canvas.height/2 - 50, 10, 100);
           
-          // Linie bramkowe – cienkie linie przy krawędziach (na wysokości bramek)
           ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.moveTo(10, canvas.height/2 - 50);
@@ -509,14 +506,12 @@
         
         /* RYSOWANIE OBIEKTÓW GRY */
         function drawGameObjects() {
-          // Piłka – zawsze biała
           ctx.beginPath();
-          ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+          ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
           ctx.fillStyle = ball.color;
           ctx.fill();
           ctx.closePath();
           
-          // Zawodnicy drużyny domowej
           fieldPlayers.forEach(player => {
             ctx.beginPath();
             ctx.arc(player.x, player.y, player.radius, 0, Math.PI*2);
@@ -525,7 +520,6 @@
             ctx.closePath();
           });
           
-          // Zawodnicy drużyny przeciwnej
           fieldPlayersAway.forEach(player => {
             ctx.beginPath();
             ctx.arc(player.x, player.y, player.radius, 0, Math.PI*2);
@@ -534,7 +528,6 @@
             ctx.closePath();
           });
           
-          // Bramkarze
           ctx.beginPath();
           ctx.arc(goalkeeper.x, goalkeeper.y, goalkeeper.radius, 0, Math.PI*2);
           ctx.fillStyle = goalkeeper.color;
@@ -547,17 +540,15 @@
           ctx.fill();
           ctx.closePath();
           
-          // RYSOWANIE STRZAŁKI – jeśli przeciągamy (dodany dodatkowy warunek)
+          // RYSOWANIE STRZAŁKI – teraz rysujemy od pozycji zawodnika w kierunku: p + (dragStart - dragCurrent)
           if (isDragging && draggingPlayerIndex !== null && dragStart && dragCurrent) {
             ctx.save();
             ctx.setLineDash([5, 5]);
             ctx.strokeStyle = "red";
             ctx.lineWidth = 2;
             let p = fieldPlayers[draggingPlayerIndex];
-            // Obliczamy punkt końcowy strzałki – dodajemy wektor (dragStart - dragCurrent) do pozycji zawodnika
             let arrowEndX = p.x + (dragStart.x - dragCurrent.x);
             let arrowEndY = p.y + (dragStart.y - dragCurrent.y);
-            // Sprawdzamy, czy wynik jest rozsądny (np. nie jest NaN)
             if (!isNaN(arrowEndX) && !isNaN(arrowEndY)) {
               ctx.beginPath();
               ctx.moveTo(p.x, p.y);
@@ -570,7 +561,6 @@
         
         /* AKTUALIZACJA POZYCJI OBIEKTÓW */
         function updatePositions() {
-          // Aktualizacja zawodników drużyny domowej
           fieldPlayers.forEach(player => {
             player.x += player.vx;
             player.y += player.vy;
@@ -594,7 +584,6 @@
             }
           });
           
-          // Aktualizacja zawodników drużyny przeciwnej
           fieldPlayersAway.forEach(player => {
             player.x += player.vx;
             player.y += player.vy;
@@ -618,7 +607,6 @@
             }
           });
           
-          // Aktualizacja bramkarzy
           [goalkeeper, goalkeeperAway].forEach(gk => {
             gk.x += gk.vx;
             gk.y += gk.vy;
@@ -626,7 +614,6 @@
             gk.vy *= FRICTION;
           });
           
-          // Aktualizacja piłki
           ball.x += ball.dx;
           ball.y += ball.dy;
           ball.dx *= FRICTION;
@@ -640,7 +627,6 @@
             ball.dy *= -1;
           }
           
-          // Sprawdzanie bramek – licz gole tylko, gdy środek piłki mieści się w zakresie bramki
           if (ball.x - ball.radius < 0) {
             if (ball.y >= canvas.height/2 - 50 && ball.y <= canvas.height/2 + 50) {
               score.away++;
@@ -661,7 +647,7 @@
           }
         }
         
-        /* RESET PIŁKI PO GOLE – respawn w środku */
+        /* RESET PIŁKI – zawsze respawnuje się na środku */
         function resetBall() {
           ball.x = canvas.width / 2;
           ball.y = canvas.height / 2;
@@ -677,7 +663,6 @@
           return Math.hypot(dx, dy) < (c1.radius + c2.radius);
         }
         
-        // Funkcja ustawiająca prędkość piłki przy kolizjach – nie zmienia koloru
         function handlePlayerBallCollision(player) {
           if (circleCollision(player, ball)) {
             const dx = ball.x - player.x;
@@ -689,13 +674,12 @@
         }
         
         function checkCollisions() {
-          fieldPlayers.forEach(player => { handlePlayerBallCollision(player); });
-          fieldPlayersAway.forEach(player => { handlePlayerBallCollision(player); });
+          fieldPlayers.forEach(player => handlePlayerBallCollision(player));
+          fieldPlayersAway.forEach(player => handlePlayerBallCollision(player));
           handlePlayerBallCollision(goalkeeper);
           handlePlayerBallCollision(goalkeeperAway);
         }
         
-        /* PROSTE RUCHY AI – po ruchu gracza, przeciwnicy reagują na piłkę */
         function aiMove() {
           fieldPlayersAway.forEach(player => {
             let dx = ball.x - player.x;
@@ -705,13 +689,11 @@
             player.vx = (dx / dist) * aiSpeed;
             player.vy = (dy / dist) * aiSpeed;
           });
-          // Bramkarz drużyny przeciwnej reaguje pionowo
           let dyGK = ball.y - goalkeeperAway.y;
           let speedGK = 2;
           goalkeeperAway.vy = (dyGK / (Math.abs(dyGK) || 1)) * speedGK;
         }
         
-        /* PĘTLA GRY */
         function gameLoop() {
           if (!gameAnimating) return;
           ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -724,7 +706,7 @@
           requestAnimationFrame(gameLoop);
         }
         
-        /* OBSŁUGA PRZECIĄGANIA (dla zawodników drużyny domowej) */
+        /* OBSŁUGA PRZECIĄGANIA – dla zawodników drużyny domowej */
         function canvasMouseDown(e) {
           const rect = canvas.getBoundingClientRect();
           const mx = e.clientX - rect.left;
@@ -763,9 +745,10 @@
           canvas.addEventListener("mousedown", canvasMouseDown);
           canvas.addEventListener("mousemove", canvasMouseMove);
           canvas.addEventListener("mouseup", canvasMouseUp);
+          // Dodajemy też obsługę mouseup na całym oknie, aby zresetować przeciąganie, gdy użytkownik puści mysze poza canvasem
+          window.addEventListener("mouseup", canvasMouseUp);
         }
         
-        /* GENEROWANIE KAFELEK DO WYBORU DRUŻYN */
         function populateTeamSelections() {
           const homeContainer = document.getElementById("homeTeamContainer");
           const awayContainer = document.getElementById("awayTeamContainer");
@@ -837,7 +820,6 @@
           }
         }
         
-        /* OBSŁUGA INTERFEJSU */
         document.addEventListener("DOMContentLoaded", () => {
           document.getElementById("startMatchBtn").addEventListener("click", () => {
             document.getElementById("startScreen").classList.add("hidden");
