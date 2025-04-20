@@ -285,13 +285,13 @@
     <div id="gameScreen" class="hidden">
       <div id="scoreboardContainer">
         <h2 id="scoreboard">— : —</h2>
-        <h3 id="matchTimer">Czas: 3:00</h3>
+        <h3 id="matchTimer">Czas: 0:00</h3>
       </div>
       <canvas id="gameCanvas" width="800" height="500"></canvas>
       <button id="backToStartBtn">Powrót do Menu</button>
     </div>
     
-    <!-- MODALE – Baza zawodników, Wybór języka -->
+    <!-- MODAL: Baza zawodników -->
     <div id="playerDBModal" class="modal hidden">
       <div class="modal-content">
         <h2>Baza zawodników</h2>
@@ -307,6 +307,7 @@
       </div>
     </div>
     
+    <!-- MODAL: Wybór języka -->
     <div id="languageModal" class="modal hidden">
       <div class="modal-content">
         <h2>Wybór języka</h2>
@@ -336,155 +337,141 @@
               FRICTION = 0.98,
               BALL_COLLISION_IMPULSE = 7,
               DRAG_IMPULSE_SCALE = 0.2;
-              
-        /* STALA CZASU MECZU: 180 sekund = 3:00 */
-        const MATCH_DURATION = 180;
-        let matchTime = MATCH_DURATION;
-        let matchTimerInterval = null;
         
+        /* PRZYKŁADOWE DANE LIGOWE – rozszerzone o kolory */
+        let teamsData = {
+          "Premier League": {
+            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
+            teams: [
+              { name: "Manchester United", logo: "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg", color: "#DA291C" },
+              { name: "Manchester City", logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg", color: "#6CABDD" }
+            ]
+          },
+          "La Liga": {
+            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/9/90/LaLiga.svg",
+            teams: [
+              { name: "Real Madrid", logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg", color: "#2E6F95" },
+              { name: "Barcelona", logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg", color: "#A50044" }
+            ]
+          }
+        };
+        
+        /* LICZNIK CZASU MECZU */
+        let matchTime = 0;
+        let matchTimerInterval = null;
         function updateTimerDisplay() {
           let minutes = Math.floor(matchTime / 60);
           let seconds = matchTime % 60;
           if (seconds < 10) seconds = "0" + seconds;
           document.getElementById("matchTimer").innerText = "Czas: " + minutes + ":" + seconds;
         }
-        
         function startTimer() {
-          matchTime = MATCH_DURATION;
+          matchTime = 0;
           updateTimerDisplay();
           matchTimerInterval = setInterval(() => {
-            matchTime--;
+            matchTime++;
             updateTimerDisplay();
-            if (matchTime <= 0) {
-              gameOver();
-            }
           }, 1000);
         }
-        
         function stopTimer() {
           clearInterval(matchTimerInterval);
           matchTimerInterval = null;
         }
         
-        function gameOver() {
-          stopTimer();
-          gameAnimating = false;
-          alert("Koniec meczu! Wynik: " + selectedHomeTeam + " " + score.home + " : " + score.away + " " + selectedAwayTeam);
-          // Reset ekranu – przełączamy z ekranu gry na ekran startowy
-          document.getElementById("gameScreen").classList.add("hidden");
-          document.getElementById("startScreen").classList.remove("hidden");
+        /* GENEROWANIE KAFELEK DO WYBORU DRUŻYN */
+        function populateTeamSelections() {
+          const homeContainer = document.getElementById("homeTeamContainer");
+          const awayContainer = document.getElementById("awayTeamContainer");
+          homeContainer.innerHTML = "";
+          awayContainer.innerHTML = "";
+          selectedHomeTeam = null;
+          selectedAwayTeam = null;
+          
+          for (let league in teamsData) {
+            // Drużyna domowa
+            let leagueDivHome = document.createElement("div");
+            leagueDivHome.className = "league-section";
+            let leagueHeaderHome = document.createElement("div");
+            leagueHeaderHome.className = "league-header";
+            let leagueLogoHome = document.createElement("img");
+            leagueLogoHome.src = teamsData[league].leagueLogo;
+            let leagueNameHome = document.createElement("span");
+            leagueNameHome.innerText = league;
+            leagueHeaderHome.appendChild(leagueLogoHome);
+            leagueHeaderHome.appendChild(leagueNameHome);
+            leagueDivHome.appendChild(leagueHeaderHome);
+            
+            let teamContainerHome = document.createElement("div");
+            teamContainerHome.className = "team-container";
+            teamsData[league].teams.forEach((team) => {
+              let teamDiv = document.createElement("div");
+              teamDiv.className = "team-option";
+              teamDiv.dataset.team = team.name;
+              teamDiv.innerHTML = `<img src="${team.logo}" alt="${team.name}" /><p>${team.name}</p>`;
+              teamDiv.addEventListener("click", function () {
+                Array.from(teamContainerHome.children).forEach((el) =>
+                  el.classList.remove("selected")
+                );
+                this.classList.add("selected");
+                selectedHomeTeam = team.name;
+              });
+              teamContainerHome.appendChild(teamDiv);
+            });
+            leagueDivHome.appendChild(teamContainerHome);
+            homeContainer.appendChild(leagueDivHome);
+            
+            // Drużyna przeciwna
+            let leagueDivAway = document.createElement("div");
+            leagueDivAway.className = "league-section";
+            let leagueHeaderAway = document.createElement("div");
+            leagueHeaderAway.className = "league-header";
+            let leagueLogoAway = document.createElement("img");
+            leagueLogoAway.src = teamsData[league].leagueLogo;
+            let leagueNameAway = document.createElement("span");
+            leagueNameAway.innerText = league;
+            leagueHeaderAway.appendChild(leagueLogoAway);
+            leagueHeaderAway.appendChild(leagueNameAway);
+            leagueDivAway.appendChild(leagueHeaderAway);
+            
+            let teamContainerAway = document.createElement("div");
+            teamContainerAway.className = "team-container";
+            teamsData[league].teams.forEach((team) => {
+              let teamDiv = document.createElement("div");
+              teamDiv.className = "team-option";
+              teamDiv.dataset.team = team.name;
+              teamDiv.innerHTML = `<img src="${team.logo}" alt="${team.name}" /><p>${team.name}</p>`;
+              teamDiv.addEventListener("click", function () {
+                Array.from(teamContainerAway.children).forEach((el) =>
+                  el.classList.remove("selected")
+                );
+                this.classList.add("selected");
+                selectedAwayTeam = team.name;
+              });
+              teamContainerAway.appendChild(teamDiv);
+            });
+            leagueDivAway.appendChild(teamContainerAway);
+            awayContainer.appendChild(leagueDivAway);
+          }
         }
         
-        /* BAZA DANYCH KLUBÓW */
-        const teamsData = {
-          "Premier League": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
-            teams: [
-              { name: "Manchester United", logo: "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg" },
-              { name: "Manchester City", logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" },
-              { name: "Liverpool", logo: "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" },
-              { name: "Chelsea", logo: "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg" },
-              { name: "Arsenal", logo: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" },
-              { name: "Tottenham Hotspur", logo: "https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg" }
-            ]
-          },
-          "La Liga": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/9/90/LaLiga.svg",
-            teams: [
-              { name: "Real Madrid", logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" },
-              { name: "Barcelona", logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" },
-              { name: "Atletico Madrid", logo: "https://brandlogos.net/wp-content/uploads/2021/09/atltico-madrid-logo.png" },
-              { name: "Sevilla", logo: "https://cdn.freebiesupply.com/logos/large/2x/sevilla-fc-logo-png-transparent.png" },
-              { name: "Valencia", logo: "https://brandlogos.net/wp-content/uploads/2014/10/valencia_cf-logo_brandlogos.net_iaffl-512x674.png" },
-              { name: "Villarreal", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/b/b9/Villarreal_CF_logo-en.svg/1200px-Villarreal_CF_logo-en.svg.png" }
-            ]
-          },
-          "Serie A": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/d/d2/Serie_A_logo_%282019%29.svg",
-            teams: [
-              { name: "Juventus", logo: "https://upload.wikimedia.org/wikipedia/commons/d/da/Juventus_Logo.png" },
-              { name: "Inter Milan", logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg" },
-              { name: "AC Milan", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_of_AC_Milan.svg/653px-Logo_of_AC_Milan.svg.png" },
-              { name: "Napoli", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/SSC_Neapel.svg/1200px-SSC_Neapel.svg.png" },
-              { name: "Roma", logo: "https://upload.wikimedia.org/wikipedia/sco/7/7d/AS_Roma%27s_logo_from_2017.png" },
-              { name: "Lazio", logo: "https://static.cdnlogo.com/logos/s/89/ss-lazio.png" }
-            ]
-          },
-          "Bundesliga": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/commons/d/df/Bundesliga_logo_%282017%29.svg",
-            teams: [
-              { name: "Bayern Munich", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg/2048px-FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg.png" },
-              { name: "Borussia Dortmund", logo: "https://upload.wikimedia.org/wikipedia/commons/7/74/Borussia_Dortmund.png" },
-              { name: "RB Leipzig", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/0/04/RB_Leipzig_2014_logo.svg/1200px-RB_Leipzig_2014_logo.svg.png" },
-              { name: "Bayer Leverkusen", logo: "https://cdn.freebiesupply.com/logos/large/2x/bayer-leverkusen-logo-png-transparent.png" },
-              { name: "Eintracht Frankfurt", logo: "https://logodownload.org/wp-content/uploads/2019/11/eintracht-frankfurt-logo.png" },
-              { name: "Borussia Mönchengladbach", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Borussia_M%C3%B6nchengladbach_logo.svg/1200px-Borussia_M%C3%B6nchengladbach_logo.svg.png" }
-            ]
-          },
-          "Ligue 1": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/fd/Ligue_1.svg",
-            teams: [
-              { name: "Paris Saint-Germain", logo: "https://logos-world.net/wp-content/uploads/2020/07/PSG-Logo.png" },
-              { name: "Marseille", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Olympique_Marseille_logo.svg/1582px-Olympique_Marseille_logo.svg.png" },
-              { name: "Lyon", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1c/Olympique_Lyonnais_logo.svg/1200px-Olympique_Lyonnais_logo.svg.png" },
-              { name: "Monaco", logo: "https://logodownload.org/wp-content/uploads/2019/09/monaco-fc-logo-1.png" },
-              { name: "Lille", logo: "https://logodownload.org/wp-content/uploads/2019/09/lille-logo-1.png" },
-              { name: "Nice", logo: "https://1000logos.net/wp-content/uploads/2020/09/Nice-logo.png" }
-            ]
-          }
-        };
-        
-        /* Funkcja pomocnicza – przypisanie koloru klubowego dla gracza.
-           Jeśli dany klub nie ma przypisanego koloru, zwraca domyślną wartość. 
-           Możesz rozszerzyć tę funkcję o dokładniejszą logikę, np. na podstawie nazwy klubu. */
+        /* Funkcja pomocnicza – zwraca kolor dla drużyny */
         function getTeamColor(teamName) {
-          // Dla przykładu, przypisamy:
-          // Manchester United – czerwony, Manchester City – niebieski,
-          // Liverpool – czarny, Chelsea – niebieski, Arsenal – czerwony, Tottenham – biały,
-          // Real Madrid – granatowy, Barcelona – bordowy,
-          // Juventus – czarny, Inter Milan – niebieski, AC Milan – czerwony,
-          // Bayern Munich – czerwony, Borussia Dortmund – żółty,
-          // PSG – granatowo-czerwony.
-          switch(teamName) {
-            case "Manchester United": return "#DA291C";
-            case "Manchester City": return "#6CABDD";
-            case "Liverpool": return "#C8102E";
-            case "Chelsea": return "#034694";
-            case "Arsenal": return "#EF0107";
-            case "Tottenham Hotspur": return "#132257";
-            case "Real Madrid": return "#2E6F95";
-            case "Barcelona": return "#A50044";
-            case "Atletico Madrid": return "#F53636";
-            case "Sevilla": return "#EC1C24";
-            case "Valencia": return "#FF8200";
-            case "Villarreal": return "#FDB913";
-            case "Juventus": return "#000000";
-            case "Inter Milan": return "#004D98";
-            case "AC Milan": return "#DC052D";
-            case "Napoli": return "#4E9D1E";
-            case "Roma": return "#9B0000";
-            case "Lazio": return "#85B8D0";
-            case "Bayern Munich": return "#DC052D";
-            case "Borussia Dortmund": return "#FFCC00";
-            case "RB Leipzig": return "#00AEEF";
-            case "Bayer Leverkusen": return "#E5007E";
-            case "Eintracht Frankfurt": return "#000000";
-            case "Borussia Mönchengladbach": return "#000000";
-            case "Paris Saint-Germain": return "#004170";
-            case "Marseille": return "#003087";
-            case "Lyon": return "#00529B";
-            case "Monaco": return "#C8102E";
-            case "Lille": return "#003A70";
-            case "Nice": return "#ED1C24";
-            default: return "#777777";
+          for (let league in teamsData) {
+            let teams = teamsData[league].teams;
+            for (let i = 0; i < teams.length; i++) {
+              if (teams[i].name === teamName) {
+                return teams[i].color;
+              }
+            }
           }
+          return "blue"; // domyślnie
         }
         
         /* FUNKCJE GRY */
         function initGame() {
           canvas = document.getElementById("gameCanvas");
           ctx = canvas.getContext("2d");
-          // Piłka – zawsze biała
+          // Inicjalizacja piłki – zawsze biała
           ball = {
             x: canvas.width / 2,
             y: canvas.height / 2,
@@ -494,11 +481,11 @@
             color: "white"
           };
           
-          // Pobranie kolorów dla wybranych drużyn
+          // Pobranie kolorów dla obu drużyn
           let homeColor = getTeamColor(selectedHomeTeam);
           let awayColor = getTeamColor(selectedAwayTeam);
           
-          // Drużyna domowa – 4 zawodników, każdy z przypisanym kolorem
+          // Drużyna domowa – 4 zawodników, każdy z przypisanym kolorem klubu
           fieldPlayers = [
             { x: canvas.width * 0.25, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor },
             { x: canvas.width * 0.25, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor },
@@ -514,7 +501,7 @@
             { x: canvas.width * 0.65, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor }
           ];
           
-          // Bramkarze (1+1)
+          // Bramkarze – 1+1, również z przypisanym kolorem
           goalkeeper = { x: 60, y: canvas.height / 2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: homeColor };
           goalkeeperAway = { x: canvas.width - 60, y: canvas.height / 2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: awayColor };
           
@@ -524,7 +511,7 @@
         
         /* RYSOWANIE BOISKA, BRAMEK, LINII ŚRODKOWEJ I POLA KARNEGO */
         function drawField() {
-          // Obramowanie pola gry
+          // Obramowanie
           ctx.strokeStyle = "#fff";
           ctx.lineWidth = 4;
           ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
@@ -553,7 +540,7 @@
           ctx.lineTo(canvas.width - 10, canvas.height/2 + 50);
           ctx.stroke();
           
-          // Linie pola karnego – przykładowe wymiary
+          // Linie pola karnego – przykładowe wymiary (lewy i prawy)
           ctx.strokeRect(10, canvas.height/2 - 80, 60, 160);
           ctx.strokeRect(canvas.width - 70, canvas.height/2 - 80, 60, 160);
         }
@@ -567,7 +554,7 @@
           ctx.fill();
           ctx.closePath();
           
-          // Zawodnicy drużyny domowej
+          // Zawodnicy drużyny domowej – używamy przypisanego koloru
           fieldPlayers.forEach(player => {
             ctx.beginPath();
             ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
@@ -712,6 +699,7 @@
           ball.y = canvas.height / 2;
           ball.dx = 0;
           ball.dy = 0;
+          // Piłka pozostaje biała
           ball.color = "white";
         }
         
@@ -744,8 +732,9 @@
           handlePlayerBallCollision(goalkeeperAway);
         }
         
-        /* PROSTE RUCHY AI – po ruchu gracza przeciwnicy z drużyny przeciwnej reagują na piłkę */
+        /* PROSTE RUCHY AI – po ruchu gracza przeciwnicy reagują na piłkę */
         function aiMove() {
+          // Ruch zawodników drużyny przeciwnej
           fieldPlayersAway.forEach(player => {
             let dx = ball.x - player.x;
             let dy = ball.y - player.y;
@@ -754,7 +743,7 @@
             player.vx = (dx / dist) * aiSpeed;
             player.vy = (dy / dist) * aiSpeed;
           });
-          // Bramkarz drużyny przeciwnej reaguje pionowo
+          // Bramkarz reaguje pionowo
           let dyGK = ball.y - goalkeeperAway.y;
           let speedGK = 2;
           goalkeeperAway.vy = (dyGK / (Math.abs(dyGK) || 1)) * speedGK;
@@ -773,7 +762,7 @@
           requestAnimationFrame(gameLoop);
         }
         
-        /* OBSŁUGA PRZECIĄGANIA – dla zawodników drużyny domowej */
+        /* OBSŁUGA PRZECIĄGANIA NA CANVASIE (dla zawodników drużyny domowej) */
         function canvasMouseDown(e) {
           const rect = canvas.getBoundingClientRect();
           const mx = e.clientX - rect.left;
@@ -805,6 +794,8 @@
           fieldPlayers[draggingPlayerIndex].vy = dy * DRAG_IMPULSE_SCALE;
           isDragging = false;
           draggingPlayerIndex = null;
+          
+          // Po ruchu gracza wykonujemy ruch AI
           aiMove();
         }
         
@@ -816,14 +807,14 @@
         
         /* OBSŁUGA INTERFEJSU */
         document.addEventListener("DOMContentLoaded", () => {
-          // "SZYBKI MECZ" – przejście do wyboru drużyn
+          // Przycisk "SZYBKI MECZ" – przejście do wyboru drużyn
           document.getElementById("startMatchBtn").addEventListener("click", () => {
             document.getElementById("startScreen").classList.add("hidden");
             document.getElementById("teamSelectScreen").classList.remove("hidden");
             populateTeamSelections();
           });
           
-          // "Rozpocznij Mecz" – sprawdzenie wybrania obu drużyn
+          // Przycisk "Rozpocznij Mecz"
           document.getElementById("startMatchFromSelectBtn").addEventListener("click", () => {
             if (!selectedHomeTeam || !selectedAwayTeam) {
               alert("Wybierz obie drużyny!");
@@ -843,13 +834,15 @@
             requestAnimationFrame(gameLoop);
           });
           
-          // "Powrót do Menu"
+          // Przycisk "Powrót do Menu"
           document.getElementById("backToStartBtn").addEventListener("click", () => {
             gameAnimating = false;
             stopTimer();
             document.getElementById("gameScreen").classList.add("hidden");
             document.getElementById("startScreen").classList.remove("hidden");
           });
+          
+          // Dodatkowa obsługa modali (Baza zawodników, Język, Ustawienia) – opcjonalnie
         });
         
       })();
