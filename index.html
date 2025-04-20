@@ -11,15 +11,14 @@
     />
     <style>
       /* ============================================================================
-         GLOBALNE STYLE – AESTHETIC DESIGN
+         GLOBALNE STYLE – DESIGN W PIŁKARSKIM KLIMACIE
          ============================================================================
-         Ustawiamy tło na podany obraz stadionu/murawy; overlay przyciemnia obraz.
+         Tło ustawione na obraz stadionu/murawy; overlay zapewnia lepszy kontrast.
       ============================================================================ */
-      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
-      
+      @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
       body {
-        font-family: 'Nunito', sans-serif;
-        background: url('https://images.unsplash.com/photo-1430232324554-8f4aebd06683?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Zm9vdGJhbGwlMjB3YWxscGFwZXJ8ZW58MHx8MHx8fDA%3D')
+        font-family: "Nunito", sans-serif;
+        background: url("https://images.unsplash.com/photo-1430232324554-8f4aebd06683?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Zm9vdGJhbGwlMjB3YWxscGFwZXJ8ZW58MHx8MHx8fDA%3D")
           no-repeat center center fixed;
         background-size: cover;
         margin: 0;
@@ -27,18 +26,15 @@
         text-align: center;
         color: #fff;
       }
-      
       body::before {
         content: "";
         position: fixed;
-        top: 0;
-        left: 0;
+        top: 0; left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.3);
+        background: rgba(0, 0, 0, 0.3);
         z-index: -1;
       }
-      
       .hidden {
         display: none !important;
       }
@@ -52,7 +48,7 @@
       #startScreen h1 {
         font-size: 56px;
         margin-bottom: 30px;
-        text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
       }
       #startScreen button {
         font-size: 20px;
@@ -60,7 +56,7 @@
         margin: 15px;
         border: none;
         border-radius: 10px;
-        background-color: rgba(255,255,255,0.8);
+        background-color: rgba(255, 255, 255, 0.8);
         cursor: pointer;
         color: #333;
         box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
@@ -73,7 +69,7 @@
       }
       
       /* ============================================================================
-         EKRAN WYBORU DRUŻYN (w stylu FIFA)
+         EKRAN WYBORU DRUŻYN – INTERFEJS W STYLU FIFA
       ============================================================================ */
       #teamSelectScreen {
         padding: 40px 20px;
@@ -85,17 +81,28 @@
       }
       .team-section {
         margin: 30px auto;
+        max-width: 800px;
+        text-align: left;
       }
       .team-section h3 {
         font-size: 28px;
         margin-bottom: 15px;
-        text-align: left;
+        padding-left: 10px;
       }
+      /* Kontenery z opcjami – poziomy scroll */
       .team-container {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
         gap: 20px;
+        overflow-x: auto;
+        padding: 10px;
+        scrollbar-width: thin;
+      }
+      .team-container::-webkit-scrollbar {
+        height: 8px;
+      }
+      .team-container::-webkit-scrollbar-thumb {
+        background: #ffd700;
+        border-radius: 4px;
       }
       .team-option {
         cursor: pointer;
@@ -105,10 +112,11 @@
         width: 150px;
         padding: 10px;
         transition: all 0.3s ease;
+        flex: 0 0 auto;
       }
       .team-option.selected {
         border-color: #ffd700;
-        transform: scale(1.05);
+        transform: scale(1.1);
         background-color: rgba(255,255,255,0.2);
       }
       .team-option img {
@@ -122,6 +130,7 @@
         align-items: center;
         gap: 5px;
         margin-bottom: 10px;
+        padding-left: 10px;
       }
       .league-header img {
         width: 30px;
@@ -269,21 +278,21 @@
       </div>
     </div>
     
-    <!-- EKRAN WYBORU DRUŻYN (STYL FIFA) -->
+    <!-- EKRAN WYBORU DRUŻYN (w stylu FIFA) -->
     <div id="teamSelectScreen" class="hidden">
       <h2>Wybierz Drużyny</h2>
       <!-- Drużyna Domowa -->
       <div class="team-section" id="homeTeamSection">
         <h3>Drużyna Domowa</h3>
         <div id="homeTeamContainer" class="team-container">
-          <!-- Opcje zostaną wygenerowane dynamicznie -->
+          <!-- Kafelki generowane dynamicznie -->
         </div>
       </div>
       <!-- Drużyna Gościa -->
       <div class="team-section" id="awayTeamSection">
         <h3>Drużyna Gościa</h3>
         <div id="awayTeamContainer" class="team-container">
-          <!-- Opcje zostaną wygenerowane dynamicznie -->
+          <!-- Kafelki generowane dynamicznie -->
         </div>
       </div>
       <button id="startMatchFromSelectBtn">Rozpocznij Mecz</button>
@@ -332,26 +341,79 @@
       (function () {
         "use strict";
         
-        ////////////////////////////////
-        // GLOBALNE ZMIENNE
-        ////////////////////////////////
-        let score = { goals: 0 },
-          canvas, ctx, ball, fieldPlayers, goalkeeper;
+        // GLOBALNE ZMIENNE I KONSTANTY
+        let score = { goals: 0 };
+        let canvas, ctx, ball, fieldPlayers, goalkeeper;
         let gameAnimating = false;
         let isDragging = false, draggingPlayerIndex = null, dragStart = { x: 0, y: 0 }, dragCurrent = { x: 0, y: 0 };
         let selectedHomeTeam = null, selectedAwayTeam = null;
+        const PLAYER_RADIUS = 16,
+              GOALKEEPER_RADIUS = 18,
+              FRICTION = 0.98,
+              BALL_COLLISION_IMPULSE = 7,
+              DRAG_IMPULSE_SCALE = 0.2;
+        
+        // DANE DRUŻYN I LIG (PRAWDZIWE LOGA)
+        const teamsData = {
+          "Premier League": {
+            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
+            teams: [
+              { name: "Manchester United", logo: "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg" },
+              { name: "Manchester City", logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" },
+              { name: "Liverpool", logo: "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" },
+              { name: "Chelsea", logo: "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg" },
+              { name: "Arsenal", logo: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" },
+              { name: "Tottenham Hotspur", logo: "https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg" }
+            ]
+          },
+          "La Liga": {
+            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/9/90/LaLiga.svg",
+            teams: [
+              { name: "Real Madrid", logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" },
+              { name: "Barcelona", logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" },
+              { name: "Atletico Madrid", logo: "https://upload.wikimedia.org/wikipedia/en/f/f4/Atletico_Madrid.svg" },
+              { name: "Sevilla", logo: "https://upload.wikimedia.org/wikipedia/en/3/3f/Sevilla_FC_logo.svg" },
+              { name: "Valencia", logo: "https://upload.wikimedia.org/wikipedia/en/c/c2/Valencia_CF.svg" },
+              { name: "Villarreal", logo: "https://upload.wikimedia.org/wikipedia/en/3/32/Villarreal_CF_logo.svg" }
+            ]
+          },
+          "Serie A": {
+            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/d/d2/Serie_A_logo_%282019%29.svg",
+            teams: [
+              { name: "Juventus", logo: "https://upload.wikimedia.org/wikipedia/en/3/3e/Juventus_FC_2017_logo.svg" },
+              { name: "Inter Milan", logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg" },
+              { name: "AC Milan", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d0/AC_Milan_logo.svg" },
+              { name: "Napoli", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2d/SSC_Napoli.svg" },
+              { name: "Roma", logo: "https://upload.wikimedia.org/wikipedia/en/f/f7/A.S._Roma_logo.svg" },
+              { name: "Lazio", logo: "https://upload.wikimedia.org/wikipedia/en/2/20/S.S._Lazio.svg" }
+            ]
+          },
+          "Bundesliga": {
+            leagueLogo: "https://upload.wikimedia.org/wikipedia/commons/d/df/Bundesliga_logo_%282017%29.svg",
+            teams: [
+              { name: "Bayern Munich", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1f/FC_Bayern_München_logo_%282017%29.svg" },
+              { name: "Borussia Dortmund", logo: "https://upload.wikimedia.org/wikipedia/commons/6/67/Borussia_Dortmund_logo.svg" },
+              { name: "RB Leipzig", logo: "https://upload.wikimedia.org/wikipedia/en/0/04/RB_Leipzig.svg" },
+              { name: "Bayer Leverkusen", logo: "https://upload.wikimedia.org/wikipedia/en/3/33/Bayer_04_Leverkusen_logo.svg" },
+              { name: "Eintracht Frankfurt", logo: "https://upload.wikimedia.org/wikipedia/en/9/91/Eintracht_Frankfurt.svg" },
+              { name: "Borussia Mönchengladbach", logo: "https://upload.wikimedia.org/wikipedia/commons/6/65/Borussia_M%C3%B6nchengladbach_logo.svg" }
+            ]
+          },
+          "Ligue 1": {
+            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/fd/Ligue_1.svg",
+            teams: [
+              { name: "Paris Saint-Germain", logo: "https://upload.wikimedia.org/wikipedia/en/9/9e/Paris_Saint-Germain_F.C..svg" },
+              { name: "Marseille", logo: "https://upload.wikimedia.org/wikipedia/en/5/58/OM.svg" },
+              { name: "Lyon", logo: "https://upload.wikimedia.org/wikipedia/en/c/c2/Olympique_Lyonnais.svg" },
+              { name: "Monaco", logo: "https://upload.wikimedia.org/wikipedia/en/4/4b/AS_Monaco_FC.svg" },
+              { name: "Lille", logo: "https://upload.wikimedia.org/wikipedia/en/c/c8/LOSC_Lille.svg" },
+              { name: "Nice", logo: "https://upload.wikimedia.org/wikipedia/en/2/27/OGCNice.svg" }
+            ]
+          }
+        };
         
         ////////////////////////////////
-        // KONSTANTY GRY
-        ////////////////////////////////
-        const PLAYER_RADIUS = 16;
-        const GOALKEEPER_RADIUS = 18;
-        const FRICTION = 0.98;
-        const BALL_COLLISION_IMPULSE = 7;
-        const DRAG_IMPULSE_SCALE = 0.2;
-        
-        ////////////////////////////////
-        // FUNKCJE OBSŁUGUJĄCE WYBÓR JĘZYKA
+        // FUNKCJE OBSŁUGUJĄCE WYBÓR JĘZYKA (Modal)
         ////////////////////////////////
         function updateLanguageContent(lang) {
           const translations = {
@@ -432,7 +494,7 @@
         }
         
         ////////////////////////////////
-        // FUNKCJE OBSŁUGUJĄCE TRYB MECZU
+        // TRYB MECZU – FUNKCJE
         ////////////////////////////////
         function initGame() {
           canvas = document.getElementById("gameCanvas");
@@ -545,8 +607,8 @@
             const dx = ball.x - player.x;
             const dy = ball.y - player.y;
             const dist = Math.hypot(dx, dy) || 1;
-            ball.dx = (dx/dist) * BALL_COLLISION_IMPULSE;
-            ball.dy = (dy/dist) * BALL_COLLISION_IMPULSE;
+            ball.dx = (dx / dist) * BALL_COLLISION_IMPULSE;
+            ball.dy = (dy / dist) * BALL_COLLISION_IMPULSE;
           }
         }
         
@@ -616,16 +678,19 @@
         }
         
         document.querySelectorAll(".modal").forEach(modal => {
-          modal.addEventListener("click", function(e) {
+          modal.addEventListener("click", function (e) {
             if (e.target === modal) modal.classList.add("hidden");
           });
         });
         
-        // Baza zawodników – pozostaje jak wcześniej (dla uproszczenia)
+        // Lista zawodników – uproszczona wersja
         const defaultPlayers = [
           { name: "Lionel Messi", team: "Paris Saint-Germain", rating: 94 },
           { name: "Cristiano Ronaldo", team: "Manchester United", rating: 93 },
-          // ... pozostałe rekordy
+          { name: "Kylian Mbappe", team: "Paris Saint-Germain", rating: 92 },
+          { name: "Neymar Jr", team: "Paris Saint-Germain", rating: 91 },
+          { name: "Robert Lewandowski", team: "Bayern Munich", rating: 91 },
+          { name: "Kevin De Bruyne", team: "Manchester City", rating: 91 },
           { name: "Jadon Sancho", team: "Manchester United", rating: 86 }
         ];
         
@@ -639,12 +704,16 @@
           });
         }
         
-        // WYBÓR DRUŻYN – FUNKCJE DLA INTERFEJSU W STYLU FIFA
+        ////////////////////////////////
+        // WYBÓR DRUŻYN – INTERFEJS W STYLU FIFA
+        ////////////////////////////////
         function populateTeamSelections() {
           const homeContainer = document.getElementById("homeTeamContainer");
           const awayContainer = document.getElementById("awayTeamContainer");
           homeContainer.innerHTML = "";
           awayContainer.innerHTML = "";
+          selectedHomeTeam = null;
+          selectedAwayTeam = null;
           
           for (let league in teamsData) {
             // Sekcja dla drużyn domowych
@@ -709,18 +778,20 @@
           }
         }
         
-        // INICJALIZACJA WSZYSTKICH ZDARZEŃ PO ZAŁADOWANIU DOM
+        ////////////////////////////////
+        // INICJALIZACJA ZDARZEŃ PO ZAŁADOWANIU DOM
+        ////////////////////////////////
         document.addEventListener("DOMContentLoaded", () => {
           console.log("DOM załadowany");
           
-          // Przycisk "SZYBKI MECZ" – przejście na ekran wyboru drużyn
+          // Przycisk "SZYBKI MECZ" – przejście do ekranu wyboru drużyn
           document.getElementById("startMatchBtn").addEventListener("click", () => {
             document.getElementById("startScreen").classList.add("hidden");
             document.getElementById("teamSelectScreen").classList.remove("hidden");
             populateTeamSelections();
           });
           
-          // Przycisk "Rozpocznij Mecz" na ekranie wyboru drużyn
+          // Przycisk "Rozpocznij Mecz" – po wyborze drużyn
           document.getElementById("startMatchFromSelectBtn").addEventListener("click", () => {
             if (!selectedHomeTeam || !selectedAwayTeam) {
               alert("Wybierz obie drużyny!");
@@ -740,7 +811,7 @@
             requestAnimationFrame(gameLoop);
           });
           
-          // Przycisk "Powrót do Menu" – wracamy do ekranu startowego
+          // Przycisk "Powrót do Menu" – z ekranu gry
           document.getElementById("backToStartBtn").addEventListener("click", () => {
             console.log("Powrót do Menu");
             gameAnimating = false;
@@ -761,26 +832,26 @@
             toggleModal("languageModal", true);
           });
           
-          // Przycisk "Ustawienia"
+          // Przyciski ustawień
           document.getElementById("btnSettings").addEventListener("click", () => {
             alert("Opcja ustawień – do implementacji!");
           });
           
+          // Zamknięcia modali
           document.getElementById("closePlayerDBBtn").addEventListener("click", () => {
             toggleModal("playerDBModal", false);
           });
-          
           document.getElementById("closeLanguageModalBtn").addEventListener("click", () => {
             toggleModal("languageModal", false);
           });
           
           const langOptions = document.getElementsByClassName("langOption");
-          for (let i = 0; i < langOptions.length; i++) {
-            langOptions[i].addEventListener("click", function () {
+          Array.from(langOptions).forEach((btn) => {
+            btn.addEventListener("click", function () {
               const lang = this.getAttribute("data-lang");
               setLanguage(lang);
             });
-          }
+          });
         });
       })();
     </script>
