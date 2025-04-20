@@ -69,7 +69,7 @@
       #teamSelectScreen h2 {
         font-size: 40px;
         margin-bottom: 20px;
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
       }
       .team-section {
         margin: 30px auto;
@@ -216,7 +216,7 @@
         padding: 10px 20px;
         margin-top: 10px;
         transition: background 0.3s, transform 0.2s;
-        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+        box-shadow: 0px 2px 4px rgba(0,0,0,0.25);
         cursor: pointer;
       }
       .modal-content button:hover {
@@ -280,7 +280,7 @@
     <!-- EKRAN GRY -->
     <div id="gameScreen" class="hidden">
       <div id="scoreboardContainer">
-        <h2 id="scoreboard">Gole: 0</h2>
+        <h2 id="scoreboard">— : —</h2>
       </div>
       <canvas id="gameCanvas" width="800" height="500"></canvas>
       <button id="backToStartBtn">Powrót do Menu</button>
@@ -314,88 +314,27 @@
     </div>
     
     <script>
-      // Wszystkie zdarzenia rejestrujemy po załadowaniu DOM
-      document.addEventListener("DOMContentLoaded", function () {
-        // --- Funkcja generująca kafelki drużyn ---
-        function populateTeamSelections() {
-          const homeContainer = document.getElementById("homeTeamContainer");
-          const awayContainer = document.getElementById("awayTeamContainer");
-          homeContainer.innerHTML = "";
-          awayContainer.innerHTML = "";
-          selectedHomeTeam = null;
-          selectedAwayTeam = null;
-          
-          // Generujemy sekcje po ligach – przykładowe dwie ligi
-          for (let league in teamsData) {
-            // Dla drużyny domowej
-            let leagueDivHome = document.createElement("div");
-            leagueDivHome.className = "league-section";
-            let leagueHeaderHome = document.createElement("div");
-            leagueHeaderHome.className = "league-header";
-            let leagueLogoHome = document.createElement("img");
-            leagueLogoHome.src = teamsData[league].leagueLogo;
-            let leagueNameHome = document.createElement("span");
-            leagueNameHome.innerText = league;
-            leagueHeaderHome.appendChild(leagueLogoHome);
-            leagueHeaderHome.appendChild(leagueNameHome);
-            leagueDivHome.appendChild(leagueHeaderHome);
-            
-            let teamContainerHome = document.createElement("div");
-            teamContainerHome.className = "team-container";
-            teamsData[league].teams.forEach((team) => {
-              let teamDiv = document.createElement("div");
-              teamDiv.className = "team-option";
-              teamDiv.dataset.team = team.name;
-              teamDiv.innerHTML = `<img src="${team.logo}" alt="${team.name}" /><p>${team.name}</p>`;
-              teamDiv.addEventListener("click", function () {
-                // Czyścimy zaznaczenie w obrębie tej sekcji
-                Array.from(teamContainerHome.children).forEach((el) =>
-                  el.classList.remove("selected")
-                );
-                this.classList.add("selected");
-                selectedHomeTeam = team.name;
-              });
-              teamContainerHome.appendChild(teamDiv);
-            });
-            leagueDivHome.appendChild(teamContainerHome);
-            homeContainer.appendChild(leagueDivHome);
-            
-            // Dla drużyny gościa
-            let leagueDivAway = document.createElement("div");
-            leagueDivAway.className = "league-section";
-            let leagueHeaderAway = document.createElement("div");
-            leagueHeaderAway.className = "league-header";
-            let leagueLogoAway = document.createElement("img");
-            leagueLogoAway.src = teamsData[league].leagueLogo;
-            let leagueNameAway = document.createElement("span");
-            leagueNameAway.innerText = league;
-            leagueHeaderAway.appendChild(leagueLogoAway);
-            leagueHeaderAway.appendChild(leagueNameAway);
-            leagueDivAway.appendChild(leagueHeaderAway);
-            
-            let teamContainerAway = document.createElement("div");
-            teamContainerAway.className = "team-container";
-            teamsData[league].teams.forEach((team) => {
-              let teamDiv = document.createElement("div");
-              teamDiv.className = "team-option";
-              teamDiv.dataset.team = team.name;
-              teamDiv.innerHTML = `<img src="${team.logo}" alt="${team.name}" /><p>${team.name}</p>`;
-              teamDiv.addEventListener("click", function () {
-                Array.from(teamContainerAway.children).forEach((el) =>
-                  el.classList.remove("selected")
-                );
-                this.classList.add("selected");
-                selectedAwayTeam = team.name;
-              });
-              teamContainerAway.appendChild(teamDiv);
-            });
-            leagueDivAway.appendChild(teamContainerAway);
-            awayContainer.appendChild(leagueDivAway);
-          }
-        }
+      (function () {
+        "use strict";
         
-        // --- Przykładowe dane ligowe (możesz uzupełnić lub rozszerzyć) ---
-       const teamsData = {
+        /* GLOBALNE ZMIENNE I KONSTANTY */
+        let score = { home: 0, away: 0 };
+        let canvas, ctx, ball;
+        let fieldPlayers = [];      // 4 zawodników domowej drużyny
+        let fieldPlayersAway = [];  // 4 zawodników drużyny przeciwnej
+        let goalkeeper, goalkeeperAway;  // Bramkarze (1+1)
+        let gameAnimating = false;
+        let isDragging = false, draggingPlayerIndex = null;
+        let dragStart = { x: 0, y: 0 }, dragCurrent = { x: 0, y: 0 };
+        let selectedHomeTeam = null, selectedAwayTeam = null;
+        const PLAYER_RADIUS = 16,
+              GOALKEEPER_RADIUS = 18,
+              FRICTION = 0.98,
+              BALL_COLLISION_IMPULSE = 7,
+              DRAG_IMPULSE_SCALE = 0.2;
+        
+        /* PRZYKŁADOWE DANE LIGOWE – możesz rozszerzyć */
+        const teamsData = {
           "Premier League": {
             leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
             teams: [
@@ -454,21 +393,388 @@
         };
 
         
-        // Zmienne globalne dla wyboru drużyn
-        let selectedHomeTeam = null,
+        /* FUNKCJA GENERUJĄCA KAFELKI DO WYBORU DRUŻYN */
+        function populateTeamSelections() {
+          const homeContainer = document.getElementById("homeTeamContainer");
+          const awayContainer = document.getElementById("awayTeamContainer");
+          homeContainer.innerHTML = "";
+          awayContainer.innerHTML = "";
+          selectedHomeTeam = null;
           selectedAwayTeam = null;
+          
+          for (let league in teamsData) {
+            // Dla drużyny domowej
+            let leagueDivHome = document.createElement("div");
+            leagueDivHome.className = "league-section";
+            let leagueHeaderHome = document.createElement("div");
+            leagueHeaderHome.className = "league-header";
+            let leagueLogoHome = document.createElement("img");
+            leagueLogoHome.src = teamsData[league].leagueLogo;
+            let leagueNameHome = document.createElement("span");
+            leagueNameHome.innerText = league;
+            leagueHeaderHome.appendChild(leagueLogoHome);
+            leagueHeaderHome.appendChild(leagueNameHome);
+            leagueDivHome.appendChild(leagueHeaderHome);
+            
+            let teamContainerHome = document.createElement("div");
+            teamContainerHome.className = "team-container";
+            teamsData[league].teams.forEach((team) => {
+              let teamDiv = document.createElement("div");
+              teamDiv.className = "team-option";
+              teamDiv.dataset.team = team.name;
+              teamDiv.innerHTML = `<img src="${team.logo}" alt="${team.name}" /><p>${team.name}</p>`;
+              teamDiv.addEventListener("click", function () {
+                Array.from(teamContainerHome.children).forEach((el) =>
+                  el.classList.remove("selected")
+                );
+                this.classList.add("selected");
+                selectedHomeTeam = team.name;
+              });
+              teamContainerHome.appendChild(teamDiv);
+            });
+            leagueDivHome.appendChild(teamContainerHome);
+            homeContainer.appendChild(leagueDivHome);
+            
+            // Dla drużyny gościa
+            let leagueDivAway = document.createElement("div");
+            leagueDivAway.className = "league-section";
+            let leagueHeaderAway = document.createElement("div");
+            leagueHeaderAway.className = "league-header";
+            let leagueLogoAway = document.createElement("img");
+            leagueLogoAway.src = teamsData[league].leagueLogo;
+            let leagueNameAway = document.createElement("span");
+            leagueNameAway.innerText = league;
+            leagueHeaderAway.appendChild(leagueLogoAway);
+            leagueHeaderAway.appendChild(leagueNameAway);
+            leagueDivAway.appendChild(leagueHeaderAway);
+            
+            let teamContainerAway = document.createElement("div");
+            teamContainerAway.className = "team-container";
+            teamsData[league].teams.forEach((team) => {
+              let teamDiv = document.createElement("div");
+              teamDiv.className = "team-option";
+              teamDiv.dataset.team = team.name;
+              teamDiv.innerHTML = `<img src="${team.logo}" alt="${team.name}" /><p>${team.name}</p>`;
+              teamDiv.addEventListener("click", function () {
+                Array.from(teamContainerAway.children).forEach((el) =>
+                  el.classList.remove("selected")
+                );
+                this.classList.add("selected");
+                selectedAwayTeam = team.name;
+              });
+              teamContainerAway.appendChild(teamDiv);
+            });
+            leagueDivAway.appendChild(teamContainerAway);
+            awayContainer.appendChild(leagueDivAway);
+          }
+        }
         
-        // --- Event listener przycisku "SZYBKI MECZ" ---
-        document.getElementById("startMatchBtn").addEventListener("click", function () {
-          document.getElementById("startScreen").classList.add("hidden");
-          document.getElementById("teamSelectScreen").classList.remove("hidden");
-          populateTeamSelections();
-        });
+        /* FUNKCJE GRY */
+        function initGame() {
+          canvas = document.getElementById("gameCanvas");
+          ctx = canvas.getContext("2d");
+          // Inicjalizacja piłki na środek
+          ball = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 8,
+            dx: 2,
+            dy: 1.5
+          };
+          
+          // Drużyna domowa: 4 zawodników
+          fieldPlayers = [
+            { x: canvas.width * 0.25, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
+            { x: canvas.width * 0.25, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
+            { x: canvas.width * 0.25, y: canvas.height * 0.7, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
+            { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 }
+          ];
+          
+          // Drużyna przeciwna: 4 zawodników
+          fieldPlayersAway = [
+            { x: canvas.width * 0.75, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
+            { x: canvas.width * 0.75, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
+            { x: canvas.width * 0.75, y: canvas.height * 0.7, radius: PLAYER_RADIUS, vx: 0, vy: 0 },
+            { x: canvas.width * 0.65, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0 }
+          ];
+          
+          // Bramkarze (1+1)
+          goalkeeper = { x: 60, y: canvas.height / 2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0 };
+          goalkeeperAway = { x: canvas.width - 60, y: canvas.height / 2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0 };
+          
+          score.home = 0;
+          score.away = 0;
+        }
         
-        // Przycisk "Rozpocznij Mecz" – sprawdzamy, czy wybrano obie drużyny
-        document
-          .getElementById("startMatchFromSelectBtn")
-          .addEventListener("click", function () {
+        function drawField() {
+          // Rysujemy boisko z marginesem 10px
+          ctx.strokeStyle = "#fff";
+          ctx.lineWidth = 4;
+          ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+          
+          // Środkowa linia
+          ctx.beginPath();
+          ctx.moveTo(canvas.width / 2, 10);
+          ctx.lineTo(canvas.width / 2, canvas.height - 10);
+          ctx.stroke();
+          
+          // Bramki – narysowane jako biały prostokąt poza głównym obszarem
+          ctx.fillStyle = "white";
+          // Lewa bramka
+          ctx.fillRect(0, canvas.height/2 - 50, 10, 100);
+          // Prawa bramka
+          ctx.fillRect(canvas.width - 10, canvas.height/2 - 50, 10, 100);
+          
+          // Linie bramkowe – rysujemy cienką linie wewnętrzną przy krawędzi pola (na wysokości bramek)
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(10, canvas.height/2 - 50);
+          ctx.lineTo(10, canvas.height/2 + 50);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(canvas.width - 10, canvas.height/2 - 50);
+          ctx.lineTo(canvas.width - 10, canvas.height/2 + 50);
+          ctx.stroke();
+        }
+        
+        function drawGameObjects() {
+          // Rysowanie piłki
+          ctx.beginPath();
+          ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+          ctx.fillStyle = "white";
+          ctx.fill();
+          ctx.closePath();
+          
+          // Rysowanie zawodników drużyny domowej
+          fieldPlayers.forEach(player => {
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "blue";
+            ctx.fill();
+            ctx.closePath();
+          });
+          
+          // Rysowanie zawodników drużyny przeciwnej
+          fieldPlayersAway.forEach(player => {
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "red";
+            ctx.fill();
+            ctx.closePath();
+          });
+          
+          // Rysowanie bramkarzy
+          ctx.beginPath();
+          ctx.arc(goalkeeper.x, goalkeeper.y, goalkeeper.radius, 0, Math.PI * 2);
+          ctx.fillStyle = "black";
+          ctx.fill();
+          ctx.closePath();
+          
+          ctx.beginPath();
+          ctx.arc(goalkeeperAway.x, goalkeeperAway.y, goalkeeperAway.radius, 0, Math.PI * 2);
+          ctx.fillStyle = "black";
+          ctx.fill();
+          ctx.closePath();
+          
+          // Rysowanie wskaźnika przeciągania dla zawodnika drużyny domowej
+          if (isDragging && draggingPlayerIndex !== null) {
+            ctx.save();
+            ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = "red";
+            ctx.lineWidth = 2;
+            let p = fieldPlayers[draggingPlayerIndex];
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(dragCurrent.x, dragCurrent.y);
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+        
+        function updatePositions() {
+          // Aktualizacja pozycji zawodników drużyny domowej
+          fieldPlayers.forEach(player => {
+            player.x += player.vx;
+            player.y += player.vy;
+            player.vx *= FRICTION;
+            player.vy *= FRICTION;
+            // Odbijanie od granic boiska
+            if (player.x - player.radius < 10) {
+              player.x = 10 + player.radius;
+              player.vx *= -1;
+            }
+            if (player.x + player.radius > canvas.width - 10) {
+              player.x = canvas.width - 10 - player.radius;
+              player.vx *= -1;
+            }
+            if (player.y - player.radius < 10) {
+              player.y = 10 + player.radius;
+              player.vy *= -1;
+            }
+            if (player.y + player.radius > canvas.height - 10) {
+              player.y = canvas.height - 10 - player.radius;
+              player.vy *= -1;
+            }
+          });
+  
+          // Aktualizacja pozycji zawodników drużyny przeciwnej
+          fieldPlayersAway.forEach(player => {
+            player.x += player.vx;
+            player.y += player.vy;
+            player.vx *= FRICTION;
+            player.vy *= FRICTION;
+            if (player.x - player.radius < 10) {
+              player.x = 10 + player.radius;
+              player.vx *= -1;
+            }
+            if (player.x + player.radius > canvas.width - 10) {
+              player.x = canvas.width - 10 - player.radius;
+              player.vx *= -1;
+            }
+            if (player.y - player.radius < 10) {
+              player.y = 10 + player.radius;
+              player.vy *= -1;
+            }
+            if (player.y + player.radius > canvas.height - 10) {
+              player.y = canvas.height - 10 - player.radius;
+              player.vy *= -1;
+            }
+          });
+          
+          // Aktualizacja pozycji bramkarzy z prostym odbiciem
+          [goalkeeper, goalkeeperAway].forEach(gk => {
+            gk.x += gk.vx;
+            gk.y += gk.vy;
+            gk.vx *= FRICTION;
+            gk.vy *= FRICTION;
+          });
+          
+          // Aktualizacja piłki
+          ball.x += ball.dx;
+          ball.y += ball.dy;
+          ball.dx *= FRICTION;
+          ball.dy *= FRICTION;
+          if (ball.y - ball.radius < 10) {
+            ball.y = 10 + ball.radius;
+            ball.dy *= -1;
+          }
+          if (ball.y + ball.radius > canvas.height - 10) {
+            ball.y = canvas.height - 10 - ball.radius;
+            ball.dy *= -1;
+          }
+          
+          // Sprawdzanie bramek – jeśli piłka opuszcza boisko
+          // Lewa bramka – gdy piłka wychodzi na lewo (przeciwnik zdobywa punkt)
+          if (ball.x - ball.radius < 0) {
+            score.away++;
+            resetBall();
+          }
+          // Prawa bramka – gdy piłka wychodzi na prawo (punkt dla drużyny domowej)
+          if (ball.x + ball.radius > canvas.width) {
+            score.home++;
+            resetBall();
+          }
+        }
+        
+        function resetBall() {
+          ball.x = canvas.width / 2;
+          ball.y = canvas.height / 2;
+          ball.dx = 0;
+          ball.dy = 0;
+        }
+        
+        // Sprawdzenie kolizji między piłką a zawodnikiem/bramkarzem
+        function circleCollision(c1, c2) {
+          const dx = c1.x - c2.x;
+          const dy = c1.y - c2.y;
+          return Math.hypot(dx, dy) < (c1.radius + c2.radius);
+        }
+        
+        function handlePlayerBallCollision(player) {
+          if (circleCollision(player, ball)) {
+            const dx = ball.x - player.x;
+            const dy = ball.y - player.y;
+            const dist = Math.hypot(dx, dy) || 1;
+            ball.dx = (dx / dist) * BALL_COLLISION_IMPULSE;
+            ball.dy = (dy / dist) * BALL_COLLISION_IMPULSE;
+          }
+        }
+        
+        function checkCollisions() {
+          fieldPlayers.forEach(player => {
+            handlePlayerBallCollision(player);
+          });
+          fieldPlayersAway.forEach(player => {
+            handlePlayerBallCollision(player);
+          });
+          handlePlayerBallCollision(goalkeeper);
+          handlePlayerBallCollision(goalkeeperAway);
+        }
+        
+        // Główna pętla gry
+        function gameLoop() {
+          if (!gameAnimating) return;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawField();
+          updatePositions();
+          checkCollisions();
+          drawGameObjects();
+          document.getElementById("scoreboard").innerText =
+            selectedHomeTeam + " " + score.home + " : " + score.away + " " + selectedAwayTeam;
+          requestAnimationFrame(gameLoop);
+        }
+        
+        /* OBSŁUGA PRZECIĄGANIA NA CANVASIE – DOTYCZY tylko zawodników drużyny domowej */
+        function canvasMouseDown(e) {
+          const rect = canvas.getBoundingClientRect();
+          const mx = e.clientX - rect.left;
+          const my = e.clientY - rect.top;
+          for (let i = 0; i < fieldPlayers.length; i++) {
+            const p = fieldPlayers[i];
+            if (Math.hypot(mx - p.x, my - p.y) < p.radius) {
+              draggingPlayerIndex = i;
+              isDragging = true;
+              dragStart = { x: p.x, y: p.y };
+              dragCurrent = { x: mx, y: my };
+              break;
+            }
+          }
+        }
+        
+        function canvasMouseMove(e) {
+          if (!isDragging) return;
+          const rect = canvas.getBoundingClientRect();
+          dragCurrent.x = e.clientX - rect.left;
+          dragCurrent.y = e.clientY - rect.top;
+        }
+        
+        function canvasMouseUp(e) {
+          if (!isDragging || draggingPlayerIndex === null) return;
+          const dx = dragStart.x - dragCurrent.x;
+          const dy = dragStart.y - dragCurrent.y;
+          fieldPlayers[draggingPlayerIndex].vx = dx * DRAG_IMPULSE_SCALE;
+          fieldPlayers[draggingPlayerIndex].vy = dy * DRAG_IMPULSE_SCALE;
+          isDragging = false;
+          draggingPlayerIndex = null;
+        }
+        
+        function addCanvasEvents() {
+          canvas.addEventListener("mousedown", canvasMouseDown);
+          canvas.addEventListener("mousemove", canvasMouseMove);
+          canvas.addEventListener("mouseup", canvasMouseUp);
+        }
+        
+        /* OBSŁUGA EVENTÓW INTERFEJSU */
+        document.addEventListener("DOMContentLoaded", () => {
+          // Kliknięcie przycisku "SZYBKI MECZ" – przejście do ekranu wyboru drużyn
+          document.getElementById("startMatchBtn").addEventListener("click", () => {
+            document.getElementById("startScreen").classList.add("hidden");
+            document.getElementById("teamSelectScreen").classList.remove("hidden");
+            populateTeamSelections();
+          });
+          
+          // Kliknięcie "Rozpocznij Mecz"
+          document.getElementById("startMatchFromSelectBtn").addEventListener("click", () => {
             if (!selectedHomeTeam || !selectedAwayTeam) {
               alert("Wybierz obie drużyny!");
               return;
@@ -480,18 +786,23 @@
             console.log("Wybrane drużyny:", selectedHomeTeam, "-", selectedAwayTeam);
             document.getElementById("teamSelectScreen").classList.add("hidden");
             document.getElementById("gameScreen").classList.remove("hidden");
-            // Tutaj możesz dodać inicjację rozgrywki, np. initGame();
+            initGame();
+            addCanvasEvents();
+            gameAnimating = true;
+            requestAnimationFrame(gameLoop);
           });
-        
-        // Przycisk Powrót do Menu
-        document.getElementById("backToStartBtn").addEventListener("click", function () {
-          document.getElementById("gameScreen").classList.add("hidden");
-          document.getElementById("startScreen").classList.remove("hidden");
+          
+          // Przycisk "Powrót do Menu"
+          document.getElementById("backToStartBtn").addEventListener("click", () => {
+            gameAnimating = false;
+            document.getElementById("gameScreen").classList.add("hidden");
+            document.getElementById("startScreen").classList.remove("hidden");
+          });
+          
+          // (Opcjonalnie) można dodać obsługę modali (Baza zawodników, Język, Ustawienia) itd.
         });
         
-        // (Opcjonalnie) dodaj tutaj obsługę pozostałych przycisków i modali
-        
-      });
+      })();
     </script>
   </body>
 </html>
