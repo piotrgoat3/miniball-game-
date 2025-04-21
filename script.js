@@ -11,7 +11,6 @@
     />
     <style>
       /* GLOBALNE STYLE – DESIGN W PIŁKARSKIM KLIMACIE */
-      /* Tło zmienione na zdjęcie stadionu */
       body {
         font-family: "Nunito", sans-serif;
         background: url("https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80")
@@ -327,9 +326,9 @@
         // GLOBALNE ZMIENNE I KONSTANTY
         let score = { home: 0, away: 0 };
         let canvas, ctx, ball;
-        let fieldPlayers = []; // 4 zawodników drużyny domowej
-        let fieldPlayersAway = []; // 4 zawodników drużyny przeciwnej
-        let goalkeeper, goalkeeperAway; // Bramkarze (1+1)
+        let fieldPlayers = []; // zawodnicy drużyny domowej
+        let fieldPlayersAway = []; // zawodnicy drużyny przeciwnej
+        let goalkeeper, goalkeeperAway; // Bramkarze
         let gameAnimating = false;
         let isDragging = false,
           draggingPlayerIndex = null;
@@ -340,18 +339,20 @@
         const PLAYER_RADIUS = 16,
           GOALKEEPER_RADIUS = 18,
           FRICTION = 0.98,
-          DRAG_IMPULSE_SCALE = 0.05, // zmniejszona prędkość naciągnięcia
-          BALL_COLLISION_IMPULSE = 5; // dodana stała – można modyfikować wg potrzeb
+          DRAG_IMPULSE_SCALE = 0.05,
+          BALL_COLLISION_IMPULSE = 5;
 
-        // CZAS MECZU – MATCH_DURATION = 180 sekund (3:00)
+        // CZAS MECZU – 180 sekund (3:00)
         const MATCH_DURATION = 180;
         let matchTime = MATCH_DURATION;
         let matchTimerInterval = null;
+
         function updateTimerDisplay() {
           let minutes = Math.floor(matchTime / 60);
           let seconds = matchTime % 60;
           if (seconds < 10) seconds = "0" + seconds;
-          document.getElementById("matchTimer").innerText = "Czas: " + minutes + ":" + seconds;
+          document.getElementById("matchTimer").innerText =
+            "Czas: " + minutes + ":" + seconds;
         }
         function startTimer() {
           matchTime = MATCH_DURATION;
@@ -371,15 +372,25 @@
         function gameOver() {
           stopTimer();
           gameAnimating = false;
-          alert("Koniec meczu! Wynik: " + selectedHomeTeam + " " + score.home + " : " + score.away + " " + selectedAwayTeam);
+          alert(
+            "Koniec meczu! Wynik: " +
+              selectedHomeTeam +
+              " " +
+              score.home +
+              " : " +
+              score.away +
+              " " +
+              selectedAwayTeam
+          );
           document.getElementById("gameScreen").classList.add("hidden");
           document.getElementById("startScreen").classList.remove("hidden");
         }
 
-        // BAZA DANYCH KLUBÓW – oryginalna
+        // BAZA DANYCH KLUBÓW
         const teamsData = {
           "Premier League": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
+            leagueLogo:
+              "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
             teams: [
               {
                 name: "Manchester United",
@@ -408,85 +419,146 @@
             ],
           },
           "La Liga": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/9/90/LaLiga.svg",
+            leagueLogo:
+              "https://upload.wikimedia.org/wikipedia/en/9/90/LaLiga.svg",
             teams: [
-              { name: "Real Madrid", logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" },
-              { name: "Barcelona", logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" },
-              { name: "Atletico Madrid", logo: "https://brandlogos.net/wp-content/uploads/2021/09/atltico-madrid-logo.png" },
+              {
+                name: "Real Madrid",
+                logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg",
+              },
+              {
+                name: "Barcelona",
+                logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg",
+              },
+              {
+                name: "Atletico Madrid",
+                logo:
+                  "https://brandlogos.net/wp-content/uploads/2021/09/atltico-madrid-logo.png",
+              },
               {
                 name: "Sevilla",
-                logo: "https://cdn.freebiesupply.com/logos/large/2x/sevilla-fc-logo-png-transparent.png",
+                logo:
+                  "https://cdn.freebiesupply.com/logos/large/2x/sevilla-fc-logo-png-transparent.png",
               },
               {
                 name: "Valencia",
-                logo: "https://brandlogos.net/wp-content/uploads/2014/10/valencia_cf-logo_brandlogos.net_iaffl-512x674.png",
+                logo:
+                  "https://brandlogos.net/wp-content/uploads/2014/10/valencia_cf-logo_brandlogos.net_iaffl-512x674.png",
               },
               {
                 name: "Villarreal",
-                logo: "https://upload.wikimedia.org/wikipedia/en/thumb/b/b9/Villarreal_CF_logo-en.svg/1200px-Villarreal_CF_logo-en.svg.png",
+                logo:
+                  "https://upload.wikimedia.org/wikipedia/en/thumb/b/b9/Villarreal_CF_logo-en.svg/1200px-Villarreal_CF_logo-en.svg.png",
               },
             ],
           },
           "Serie A": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/d/d2/Serie_A_logo_(2019).svg",
+            leagueLogo:
+              "https://upload.wikimedia.org/wikipedia/en/d/d2/Serie_A_logo_(2019).svg",
             teams: [
-              { name: "Juventus", logo: "https://upload.wikimedia.org/wikipedia/commons/d/da/Juventus_Logo.png" },
-              { name: "Inter Milan", logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg" },
+              {
+                name: "Juventus",
+                logo: "https://upload.wikimedia.org/wikipedia/commons/d/da/Juventus_Logo.png",
+              },
+              {
+                name: "Inter Milan",
+                logo:
+                  "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg",
+              },
               {
                 name: "AC Milan",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_of_AC_Milan.svg/653px-Logo_of_AC_Milan.svg.png",
+                logo:
+                  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_of_AC_Milan.svg/653px-Logo_of_AC_Milan.svg.png",
               },
               {
                 name: "Napoli",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/SSC_Neapel.svg/1200px-SSC_Neapel.svg.png",
+                logo:
+                  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/SSC_Neapel.svg/1200px-SSC_Neapel.svg.png",
               },
-              { name: "Roma", logo: "https://upload.wikimedia.org/wikipedia/sco/7/7d/AS_Roma%27s_logo_from_2017.png" },
-              { name: "Lazio", logo: "https://static.cdnlogo.com/logos/s/89/ss-lazio.png" },
+              {
+                name: "Roma",
+                logo:
+                  "https://upload.wikimedia.org/wikipedia/sco/7/7d/AS_Roma%27s_logo_from_2017.png",
+              },
+              {
+                name: "Lazio",
+                logo: "https://static.cdnlogo.com/logos/s/89/ss-lazio.png",
+              },
             ],
           },
           Bundesliga: {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/commons/d/df/Bundesliga_logo_(2017).svg",
+            leagueLogo:
+              "https://upload.wikimedia.org/wikipedia/commons/d/df/Bundesliga_logo_(2017).svg",
             teams: [
               {
                 name: "Bayern Munich",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_(2017).svg/2048px-FC_Bayern_M%C3%BCnchen_logo_(2017).svg.png",
+                logo:
+                  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_(2017).svg/2048px-FC_Bayern_M%C3%BCnchen_logo_(2017).svg.png",
               },
-              { name: "Borussia Dortmund", logo: "https://upload.wikimedia.org/wikipedia/commons/7/74/Borussia_Dortmund.png" },
+              {
+                name: "Borussia Dortmund",
+                logo:
+                  "https://upload.wikimedia.org/wikipedia/commons/7/74/Borussia_Dortmund.png",
+              },
               {
                 name: "RB Leipzig",
-                logo: "https://upload.wikimedia.org/wikipedia/en/thumb/0/04/RB_Leipzig_2014_logo.svg/1200px-RB_Leipzig_2014_logo.svg.png",
+                logo:
+                  "https://upload.wikimedia.org/wikipedia/en/thumb/0/04/RB_Leipzig_2014_logo.svg/1200px-RB_Leipzig_2014_logo.svg.png",
               },
               {
                 name: "Bayer Leverkusen",
-                logo: "https://cdn.freebiesupply.com/logos/large/2x/bayer-leverkusen-logo-png-transparent.png",
+                logo:
+                  "https://cdn.freebiesupply.com/logos/large/2x/bayer-leverkusen-logo-png-transparent.png",
               },
-              { name: "Eintracht Frankfurt", logo: "https://logodownload.org/wp-content/uploads/2019/11/eintracht-frankfurt-logo.png" },
+              {
+                name: "Eintracht Frankfurt",
+                logo:
+                  "https://logodownload.org/wp-content/uploads/2019/11/eintracht-frankfurt-logo.png",
+              },
               {
                 name: "Borussia Mönchengladbach",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Borussia_M%C3%B6nchengladbach_logo.svg/1200px-Borussia_M%C3%B6nchengladbach_logo.svg.png",
+                logo:
+                  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Borussia_M%C3%B6nchengladbach_logo.svg/1200px-Borussia_M%C3%B6nchengladbach_logo.svg.png",
               },
             ],
           },
           "Ligue 1": {
-            leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/fd/Ligue_1.svg",
+            leagueLogo:
+              "https://upload.wikimedia.org/wikipedia/en/f/fd/Ligue_1.svg",
             teams: [
-              { name: "Paris Saint-Germain", logo: "https://logos-world.net/wp-content/uploads/2020/07/PSG-Logo.png" },
+              {
+                name: "Paris Saint-Germain",
+                logo: "https://logos-world.net/wp-content/uploads/2020/07/PSG-Logo.png",
+              },
               {
                 name: "Marseille",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Olympique_Marseille_logo.svg/1582px-Olympique_Marseille_logo.svg.png",
+                logo:
+                  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Olympique_Marseille_logo.svg/1582px-Olympique_Marseille_logo.svg.png",
               },
               {
                 name: "Lyon",
-                logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1c/Olympique_Lyonnais_logo.svg/1200px-Olympique_Lyonnais_logo.svg.png",
+                logo:
+                  "https://upload.wikimedia.org/wikipedia/en/thumb/1/1c/Olympique_Lyonnais_logo.svg/1200px-Olympique_Lyonnais_logo.svg.png",
               },
-              { name: "Monaco", logo: "https://logodownload.org/wp-content/uploads/2019/09/monaco-fc-logo-1.png" },
-              { name: "Lille", logo: "https://logodownload.org/wp-content/uploads/2019/09/lille-logo-1.png" },
-              { name: "Nice", logo: "https://1000logos.net/wp-content/uploads/2020/09/Nice-logo.png" },
+              {
+                name: "Monaco",
+                logo:
+                  "https://logodownload.org/wp-content/uploads/2019/09/monaco-fc-logo-1.png",
+              },
+              {
+                name: "Lille",
+                logo:
+                  "https://logodownload.org/wp-content/uploads/2019/09/lille-logo-1.png",
+              },
+              {
+                name: "Nice",
+                logo:
+                  "https://1000logos.net/wp-content/uploads/2020/09/Nice-logo.png",
+              },
             ],
           },
         };
 
-        /* Funkcja pomocnicza – zwraca kolor klubowy dla danego klubu */
         function getTeamColor(teamName) {
           switch (teamName) {
             case "Manchester United":
@@ -574,14 +646,14 @@
             { x: canvas.width * 0.25, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor },
             { x: canvas.width * 0.25, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor },
             { x: canvas.width * 0.25, y: canvas.height * 0.7, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor },
-            { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor },
+            { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor }
           ];
 
           fieldPlayersAway = [
             { x: canvas.width * 0.75, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor },
             { x: canvas.width * 0.75, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor },
             { x: canvas.width * 0.75, y: canvas.height * 0.7, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor },
-            { x: canvas.width * 0.65, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor },
+            { x: canvas.width * 0.65, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor }
           ];
 
           goalkeeper = { x: 60, y: canvas.height / 2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: homeColor };
@@ -655,7 +727,7 @@
           ctx.fill();
           ctx.closePath();
 
-          // Rysowanie strzałki – linia od pozycji zawodnika do punktu z obliczeniem p + (dragStart - dragCurrent)
+          // Rysowanie wskaźnika przeciągania u zawodnika drużyny domowej
           if (isDragging && draggingPlayerIndex !== null && dragStart && dragCurrent) {
             ctx.save();
             ctx.setLineDash([5, 5]);
@@ -861,7 +933,16 @@
           canvas.addEventListener("mousedown", canvasMouseDown);
           canvas.addEventListener("mousemove", canvasMouseMove);
           canvas.addEventListener("mouseup", canvasMouseUp);
-          canvas.addEventListener("mouseleave", canvasMouseUp);
+          // Zamiast wywoływania canvasMouseUp przy opuszczeniu obszaru,
+          // bezpiecznie anulujemy przeciąganie, ustawiając prędkość na 0.
+          canvas.addEventListener("mouseleave", function () {
+            if (isDragging && draggingPlayerIndex !== null) {
+              fieldPlayers[draggingPlayerIndex].vx = 0;
+              fieldPlayers[draggingPlayerIndex].vy = 0;
+              isDragging = false;
+              draggingPlayerIndex = null;
+            }
+          });
         }
 
         function populateTeamSelections() {
@@ -893,7 +974,9 @@
               teamDiv.dataset.team = team.name;
               teamDiv.innerHTML = `<img src="${team.logo}" alt="${team.name}" /><p>${team.name}</p>`;
               teamDiv.addEventListener("click", function () {
-                Array.from(teamContainerHome.children).forEach((el) => el.classList.remove("selected"));
+                Array.from(teamContainerHome.children).forEach((el) =>
+                  el.classList.remove("selected")
+                );
                 this.classList.add("selected");
                 selectedHomeTeam = team.name;
               });
@@ -922,7 +1005,9 @@
               teamDiv.dataset.team = team.name;
               teamDiv.innerHTML = `<img src="${team.logo}" alt="${team.name}" /><p>${team.name}</p>`;
               teamDiv.addEventListener("click", function () {
-                Array.from(teamContainerAway.children).forEach((el) => el.classList.remove("selected"));
+                Array.from(teamContainerAway.children).forEach((el) =>
+                  el.classList.remove("selected")
+                );
                 this.classList.add("selected");
                 selectedAwayTeam = team.name;
               });
