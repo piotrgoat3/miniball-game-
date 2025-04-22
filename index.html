@@ -4,292 +4,85 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>MiniSoccer - Szybki Mecz</title>
-    <!-- Łącze do czcionki Nunito -->
     <link
         href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
         rel="stylesheet"
     />
     <style>
-        /* --- GLOBALNE STYLE --- */
-        :root {
-            /* Domyślne rozmiary (odpowiadające średniej) */
-            --font-size-h1: 56px;
-            --font-size-h2: 40px;
-            --font-size-h3: 28px;
-            --font-size-button: 20px;
-            --font-size-button-padding: 15px 30px;
-            --font-size-small-button: 18px;
-            --font-size-small-button-padding: 10px 20px;
-            --font-size-team-option: 1rem; /* Domyślny rozmiar tekstu */
-            --font-size-scoreboard: 28px;
-            --font-size-timer: 20px;
-        }
+        /* --- STYLE CSS --- */
+        /* (Style CSS pozostają takie same jak w poprzedniej wersji - dla zwięzłości pominięto) */
+        /* --- Dodaj tutaj style z poprzedniej odpowiedzi --- */
+         :root { /* Domyślne rozmiary */ --font-size-h1: 56px; --font-size-h2: 40px; --font-size-h3: 28px; --font-size-button: 20px; --font-size-button-padding: 15px 30px; --font-size-small-button: 18px; --font-size-small-button-padding: 10px 20px; --font-size-team-option: 1rem; --font-size-scoreboard: 28px; --font-size-timer: 20px; }
+         body { font-family: "Nunito", sans-serif; background: url("https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80") no-repeat center center fixed; background-size: cover; margin: 0; padding: 0; text-align: center; color: #fff; font-size: var(--font-size-team-option); transition: font-size 0.3s ease; overflow: hidden; }
+         body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: -1; }
+         .hidden { display: none !important; }
+         body.font-size-small { --font-size-h1: 48px; --font-size-h2: 34px; --font-size-h3: 24px; --font-size-button: 18px; --font-size-button-padding: 12px 25px; --font-size-small-button: 16px; --font-size-small-button-padding: 8px 16px; --font-size-team-option: 0.9rem; --font-size-scoreboard: 24px; --font-size-timer: 18px; }
+         body.font-size-medium {}
+         body.font-size-large { --font-size-h1: 64px; --font-size-h2: 46px; --font-size-h3: 32px; --font-size-button: 22px; --font-size-button-padding: 18px 35px; --font-size-small-button: 20px; --font-size-small-button-padding: 12px 25px; --font-size-team-option: 1.1rem; --font-size-scoreboard: 32px; --font-size-timer: 22px; }
+         #startScreen { padding: 40px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; box-sizing: border-box; }
+         #startScreen h1 { font-size: var(--font-size-h1); margin-bottom: 30px; text-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+         #startScreen button { font-size: var(--font-size-button); padding: var(--font-size-button-padding); margin: 10px; border: none; border-radius: 10px; background-color: rgba(255,255,255,0.85); cursor: pointer; color: #333; box-shadow: 0px 4px 8px rgba(0,0,0,0.2); transition: all 0.3s ease; min-width: 200px; }
+         #startScreen button:hover { background-color: #fff; transform: scale(1.05); box-shadow: 0px 5px 15px rgba(0,0,0,0.3); }
+         .start-options { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center;}
+         .start-options button { font-size: var(--font-size-small-button); padding: var(--font-size-small-button-padding); background-color: rgba(255,255,255,0.7); min-width: 150px; }
+         .start-options button:hover { background-color: #eee; }
+         #teamSelectScreen { padding: 30px 15px; box-sizing: border-box; max-height: 100vh; overflow-y: auto;}
+         #teamSelectScreen h2 { font-size: var(--font-size-h2); margin-bottom: 15px; text-shadow: 1px 1px 4px rgba(0,0,0,0.3); }
+         .team-section { margin: 20px auto; max-width: 90%; text-align: left; }
+         .team-section h3 { font-size: var(--font-size-h3); margin-bottom: 10px; padding-left: 10px; }
+         .team-container { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px; scrollbar-width: thin; scrollbar-color: #ffd700 rgba(0,0,0,0.2); min-height: 160px; }
+         .team-container::-webkit-scrollbar { height: 10px; background: rgba(0,0,0,0.1); border-radius: 5px; }
+         .team-container::-webkit-scrollbar-thumb { background: #ffd700; border-radius: 5px; border: 2px solid rgba(0,0,0,0.1); }
+         .team-option { cursor: pointer; text-align: center; border: 3px solid rgba(255,255,255,0.5); border-radius: 12px; width: 130px; padding: 10px; transition: all 0.2s ease; flex: 0 0 auto; font-size: calc(var(--font-size-team-option) * 0.9); background-color: rgba(0,0,0, 0.2); display: flex; flex-direction: column; justify-content: space-between; }
+         .team-option p { margin: 5px 0 0 0; word-wrap: break-word; }
+         .team-option.selected { border-color: #ffd700; transform: scale(1.08); background-color: rgba(255,255,255,0.2); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+         .team-option img { width: 70px; height: 70px; display: block; margin: 0 auto 8px; object-fit: contain; }
+         .league-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-left: 10px; }
+         .league-header img { width: 25px; height: 25px; }
+         #startMatchFromSelectBtn { font-size: var(--font-size-button); padding: var(--font-size-button-padding); margin-top: 25px; cursor: pointer; background-color: rgba(90, 180, 90, 0.9); border: none; border-radius: 12px; transition: all 0.3s ease; box-shadow: 0px 4px 8px rgba(0,0,0,0.2); color: white; }
+         #startMatchFromSelectBtn:hover { background-color: rgba(70, 160, 70, 1); transform: scale(1.05); box-shadow: 0px 5px 15px rgba(0,0,0,0.3); }
+         #gameScreen { padding: 15px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; height: 100vh; }
+         #scoreboardContainer { margin-bottom: 10px; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 8px; }
+         #scoreboard { font-size: var(--font-size-scoreboard); font-weight: bold; margin: 0; }
+         #matchTimer { font-size: var(--font-size-timer); margin-top: 3px; color: #eee; }
+         canvas { background-color: #2A9D8F; border: 4px solid #fff; border-radius: 12px; display: block; margin: 0 auto; box-shadow: 0px 8px 16px rgba(0,0,0,0.4); cursor: grab; max-width: 95%; max-height: calc(100vh - 150px); aspect-ratio: 800 / 500; width: auto; height: auto; }
+         canvas:active { cursor: grabbing; }
+         #backToStartBtn { font-size: var(--font-size-small-button); padding: var(--font-size-small-button-padding); margin-top: 15px; cursor: pointer; background: rgba(200, 80, 80, 0.9); border: none; border-radius: 10px; transition: background 0.3s; box-shadow: 0px 4px 8px rgba(0,0,0,0.2); color: white; }
+         #backToStartBtn:hover { background: rgba(180, 60, 60, 1); }
+         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; animation: fadeIn 0.3s ease-out; }
+         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+         .modal-content { background: #f8f9fa; padding: 25px; width: 90%; max-width: 450px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); color: #343a40; max-height: 80vh; overflow-y: auto; }
+         .modal-content h2 { margin-top: 0; font-size: calc(var(--font-size-h3) * 1.1); color: #007bff; }
+         .modal-content h3 { font-size: calc(var(--font-size-h3) * 0.9); color: #6c757d; margin-top: 15px;}
+         .modal-content p { font-size: var(--font-size-team-option); line-height: 1.5; }
+         .modal-content button { font-size: var(--font-size-small-button); padding: 10px 18px; background: #007bff; border: none; border-radius: 6px; margin-top: 10px; margin-right: 8px; transition: background 0.3s, transform 0.2s; box-shadow: 0px 2px 5px rgba(0,0,0,0.15); cursor: pointer; color: white; }
+         .modal-content button:hover { background: #0056b3; transform: translateY(-1px); }
+         .modal-content button.close-btn { background: #dc3545; }
+         .modal-content button.close-btn:hover { background: #c82333; }
+         .modal-content button.active-size { background: #28a745; box-shadow: inset 0px 2px 4px rgba(0,0,0,0.2); }
+         .modal-content button.active-size:hover { background: #218838; }
+         input, select { border: 1px solid #ced4da; border-radius: 6px; padding: 10px; margin: 8px 0; width: calc(100% - 22px); box-sizing: border-box; font-size: var(--font-size-team-option); background-color: #fff; }
+         input:focus, select:focus { border-color: #80bdff; outline: 0; box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }
+         #playerList { max-height: 250px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #007bff #e9ecef; margin-bottom: 15px; border: 1px solid #dee2e6; padding: 10px; border-radius: 6px; background-color: #fff; }
+         #playerList::-webkit-scrollbar { width: 8px; }
+         #playerList::-webkit-scrollbar-thumb { background: #007bff; border-radius: 5px; }
+         #playerList::-webkit-scrollbar-track { background: #e9ecef; }
+         #addPlayerForm { margin-top: 15px; }
+         #addPlayerForm button { margin-top: 10px; margin-right: 0; background-color: #28a745; }
+         #addPlayerForm button:hover { background-color: #218838; }
+         .font-size-options { margin-top: 15px; margin-bottom: 20px; text-align: center;}
+         .font-size-options button { margin: 5px; }
 
-        body {
-            font-family: "Nunito", sans-serif;
-            background: url("https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80")
-                no-repeat center center fixed;
-            background-size: cover;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-            color: #fff;
-            font-size: var(--font-size-team-option); /* Używamy zmiennej CSS dla bazowego rozmiaru */
-            transition: font-size 0.3s ease; /* Płynne przejście przy zmianie rozmiaru */
-            overflow: hidden; /* Zapobiegaj scrollowaniu strony */
-        }
-        body::before {
-            content: "";
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); /* Lekko ciemniejsze tło */
-             z-index: -1;
-        }
-        .hidden { display: none !important; }
-
-        /* --- STYLOWANIE DLA RÓŻNYCH ROZMIARÓW CZCIONEK --- */
-        body.font-size-small { --font-size-h1: 48px; --font-size-h2: 34px; --font-size-h3: 24px; --font-size-button: 18px; --font-size-button-padding: 12px 25px; --font-size-small-button: 16px; --font-size-small-button-padding: 8px 16px; --font-size-team-option: 0.9rem; --font-size-scoreboard: 24px; --font-size-timer: 18px; }
-        body.font-size-medium { /* Domyślne wartości są już w :root */ }
-        body.font-size-large { --font-size-h1: 64px; --font-size-h2: 46px; --font-size-h3: 32px; --font-size-button: 22px; --font-size-button-padding: 18px 35px; --font-size-small-button: 20px; --font-size-small-button-padding: 12px 25px; --font-size-team-option: 1.1rem; --font-size-scoreboard: 32px; --font-size-timer: 22px; }
-
-        /* --- EKRAN STARTOWY --- */
-        #startScreen { padding: 40px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; box-sizing: border-box; }
-        #startScreen h1 {
-            font-size: var(--font-size-h1); margin-bottom: 30px;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-        }
-        #startScreen button {
-            font-size: var(--font-size-button); padding: var(--font-size-button-padding); margin: 10px; /* Zmniejszony margines */
-            border: none; border-radius: 10px; background-color: rgba(255,255,255,0.85); /* Jaśniejsze */
-            cursor: pointer; color: #333; box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
-            transition: all 0.3s ease; min-width: 200px; /* Minimalna szerokość */
-        }
-        #startScreen button:hover {
-            background-color: #fff; transform: scale(1.05);
-            box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
-        }
-        .start-options { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center;} /* Flex dla opcji */
-        .start-options button {
-             font-size: var(--font-size-small-button); padding: var(--font-size-small-button-padding);
-             background-color: rgba(255,255,255,0.7); /* Lekko inne tło dla opcji */
-             min-width: 150px;
-        }
-        .start-options button:hover {
-            background-color: #eee;
-        }
-
-
-        /* --- EKRAN WYBORU DRUŻYN --- */
-        #teamSelectScreen { padding: 30px 15px; box-sizing: border-box; max-height: 100vh; overflow-y: auto;}
-        #teamSelectScreen h2 {
-            font-size: var(--font-size-h2); margin-bottom: 15px; /* Mniejszy margines */
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
-        }
-        .team-section { margin: 20px auto; max-width: 90%; text-align: left; } /* Zwiększona szerokość */
-        .team-section h3 { font-size: var(--font-size-h3); margin-bottom: 10px; padding-left: 10px; }
-        .team-container { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px; scrollbar-width: thin; scrollbar-color: #ffd700 rgba(0,0,0,0.2); min-height: 160px; /* Minimalna wysokość */}
-        .team-container::-webkit-scrollbar { height: 10px; background: rgba(0,0,0,0.1); border-radius: 5px; }
-        .team-container::-webkit-scrollbar-thumb { background: #ffd700; border-radius: 5px; border: 2px solid rgba(0,0,0,0.1); }
-        .team-option {
-            cursor: pointer; text-align: center; border: 3px solid rgba(255,255,255,0.5); /* Grubsza ramka */
-            border-radius: 12px; width: 130px; /* Mniejsza szerokość */ padding: 10px; transition: all 0.2s ease;
-            flex: 0 0 auto; font-size: calc(var(--font-size-team-option) * 0.9); /* Mniejsza czcionka nazwy */
-             background-color: rgba(0,0,0, 0.2); /* Ciemniejsze tło opcji */
-             display: flex; flex-direction: column; justify-content: space-between; /* Lepsze ułożenie logo i tekstu */
-        }
-        .team-option p { margin: 5px 0 0 0; word-wrap: break-word; } /* Dodano zawijanie */
-        .team-option.selected { border-color: #ffd700; transform: scale(1.08); background-color: rgba(255,255,255,0.2); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
-        .team-option img { width: 70px; height: 70px; display: block; margin: 0 auto 8px; object-fit: contain; }
-        .league-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-left: 10px; }
-        .league-header img { width: 25px; height: 25px; }
-        #startMatchFromSelectBtn {
-            font-size: var(--font-size-button); padding: var(--font-size-button-padding); margin-top: 25px; cursor: pointer;
-            background-color: rgba(90, 180, 90, 0.9); border: none; border-radius: 12px; /* Zielony przycisk */
-            transition: all 0.3s ease; box-shadow: 0px 4px 8px rgba(0,0,0,0.2); color: white;
-        }
-        #startMatchFromSelectBtn:hover { background-color: rgba(70, 160, 70, 1); transform: scale(1.05); box-shadow: 0px 5px 15px rgba(0,0,0,0.3); }
-
-        /* --- EKRAN GRY --- */
-        #gameScreen { padding: 15px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; height: 100vh; }
-        #scoreboardContainer { margin-bottom: 10px; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 8px; }
-        #scoreboard { font-size: var(--font-size-scoreboard); font-weight: bold; margin: 0; }
-        #matchTimer { font-size: var(--font-size-timer); margin-top: 3px; color: #eee; }
-        canvas {
-            background-color: #2A9D8F; /* Inny odcień zieleni */
-             border: 4px solid #fff; border-radius: 12px;
-            display: block; margin: 0 auto; box-shadow: 0px 8px 16px rgba(0,0,0,0.4);
-            cursor: grab; /* Kursor łapki nad canvasem */
-             max-width: 95%; /* Ograniczenie szerokości */
-             max-height: calc(100vh - 150px); /* Ograniczenie wysokości */
-             aspect-ratio: 800 / 500; /* Zachowaj proporcje */
-             width: auto; /* Automatyczna szerokość */
-             height: auto; /* Automatyczna wysokość */
-        }
-        canvas:active {
-             cursor: grabbing; /* Kursor ściskania podczas przeciągania */
-        }
-        #backToStartBtn {
-            font-size: var(--font-size-small-button); padding: var(--font-size-small-button-padding); margin-top: 15px; cursor: pointer;
-            background: rgba(200, 80, 80, 0.9); /* Czerwony przycisk */
-             border: none; border-radius: 10px;
-            transition: background 0.3s; box-shadow: 0px 4px 8px rgba(0,0,0,0.2); color: white;
-        }
-        #backToStartBtn:hover { background: rgba(180, 60, 60, 1); }
-
-        /* --- MODALE --- */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); display: flex; align-items: center; /* Wyśrodkowanie w pionie */
-            justify-content: center; z-index: 100; animation: fadeIn 0.3s ease-out;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .modal-content {
-            background: #f8f9fa; padding: 25px; width: 90%; max-width: 450px; /* Mniejszy modal */
-            border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            color: #343a40; /* Ciemniejszy tekst */
-             max-height: 80vh; /* Maksymalna wysokość */
-             overflow-y: auto; /* Scroll jeśli treść jest za długa */
-        }
-        .modal-content h2 { margin-top: 0; font-size: calc(var(--font-size-h3) * 1.1); color: #007bff; } /* Niebieski nagłówek */
-        .modal-content h3 { font-size: calc(var(--font-size-h3) * 0.9); color: #6c757d; margin-top: 15px;}
-        .modal-content p { font-size: var(--font-size-team-option); line-height: 1.5; }
-        .modal-content button {
-            font-size: var(--font-size-small-button); /* Użycie zmiennej */
-            padding: 10px 18px; /* Dostosowany padding */
-            background: #007bff; /* Niebieski przycisk */
-            border: none; border-radius: 6px; margin-top: 10px; margin-right: 8px; /* Dodano margines */
-            transition: background 0.3s, transform 0.2s;
-            box-shadow: 0px 2px 5px rgba(0,0,0,0.15); cursor: pointer; color: white; /* Biały tekst */
-        }
-        .modal-content button:hover {
-            background: #0056b3; /* Ciemniejszy niebieski */
-            transform: translateY(-1px);
-        }
-        /* Specyficzny styl dla przycisku zamknięcia */
-        .modal-content button.close-btn {
-             background: #dc3545; /* Czerwony */
-        }
-         .modal-content button.close-btn:hover {
-             background: #c82333; /* Ciemniejszy czerwony */
-        }
-        /* Aktywny przycisk rozmiaru czcionki */
-        .modal-content button.active-size {
-             background: #28a745; /* Zielony dla aktywnego */
-             box-shadow: inset 0px 2px 4px rgba(0,0,0,0.2);
-        }
-         .modal-content button.active-size:hover {
-             background: #218838;
-         }
-        input, select { /* Dodano select */
-            border: 1px solid #ced4da; border-radius: 6px; padding: 10px;
-            margin: 8px 0; width: calc(100% - 22px); /* Dostosowanie szerokości */
-            box-sizing: border-box; font-size: var(--font-size-team-option); /* Użycie zmiennej */
-             background-color: #fff;
-        }
-         input:focus, select:focus {
-             border-color: #80bdff;
-             outline: 0;
-             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-         }
-
-        #playerList {
-            max-height: 250px; overflow-y: auto; scrollbar-width: thin; /* Zmniejszona wysokość */
-            scrollbar-color: #007bff #e9ecef; margin-bottom: 15px; /* Dodano margines */
-            font-size: var(--font-size-team-option); /* Użycie zmiennej */
-             border: 1px solid #dee2e6; padding: 10px; border-radius: 6px; background-color: #fff;
-        }
-        #playerList::-webkit-scrollbar { width: 8px; }
-        #playerList::-webkit-scrollbar-thumb { background: #007bff; border-radius: 5px; }
-        #playerList::-webkit-scrollbar-track { background: #e9ecef; }
-        #addPlayerForm { margin-top: 15px; }
-        #addPlayerForm button { /* Zastosuj niebieski styl do przycisku Dodaj */
-             margin-top: 10px; margin-right: 0; /* Reset marginesu dla tego przycisku */
-             background-color: #28a745; /* Zielony przycisk Dodaj */
-        }
-         #addPlayerForm button:hover {
-              background-color: #218838;
-         }
-        .font-size-options { margin-top: 15px; margin-bottom: 20px; text-align: center;} /* Wyśrodkowanie przycisków */
-         .font-size-options button { margin: 5px; } /* Marginesy między przyciskami */
     </style>
 </head>
-<body class="font-size-medium"> <!-- Domyślnie średnia czcionka -->
-    <!-- EKRAN STARTOWY -->
-    <div id="startScreen">
-        <h1>MiniSoccer ⚽</h1>
-        <button id="startMatchBtn">SZYBKI MECZ</button>
-        <div class="start-options">
-            <button id="btnPlayerDB">Baza zawodników</button>
-            <button id="btnLanguage">Język</button>
-            <button id="btnSettings">Ustawienia</button> <!-- Przycisk Ustawienia -->
-        </div>
-    </div>
-
-    <!-- EKRAN WYBORU DRUŻYN -->
-    <div id="teamSelectScreen" class="hidden">
-        <h2>Wybierz Drużyny</h2>
-        <div class="team-section" id="homeTeamSection">
-            <h3>Drużyna Domowa</h3>
-            <div id="homeTeamContainer" class="team-container"></div>
-        </div>
-        <div class="team-section" id="awayTeamSection">
-            <h3>Drużyna Gościa</h3>
-            <div id="awayTeamContainer" class="team-container"></div>
-        </div>
-        <button id="startMatchFromSelectBtn">Rozpocznij Mecz</button>
-        <button id="backToMenuFromSelect" class="close-btn" style="margin-left: 10px;">Powrót</button> <!-- Dodano przycisk powrotu -->
-    </div>
-
-    <!-- EKRAN GRY -->
-    <div id="gameScreen" class="hidden">
-        <div id="scoreboardContainer">
-            <h2 id="scoreboard">— : —</h2>
-            <h3 id="matchTimer">Czas: 3:00</h3>
-        </div>
-        <canvas id="gameCanvas" width="800" height="500"></canvas>
-        <button id="backToStartBtn">Powrót do Menu</button>
-    </div>
-
-    <!-- MODALE -->
-    <div id="playerDBModal" class="modal hidden">
-        <div class="modal-content">
-            <h2>Baza zawodników</h2>
-            <div id="playerList"></div>
-            <h3>Dodaj zawodnika</h3>
-            <form id="addPlayerForm">
-                <input type="text" id="playerName" placeholder="Imię i nazwisko" required />
-                <input type="text" id="playerTeam" placeholder="Drużyna" required />
-                <input type="number" id="playerRating" placeholder="Ocena (1-100)" required min="1" max="100" />
-                <button type="submit">Dodaj</button>
-            </form>
-            <button id="closePlayerDBBtn" class="close-btn">Zamknij</button> <!-- Dodano klasę close-btn -->
-        </div>
-    </div>
-
-    <div id="languageModal" class="modal hidden">
-        <div class="modal-content">
-            <h2>Wybór języka</h2>
-            <p>Wybierz język interfejsu:</p>
-            <button class="langOption" data-lang="pl">Polski</button>
-            <button class="langOption" data-lang="en">English</button>
-            <button id="closeLanguageModalBtn" class="close-btn">Zamknij</button> <!-- Dodano klasę close-btn -->
-        </div>
-    </div>
-
-    <!-- NOWY MODAL: USTAWIEŃ -->
-    <div id="settingsModal" class="modal hidden">
-        <div class="modal-content">
-            <h2>Ustawienia</h2>
-            <div class="font-size-options">
-                 <h3>Rozmiar czcionki</h3>
-                 <button class="fontSizeOption" data-size="small">Mała</button>
-                 <button class="fontSizeOption" data-size="medium">Średnia</button>
-                 <button class="fontSizeOption" data-size="large">Duża</button>
-            </div>
-            <hr> <!-- Linia oddzielająca -->
-             <!-- Tutaj można dodać więcej ustawień w przyszłości -->
-            <button id="closeSettingsModalBtn" class="close-btn">Zamknij</button> <!-- Dodano klasę close-btn -->
-        </div>
-    </div>
+<body class="font-size-medium">
+    <!-- EKRANY HTML (bez zmian) -->
+     <div id="startScreen"><h1>MiniSoccer ⚽</h1><button id="startMatchBtn">SZYBKI MECZ</button><div class="start-options"><button id="btnPlayerDB">Baza zawodników</button><button id="btnLanguage">Język</button><button id="btnSettings">Ustawienia</button></div></div>
+     <div id="teamSelectScreen" class="hidden"><h2>Wybierz Drużyny</h2><div class="team-section" id="homeTeamSection"><h3>Drużyna Domowa</h3><div id="homeTeamContainer" class="team-container"></div></div><div class="team-section" id="awayTeamSection"><h3>Drużyna Gościa</h3><div id="awayTeamContainer" class="team-container"></div></div><button id="startMatchFromSelectBtn">Rozpocznij Mecz</button><button id="backToMenuFromSelect" class="close-btn" style="margin-left: 10px;">Powrót</button></div>
+     <div id="gameScreen" class="hidden"><div id="scoreboardContainer"><h2 id="scoreboard">— : —</h2><h3 id="matchTimer">Czas: 3:00</h3></div><canvas id="gameCanvas" width="800" height="500"></canvas><button id="backToStartBtn">Powrót do Menu</button></div>
+     <div id="playerDBModal" class="modal hidden"><div class="modal-content"><h2>Baza zawodników</h2><div id="playerList"></div><h3>Dodaj zawodnika</h3><form id="addPlayerForm"><input type="text" id="playerName" placeholder="Imię i nazwisko" required /><input type="text" id="playerTeam" placeholder="Drużyna" required /><input type="number" id="playerRating" placeholder="Ocena (1-100)" required min="1" max="100" /><button type="submit">Dodaj</button></form><button id="closePlayerDBBtn" class="close-btn">Zamknij</button></div></div>
+     <div id="languageModal" class="modal hidden"><div class="modal-content"><h2>Wybór języka</h2><p>Wybierz język interfejsu:</p><button class="langOption" data-lang="pl">Polski</button><button class="langOption" data-lang="en">English</button><button id="closeLanguageModalBtn" class="close-btn">Zamknij</button></div></div>
+     <div id="settingsModal" class="modal hidden"><div class="modal-content"><h2>Ustawienia</h2><div class="font-size-options"><h3>Rozmiar czcionki</h3><button class="fontSizeOption" data-size="small">Mała</button><button class="fontSizeOption" data-size="medium">Średnia</button><button class="fontSizeOption" data-size="large">Duża</button></div><hr><button id="closeSettingsModalBtn" class="close-btn">Zamknij</button></div></div>
 
     <script>
         (function () {
@@ -303,27 +96,27 @@
             let goalkeeper, goalkeeperAway;
             let gameAnimating = false;
             let isDragging = false, draggingPlayerIndex = null;
-            let dragStart = { x: 0, y: 0 }, dragCurrent = { x: 0, y: 0 };
+            let dragStartCanvas = { x: 0, y: 0 }; // Pozycja gracza w momencie kliknięcia
+            let dragCurrentCanvas = { x: 0, y: 0 }; // Aktualna pozycja myszy na canvasie
             let selectedHomeTeam = null, selectedAwayTeam = null;
-            let canvasScale = 1; // Do skalowania canvasa
 
             // Stałe fizyki i gry
             const PLAYER_RADIUS = 16;
             const GOALKEEPER_RADIUS = 18;
             const BALL_RADIUS = 8;
-            const FRICTION = 0.975; // Zmniejszone tarcie ogólne
-            const PLAYER_FRICTION = 0.95; // Tarcie dla graczy
-            const DRAG_IMPULSE_SCALE = 0.08; // Zwiększona siła naciągu gracza
-            const MAX_PULL_LENGTH = 150;
-            const COLLISION_RESTITUTION = 0.5; // Zmniejszona sprężystość odbić
+            const FRICTION = 0.97; // Tarcie ogólne (zwiększone trochę)
+            const PLAYER_FRICTION = 0.94; // Tarcie dla graczy (zwiększone trochę)
+            const DRAG_IMPULSE_SCALE = 0.1; // Zwiększona siła naciągu gracza (!)
+            const MAX_PULL_LENGTH = 200; // Maksymalna długość naciągu
+            const COLLISION_RESTITUTION = 0.5;
             const PLAYER_COLLISION_RESTITUTION = 0.3;
-            const BALL_COLLISION_BOOST = 1.15; // Zwiększony boost piłki po odbiciu
+            const BALL_COLLISION_BOOST = 1.1; // Boost piłki po odbiciu
 
             // Stałe AI
-            const AI_KICK_POWER = 6; // Siła "kopnięcia" AI (prędkość początkowa)
-            const AI_PASSIVE_MOVE_SPEED = 0.5; // Prędkość powrotu pasywnych AI
-            const AI_GOALKEEPER_SPEED = 1.8; // Zwiększona prędkość bramkarza AI
-            const AI_INTERCEPT_RADIUS_SQ = Math.pow(PLAYER_RADIUS + BALL_RADIUS + 50, 2); // Kwadrat dystansu, w którym AI próbuje przechwycić
+            const AI_KICK_POWER = 7; // Siła "kopnięcia" AI
+            const AI_PASSIVE_MOVE_SPEED = 0.6;
+            const AI_GOALKEEPER_SPEED = 2.0;
+            const AI_INTERCEPT_RADIUS_SQ = Math.pow(PLAYER_RADIUS + BALL_RADIUS + 60, 2); // Zwiększony zasięg przechwytu
 
 
             // CZAS MECZU
@@ -339,314 +132,186 @@
             const languageModal = document.getElementById("languageModal");
             const settingsModal = document.getElementById("settingsModal");
 
-            // --- FUNKCJE TIMERA ---
-            // ... (bez zmian, jak w poprzedniej wersji) ...
-             function updateTimerDisplay() { let minutes = Math.floor(matchTime / 60); let seconds = matchTime % 60; if (seconds < 10) seconds = "0" + seconds; const timerElement = document.getElementById("matchTimer"); if(timerElement) timerElement.innerText = "Czas: " + minutes + ":" + seconds; }
-             function startTimer() { if (matchTimerInterval) stopTimer(); matchTime = MATCH_DURATION; updateTimerDisplay(); matchTimerInterval = setInterval(() => { matchTime--; updateTimerDisplay(); if (matchTime <= 0) { gameOver(); } }, 1000); }
-             function stopTimer() { clearInterval(matchTimerInterval); matchTimerInterval = null; }
-             function gameOver() { stopTimer(); gameAnimating = false; const homeName = selectedHomeTeam || "Gospodarze"; const awayName = selectedAwayTeam || "Goście"; alert("Koniec meczu! Wynik: " + homeName + " " + score.home + " : " + score.away + " " + awayName); closeModal(gameScreen); openModal(startScreen); resetGameFull(); }
-             function resetGameFull() { if(canvas) { const ctx = canvas.getContext('2d'); ctx.clearRect(0,0, canvas.width, canvas.height); } selectedHomeTeam = null; selectedAwayTeam = null; score = {home: 0, away: 0}; fieldPlayers = []; fieldPlayersAway = []; goalkeeper = null; goalkeeperAway = null; ball = null; }
+             // --- FUNKCJE TIMERA, RESETU ---
+            function updateTimerDisplay() { let minutes = Math.floor(matchTime / 60); let seconds = matchTime % 60; if (seconds < 10) seconds = "0" + seconds; const timerElement = document.getElementById("matchTimer"); if(timerElement) timerElement.innerText = "Czas: " + minutes + ":" + seconds; }
+            function startTimer() { if (matchTimerInterval) stopTimer(); matchTime = MATCH_DURATION; updateTimerDisplay(); matchTimerInterval = setInterval(() => { matchTime--; updateTimerDisplay(); if (matchTime <= 0) { gameOver(); } }, 1000); }
+            function stopTimer() { clearInterval(matchTimerInterval); matchTimerInterval = null; }
+            function gameOver() { stopTimer(); gameAnimating = false; const homeName = selectedHomeTeam || "Gospodarze"; const awayName = selectedAwayTeam || "Goście"; alert("Koniec meczu! Wynik: " + homeName + " " + score.home + " : " + score.away + " " + awayName); closeModal(gameScreen); openModal(startScreen); resetGameFull(); }
+            function resetGameFull() { if(canvas) { const ctx = canvas.getContext('2d'); ctx.clearRect(0,0, canvas.width, canvas.height); } selectedHomeTeam = null; selectedAwayTeam = null; score = {home: 0, away: 0}; fieldPlayers = []; fieldPlayersAway = []; goalkeeper = null; goalkeeperAway = null; ball = null; }
+            function updateScoreboard() { const scoreboardElement = document.getElementById("scoreboard"); if(scoreboardElement) { const homeName = selectedHomeTeam || "Dom"; const awayName = selectedAwayTeam || "Gość"; scoreboardElement.innerText = `${homeName} ${score.home} : ${score.away} ${awayName}`; } }
 
 
-            // --- BAZA DANYCH KLUBÓW ---
-            const teamsData = { /* ... (bez zmian) ... */
+             // --- BAZA DANYCH KLUBÓW ---
+             const teamsData = { /* ... (bez zmian) ... */
                  "Premier League": { leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg", teams: [ { name: "Manchester United", logo: "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg" }, { name: "Manchester City", logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" }, { name: "Liverpool", logo: "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" }, { name: "Chelsea", logo: "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg" }, { name: "Arsenal", logo: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" }, { name: "Tottenham Hotspur", logo: "https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg" } ] }, "La Liga": { leagueLogo: "https://upload.wikimedia.org/wikipedia/en/9/90/LaLiga.svg", teams: [ { name: "Real Madrid", logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg" }, { name: "Barcelona", logo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" }, { name: "Atletico Madrid", logo: "https://brandlogos.net/wp-content/uploads/2021/09/atltico-madrid-logo.png" }, { name: "Sevilla", logo: "https://cdn.freebiesupply.com/logos/large/2x/sevilla-fc-logo-png-transparent.png" }, { name: "Valencia", logo: "https://brandlogos.net/wp-content/uploads/2014/10/valencia_cf-logo_brandlogos.net_iaffl-512x674.png" }, { name: "Villarreal", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/b/b9/Villarreal_CF_logo-en.svg/1200px-Villarreal_CF_logo-en.svg.png" } ] }, "Serie A": { leagueLogo: "https://upload.wikimedia.org/wikipedia/en/d/d2/Serie_A_logo_(2019).svg", teams: [ { name: "Juventus", logo: "https://upload.wikimedia.org/wikipedia/commons/d/da/Juventus_Logo.png" }, { name: "Inter Milan", logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg" }, { name: "AC Milan", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_of_AC_Milan.svg/653px-Logo_of_AC_Milan.svg.png" }, { name: "Napoli", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/SSC_Neapel.svg/1200px-SSC_Neapel.svg.png" }, { name: "Roma", logo: "https://upload.wikimedia.org/wikipedia/sco/7/7d/AS_Roma%27s_logo_from_2017.png" }, { name: "Lazio", logo: "https://static.cdnlogo.com/logos/s/89/ss-lazio.png" } ] }, "Bundesliga": { leagueLogo: "https://upload.wikimedia.org/wikipedia/commons/d/df/Bundesliga_logo_(2017).svg", teams: [ { name: "Bayern Munich", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_(2017).svg/2048px-FC_Bayern_M%C3%BCnchen_logo_(2017).svg.png" }, { name: "Borussia Dortmund", logo: "https://upload.wikimedia.org/wikipedia/commons/7/74/Borussia_Dortmund.png" }, { name: "RB Leipzig", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/0/04/RB_Leipzig_2014_logo.svg/1200px-RB_Leipzig_2014_logo.svg.png" }, { name: "Bayer Leverkusen", logo: "https://cdn.freebiesupply.com/logos/large/2x/bayer-leverkusen-logo-png-transparent.png" }, { name: "Eintracht Frankfurt", logo: "https://logodownload.org/wp-content/uploads/2019/11/eintracht-frankfurt-logo.png" }, { name: "Borussia Mönchengladbach", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Borussia_M%C3%B6nchengladbach_logo.svg/1200px-Borussia_M%C3%B6nchengladbach_logo.svg.png" } ] }, "Ligue 1": { leagueLogo: "https://upload.wikimedia.org/wikipedia/en/f/fd/Ligue_1.svg", teams: [ { name: "Paris Saint-Germain", logo: "https://logos-world.net/wp-content/uploads/2020/07/PSG-Logo.png" }, { name: "Marseille", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Olympique_Marseille_logo.svg/1582px-Olympique_Marseille_logo.svg.png" }, { name: "Lyon", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1c/Olympique_Lyonnais_logo.svg/1200px-Olympique_Lyonnais_logo.svg.png" }, { name: "Monaco", logo: "https://logodownload.org/wp-content/uploads/2019/09/monaco-fc-logo-1.png" }, { name: "Lille", logo: "https://logodownload.org/wp-content/uploads/2019/09/lille-logo-1.png" }, { name: "Nice", logo: "https://1000logos.net/wp-content/uploads/2020/09/Nice-logo.png" } ] }
-            };
+             };
+             /* Funkcja pomocnicza – zwraca kolor klubowy */
+             function getTeamColor(teamName) { /* ... (bez zmian) ... */ switch(teamName) { case "Manchester United": return "#DA291C"; case "Manchester City": return "#6CABDD"; case "Liverpool": return "#C8102E"; case "Chelsea": return "#034694"; case "Arsenal": return "#EF0107"; case "Tottenham Hotspur": return "#132257"; case "Real Madrid": return "#FEBE10"; case "Barcelona": return "#A50044"; case "Atletico Madrid": return "#CB3524"; case "Sevilla": return "#EC1C24"; case "Valencia": return "#FF8200"; case "Villarreal": return "#FDB913"; case "Juventus": return "#000000"; case "Inter Milan": return "#004D98"; case "AC Milan": return "#DC052D"; case "Napoli": return "#12A0D7"; case "Roma": return "#8E1F2F"; case "Lazio": return "#85B8D0"; case "Bayern Munich": return "#DC052D"; case "Borussia Dortmund": return "#FDE100"; case "RB Leipzig": return "#00AEEF"; case "Bayer Leverkusen": return "#E32221"; case "Eintracht Frankfurt": return "#000000"; case "Borussia Mönchengladbach": return "#000000"; case "Paris Saint-Germain": return "#004170"; case "Marseille": return "#0098D6"; case "Lyon": return "#DA291C"; case "Monaco": return "#E41E2A"; case "Lille": return "#E21C24"; case "Nice": return "#ED1C24"; default: return "#777777"; } }
 
-            /* Funkcja pomocnicza – zwraca kolor klubowy */
-            function getTeamColor(teamName) { /* ... (bez zmian) ... */
-                 switch(teamName) { case "Manchester United": return "#DA291C"; case "Manchester City": return "#6CABDD"; case "Liverpool": return "#C8102E"; case "Chelsea": return "#034694"; case "Arsenal": return "#EF0107"; case "Tottenham Hotspur": return "#132257"; case "Real Madrid": return "#FEBE10"; case "Barcelona": return "#A50044"; case "Atletico Madrid": return "#CB3524"; case "Sevilla": return "#EC1C24"; case "Valencia": return "#FF8200"; case "Villarreal": return "#FDB913"; case "Juventus": return "#000000"; case "Inter Milan": return "#004D98"; case "AC Milan": return "#DC052D"; case "Napoli": return "#12A0D7"; case "Roma": return "#8E1F2F"; case "Lazio": return "#85B8D0"; case "Bayern Munich": return "#DC052D"; case "Borussia Dortmund": return "#FDE100"; case "RB Leipzig": return "#00AEEF"; case "Bayer Leverkusen": return "#E32221"; case "Eintracht Frankfurt": return "#000000"; case "Borussia Mönchengladbach": return "#000000"; case "Paris Saint-Germain": return "#004170"; case "Marseille": return "#0098D6"; case "Lyon": return "#DA291C"; case "Monaco": return "#E41E2A"; case "Lille": return "#E21C24"; case "Nice": return "#ED1C24"; default: return "#777777"; }
-            }
-
-            // --- FUNKCJE INICJALIZACJI I RESETU GRY ---
+             // --- INICJALIZACJA GRY ---
             function initGame() {
                 canvas = document.getElementById("gameCanvas");
                 if (!canvas) { console.error("Nie znaleziono elementu canvas!"); return; }
                 ctx = canvas.getContext("2d");
+                resizeCanvas(); // Dopasuj rozmiar przed inicjalizacją obiektów
 
-                // Skalowanie canvasa
-                resizeCanvas(); // Dopasuj rozmiar canvasa przy inicjalizacji
-
-                ball = { x: canvas.width / 2, y: canvas.height / 2, radius: BALL_RADIUS * canvasScale, vx: 0, vy: 0, color: "white" };
+                ball = { x: canvas.width / 2, y: canvas.height / 2, radius: BALL_RADIUS, vx: 0, vy: 0, color: "white" };
 
                 let homeColor = getTeamColor(selectedHomeTeam);
                 let awayColor = getTeamColor(selectedAwayTeam);
-                const scaledPlayerRadius = PLAYER_RADIUS * canvasScale;
-                const scaledGkRadius = GOALKEEPER_RADIUS * canvasScale;
 
-                // Ustawienie początkowe - 3 zawodników w polu + bramkarz (2-1)
+                // Pozycje startowe (w koordynatach 800x500)
                 fieldPlayers = [
-                    { x: canvas.width * 0.20, y: canvas.height * 0.3, radius: scaledPlayerRadius, vx: 0, vy: 0, color: homeColor },
-                    { x: canvas.width * 0.20, y: canvas.height * 0.7, radius: scaledPlayerRadius, vx: 0, vy: 0, color: homeColor },
-                    { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: scaledPlayerRadius, vx: 0, vy: 0, color: homeColor }
+                    { x: canvas.width * 0.20, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor },
+                    { x: canvas.width * 0.20, y: canvas.height * 0.7, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor },
+                    { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor }
                 ];
                 fieldPlayersAway = [
-                    { x: canvas.width * 0.80, y: canvas.height * 0.3, radius: scaledPlayerRadius, vx: 0, vy: 0, color: awayColor },
-                    { x: canvas.width * 0.80, y: canvas.height * 0.7, radius: scaledPlayerRadius, vx: 0, vy: 0, color: awayColor },
-                    { x: canvas.width * 0.65, y: canvas.height * 0.5, radius: scaledPlayerRadius, vx: 0, vy: 0, color: awayColor }
+                    { x: canvas.width * 0.80, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor },
+                    { x: canvas.width * 0.80, y: canvas.height * 0.7, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor },
+                    { x: canvas.width * 0.65, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor }
                 ];
-
-                goalkeeper = { x: 50 * canvasScale, y: canvas.height/2, radius: scaledGkRadius, vx: 0, vy: 0, color: homeColor };
-                goalkeeperAway = { x: canvas.width - 50 * canvasScale, y: canvas.height/2, radius: scaledGkRadius, vx: 0, vy: 0, color: awayColor };
+                goalkeeper = { x: 50, y: canvas.height/2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: homeColor };
+                goalkeeperAway = { x: canvas.width - 50, y: canvas.height/2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: awayColor };
 
                 score.home = 0; score.away = 0;
                 updateScoreboard();
             }
-             function resetPositionsAfterGoal(homeJustScored) {
+            function resetPositionsAfterGoal(homeJustScored) {
                  if (!canvas || !ball) return;
                  ball.x = canvas.width / 2; ball.y = canvas.height / 2; ball.vx = 0; ball.vy = 0;
-                 const scaledPlayerRadius = PLAYER_RADIUS * canvasScale;
-                 const scaledGkRadius = GOALKEEPER_RADIUS * canvasScale;
                  let homeColor = getTeamColor(selectedHomeTeam); let awayColor = getTeamColor(selectedAwayTeam);
-                 fieldPlayers = [ { x: canvas.width * 0.20, y: canvas.height * 0.3, radius: scaledPlayerRadius, vx: 0, vy: 0, color: homeColor }, { x: canvas.width * 0.20, y: canvas.height * 0.7, radius: scaledPlayerRadius, vx: 0, vy: 0, color: homeColor }, { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: scaledPlayerRadius, vx: 0, vy: 0, color: homeColor } ];
-                 fieldPlayersAway = [ { x: canvas.width * 0.80, y: canvas.height * 0.3, radius: scaledPlayerRadius, vx: 0, vy: 0, color: awayColor }, { x: canvas.width * 0.80, y: canvas.height * 0.7, radius: scaledPlayerRadius, vx: 0, vy: 0, color: awayColor }, { x: canvas.width * 0.65, y: canvas.height * 0.5, radius: scaledPlayerRadius, vx: 0, vy: 0, color: awayColor } ];
-                 goalkeeper = { x: 50 * canvasScale, y: canvas.height/2, radius: scaledGkRadius, vx: 0, vy: 0, color: homeColor }; goalkeeperAway = { x: canvas.width - 50 * canvasScale, y: canvas.height/2, radius: scaledGkRadius, vx: 0, vy: 0, color: awayColor };
+                 fieldPlayers = [ { x: canvas.width * 0.20, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor }, { x: canvas.width * 0.20, y: canvas.height * 0.7, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor }, { x: canvas.width * 0.35, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor } ];
+                 fieldPlayersAway = [ { x: canvas.width * 0.80, y: canvas.height * 0.3, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor }, { x: canvas.width * 0.80, y: canvas.height * 0.7, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor }, { x: canvas.width * 0.65, y: canvas.height * 0.5, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor } ];
+                 goalkeeper = { x: 50, y: canvas.height/2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: homeColor }; goalkeeperAway = { x: canvas.width - 50, y: canvas.height/2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: awayColor };
                  gameAnimating = false; setTimeout(() => { gameAnimating = true; requestAnimationFrame(gameLoop); }, 1200);
-             }
-             function updateScoreboard() {
-                 const scoreboardElement = document.getElementById("scoreboard"); if(scoreboardElement) { const homeName = selectedHomeTeam || "Dom"; const awayName = selectedAwayTeam || "Gość"; scoreboardElement.innerText = `${homeName} ${score.home} : ${score.away} ${awayName}`; }
-             }
+            }
 
             // --- FUNKCJE RYSOWANIA ---
-            function drawField() { /* ... (jak poprzednio, można dodać skalowanie linii jeśli trzeba) ... */
+            function drawField() { /* ... (używa teraz stałych rozmiarów 800x500) ... */
                 if (!ctx) return;
-                 const scale = canvasScale; // Użyj globalnego skali
-                 const lineWidth = 3 * scale;
-                 const goalLineWidth = 6 * scale;
-                 const midCircleRadius = 60 * scale;
-                 const centerDotRadius = 5 * scale;
-                 const penaltyBoxWidth = 120 * scale;
-                 const penaltyBoxHeight = 200 * scale;
-                 const goalAreaWidth = 40 * scale;
-                 const goalAreaHeight = 80 * scale;
-                 const goalWidth = 10 * scale; // Szerokość słupka/linii bramkowej
-                 const goalHeight = 50 * scale; // Połowa wysokości bramki
-
+                 const lineWidth = 3; const goalLineWidth = 6; const midCircleRadius = 60; const centerDotRadius = 5;
+                 const penaltyBoxWidth = 120; const penaltyBoxHeight = 200; const goalAreaWidth = 40; const goalAreaHeight = 80;
+                 const goalWidth = 10; const goalHeight = 50;
 
                  ctx.fillStyle = "#2A9D8F"; ctx.fillRect(0, 0, canvas.width, canvas.height);
                  ctx.strokeStyle = "rgba(255, 255, 255, 0.7)"; ctx.lineWidth = lineWidth;
-
-                 // Zewnętrzna ramka
                  ctx.strokeRect(goalWidth, goalWidth, canvas.width - 2 * goalWidth, canvas.height - 2 * goalWidth);
-                 // Linia środkowa
                  ctx.beginPath(); ctx.moveTo(canvas.width/2, goalWidth); ctx.lineTo(canvas.width/2, canvas.height - goalWidth); ctx.stroke();
-                 // Koło środkowe
                  ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, midCircleRadius, 0, Math.PI * 2); ctx.stroke();
-                 // Kropka na środku
                  ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, centerDotRadius, 0, Math.PI * 2); ctx.fillStyle = "rgba(255, 255, 255, 0.7)"; ctx.fill();
-
-                 // Pola karne
                  ctx.strokeRect(goalWidth, canvas.height/2 - penaltyBoxHeight/2, penaltyBoxWidth, penaltyBoxHeight);
                  ctx.strokeRect(canvas.width - goalWidth - penaltyBoxWidth, canvas.height/2 - penaltyBoxHeight/2, penaltyBoxWidth, penaltyBoxHeight);
-
-                 // Pola bramkowe (małe)
                  ctx.strokeRect(goalWidth, canvas.height/2 - goalAreaHeight/2, goalAreaWidth, goalAreaHeight);
                  ctx.strokeRect(canvas.width - goalWidth - goalAreaWidth, canvas.height/2 - goalAreaHeight/2, goalAreaWidth, goalAreaHeight);
-
-                 // Bramki
                  ctx.lineWidth = goalLineWidth; ctx.strokeStyle = "#FFFFFF";
-                 ctx.beginPath(); ctx.moveTo(0, canvas.height/2 - goalHeight); ctx.lineTo(goalWidth, canvas.height/2 - goalHeight); ctx.stroke(); // Lewa górna
-                 ctx.beginPath(); ctx.moveTo(0, canvas.height/2 + goalHeight); ctx.lineTo(goalWidth, canvas.height/2 + goalHeight); ctx.stroke(); // Lewa dolna
-                 ctx.beginPath(); ctx.moveTo(goalWidth, canvas.height/2 - goalHeight); ctx.lineTo(goalWidth, canvas.height/2 + goalHeight); ctx.stroke(); // Lewy słupek
-
-                 ctx.beginPath(); ctx.moveTo(canvas.width, canvas.height/2 - goalHeight); ctx.lineTo(canvas.width - goalWidth, canvas.height/2 - goalHeight); ctx.stroke(); // Prawa górna
-                 ctx.beginPath(); ctx.moveTo(canvas.width, canvas.height/2 + goalHeight); ctx.lineTo(canvas.width - goalWidth, canvas.height/2 + goalHeight); ctx.stroke(); // Prawa dolna
-                 ctx.beginPath(); ctx.moveTo(canvas.width - goalWidth, canvas.height/2 - goalHeight); ctx.lineTo(canvas.width - goalWidth, canvas.height/2 + goalHeight); ctx.stroke(); // Prawy słupek
+                 ctx.beginPath(); ctx.moveTo(0, canvas.height/2 - goalHeight); ctx.lineTo(goalWidth, canvas.height/2 - goalHeight); ctx.stroke();
+                 ctx.beginPath(); ctx.moveTo(0, canvas.height/2 + goalHeight); ctx.lineTo(goalWidth, canvas.height/2 + goalHeight); ctx.stroke();
+                 ctx.beginPath(); ctx.moveTo(goalWidth, canvas.height/2 - goalHeight); ctx.lineTo(goalWidth, canvas.height/2 + goalHeight); ctx.stroke();
+                 ctx.beginPath(); ctx.moveTo(canvas.width, canvas.height/2 - goalHeight); ctx.lineTo(canvas.width - goalWidth, canvas.height/2 - goalHeight); ctx.stroke();
+                 ctx.beginPath(); ctx.moveTo(canvas.width, canvas.height/2 + goalHeight); ctx.lineTo(canvas.width - goalWidth, canvas.height/2 + goalHeight); ctx.stroke();
+                 ctx.beginPath(); ctx.moveTo(canvas.width - goalWidth, canvas.height/2 - goalHeight); ctx.lineTo(canvas.width - goalWidth, canvas.height/2 + goalHeight); ctx.stroke();
             }
-            function drawGameObjects() { /* ... (bez zmian) ... */
+            function drawGameObjects() { /* ... (używa stałych promieni) ... */
                  if (!ctx || !ball) return;
-                 const drawPlayer = (player) => { if (!player) return; ctx.beginPath(); ctx.arc(player.x, player.y, player.radius, 0, Math.PI*2); ctx.fillStyle = player.color; ctx.fill(); ctx.strokeStyle = "#333"; ctx.lineWidth = 1 * canvasScale; ctx.stroke(); ctx.closePath(); };
+                 const drawPlayer = (player) => { if (!player) return; ctx.beginPath(); ctx.arc(player.x, player.y, player.radius, 0, Math.PI*2); ctx.fillStyle = player.color; ctx.fill(); ctx.strokeStyle = "#333"; ctx.lineWidth = 1; ctx.stroke(); ctx.closePath(); };
                  fieldPlayers.forEach(drawPlayer); fieldPlayersAway.forEach(drawPlayer); drawPlayer(goalkeeper); drawPlayer(goalkeeperAway);
-                 ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2); ctx.fillStyle = ball.color; ctx.fill(); ctx.strokeStyle = "black"; ctx.lineWidth = 1 * canvasScale; ctx.stroke(); ctx.closePath();
-                 if (isDragging && draggingPlayerIndex !== null && dragStart && dragCurrent) { drawPullLine(); }
+                 ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2); ctx.fillStyle = ball.color; ctx.fill(); ctx.strokeStyle = "black"; ctx.lineWidth = 1; ctx.stroke(); ctx.closePath();
+                 if (isDragging && draggingPlayerIndex !== null) { drawPullLine(); } // Usunięto sprawdzanie dragStart/dragCurrent
             }
-            function drawPullLine() { /* ... (bez zmian) ... */
+            function drawPullLine() { /* ... (używa stałych, koordynaty canvas) ... */
                 if (!ctx) return; ctx.save(); let startPoint;
                  if (draggingPlayerIndex >= 0 && fieldPlayers[draggingPlayerIndex]) { startPoint = fieldPlayers[draggingPlayerIndex]; } else if (draggingPlayerIndex === -1 && goalkeeper) { startPoint = goalkeeper; } else { ctx.restore(); return; }
-                 ctx.setLineDash([3 * canvasScale, 3 * canvasScale]); ctx.strokeStyle = "rgba(255, 255, 255, 0.6)"; ctx.lineWidth = 1 * canvasScale; ctx.beginPath(); ctx.moveTo(startPoint.x, startPoint.y); ctx.lineTo(dragCurrent.x, dragCurrent.y); ctx.stroke();
-                 let dx = startPoint.x - dragCurrent.x; let dy = startPoint.y - dragCurrent.y; let pullLength = Math.hypot(dx, dy); let pullScale = Math.min(1, pullLength / (MAX_PULL_LENGTH * canvasScale));
-                 if (pullLength > 5 * canvasScale) { let arrowEndX = startPoint.x + dx * pullScale * 0.5; let arrowEndY = startPoint.y + dy * pullScale * 0.5; ctx.setLineDash([]); let red = Math.floor(255 * pullScale); let green = Math.floor(255 * (1 - pullScale)); ctx.strokeStyle = `rgba(${red}, ${green}, 0, 0.9)`; ctx.lineWidth = (3 + 2 * pullScale) * canvasScale; ctx.beginPath(); ctx.moveTo(startPoint.x, startPoint.y); ctx.lineTo(arrowEndX, arrowEndY); ctx.stroke(); drawArrowhead(ctx, startPoint.x, startPoint.y, arrowEndX, arrowEndY, (8 + 4 * pullScale) * canvasScale); }
+                 ctx.setLineDash([3, 3]); ctx.strokeStyle = "rgba(255, 255, 255, 0.6)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(startPoint.x, startPoint.y); ctx.lineTo(dragCurrentCanvas.x, dragCurrentCanvas.y); ctx.stroke();
+                 let dx = startPoint.x - dragCurrentCanvas.x; let dy = startPoint.y - dragCurrentCanvas.y; let pullLength = Math.hypot(dx, dy); let pullScale = Math.min(1, pullLength / MAX_PULL_LENGTH);
+                 if (pullLength > 5) { let arrowEndX = startPoint.x + dx * pullScale * 0.5; let arrowEndY = startPoint.y + dy * pullScale * 0.5; ctx.setLineDash([]); let red = Math.floor(255 * pullScale); let green = Math.floor(255 * (1 - pullScale)); ctx.strokeStyle = `rgba(${red}, ${green}, 0, 0.9)`; ctx.lineWidth = 3 + 2 * pullScale; ctx.beginPath(); ctx.moveTo(startPoint.x, startPoint.y); ctx.lineTo(arrowEndX, arrowEndY); ctx.stroke(); drawArrowhead(ctx, startPoint.x, startPoint.y, arrowEndX, arrowEndY, 8 + 4 * pullScale); }
                  ctx.restore();
             }
-            function drawArrowhead(context, fromx, fromy, tox, toy, headLength) { /* ... (bez zmian) ... */
-                 var angle = Math.atan2(toy - fromy, tox - fromx); context.beginPath(); context.moveTo(tox, toy); context.lineTo(tox - headLength * Math.cos(angle - Math.PI / 6), toy - headLength * Math.sin(angle - Math.PI / 6)); context.moveTo(tox, toy); context.lineTo(tox - headLength * Math.cos(angle + Math.PI / 6), toy - headLength * Math.sin(angle + Math.PI / 6)); context.stroke();
-            }
+            function drawArrowhead(context, fromx, fromy, tox, toy, headLength) { /* ... (bez zmian) ... */ var angle = Math.atan2(toy - fromy, tox - fromx); context.beginPath(); context.moveTo(tox, toy); context.lineTo(tox - headLength * Math.cos(angle - Math.PI / 6), toy - headLength * Math.sin(angle - Math.PI / 6)); context.moveTo(tox, toy); context.lineTo(tox - headLength * Math.cos(angle + Math.PI / 6), toy - headLength * Math.sin(angle + Math.PI / 6)); context.stroke(); }
 
-            // --- FUNKCJE FIZYKI I KOLIZJI ---
+
+             // --- FUNKCJE FIZYKI I KOLIZJI ---
             function updatePositions() {
                 if (!canvas || !ball) return;
                 const allMovables = [...fieldPlayers, ...fieldPlayersAway, goalkeeper, goalkeeperAway, ball];
-                const borderMargin = 10 * canvasScale; // Skalowany margines
+                const borderMargin = 10; // Stały margines 10px
 
                 allMovables.forEach(obj => {
                     if (!obj) return;
                     obj.x += obj.vx; obj.y += obj.vy;
-
-                    // Tarcie (gracze mają większe)
                     let currentFriction = (obj === ball) ? FRICTION : FRICTION * PLAYER_FRICTION;
                     obj.vx *= currentFriction; obj.vy *= currentFriction;
-
-                    // Zatrzymanie przy małej prędkości
-                    if (Math.hypot(obj.vx, obj.vy) < 0.05 * canvasScale) { obj.vx = 0; obj.vy = 0; }
+                    if (Math.hypot(obj.vx, obj.vy) < 0.05) { obj.vx = 0; obj.vy = 0; }
 
                     // Kolizje z bandami
-                    const restitution = -0.4; // Małe odbicie od bandy
-                    if (obj !== ball) { // Gracze odbijają się od wszystkich band
+                    const restitution = -0.4;
+                    if (obj !== ball) {
                         if (obj.x - obj.radius < borderMargin) { obj.x = borderMargin + obj.radius; obj.vx *= restitution; }
                         if (obj.x + obj.radius > canvas.width - borderMargin) { obj.x = canvas.width - borderMargin - obj.radius; obj.vx *= restitution; }
                     }
-                     // Wszyscy (w tym piłka) odbijają się od góry/dołu
                     if (obj.y - obj.radius < borderMargin) { obj.y = borderMargin + obj.radius; obj.vy *= restitution; }
                     if (obj.y + obj.radius > canvas.height - borderMargin) { obj.y = canvas.height - borderMargin - obj.radius; obj.vy *= restitution; }
                 });
-
-                 // Ograniczenie ruchu bramkarzy
                  confineGoalkeeper(goalkeeper, true);
                  confineGoalkeeper(goalkeeperAway, false);
-                checkGoal(); // Sprawdzenie gola (już obsługuje kolizje ze słupkami/linią)
+                checkGoal();
             }
-            function confineGoalkeeper(gk, isHomeTeam) { /* ... (dodano skalowanie) ... */
-                 if (!gk) return; const goalTop = canvas.height / 2 - (50 * canvasScale); const goalBottom = canvas.height / 2 + (50 * canvasScale); const borderMargin = 10 * canvasScale; const penaltyAreaFront = isHomeTeam ? borderMargin + (120 * canvasScale) : canvas.width - borderMargin - (120 * canvasScale);
+            function confineGoalkeeper(gk, isHomeTeam) { /* ... (używa stałych rozmiarów) ... */
+                 if (!gk) return; const goalTop = canvas.height / 2 - 50; const goalBottom = canvas.height / 2 + 50; const borderMargin = 10; const penaltyAreaFront = isHomeTeam ? borderMargin + 120 : canvas.width - borderMargin - 120;
                  gk.y = Math.max(goalTop + gk.radius, Math.min(goalBottom - gk.radius, gk.y));
                  if (isHomeTeam) { gk.x = Math.max(borderMargin + gk.radius, Math.min(penaltyAreaFront - gk.radius, gk.x)); } else { gk.x = Math.max(penaltyAreaFront + gk.radius, Math.min(canvas.width - borderMargin - gk.radius, gk.x)); }
             }
-            function checkGoal() { /* ... (dodano skalowanie) ... */
-                 if (!ball) return; const borderMargin = 10 * canvasScale; const goalHeight = 50 * canvasScale; const goalLineYTop = canvas.height/2 - goalHeight; const goalLineYBottom = canvas.height/2 + goalHeight; const goalPostRestitution = -0.5 * COLLISION_RESTITUTION;
+            function checkGoal() { /* ... (używa stałych rozmiarów) ... */
+                 if (!ball) return; const borderMargin = 10; const goalHeight = 50; const goalLineYTop = canvas.height/2 - goalHeight; const goalLineYBottom = canvas.height/2 + goalHeight; const goalPostRestitution = -0.5 * COLLISION_RESTITUTION;
                  if (ball.x - ball.radius < borderMargin) { if (ball.y > goalLineYTop && ball.y < goalLineYBottom) { score.away++; updateScoreboard(); resetPositionsAfterGoal(false); } else { ball.x = borderMargin + ball.radius; ball.vx *= goalPostRestitution; } }
                  if (ball.x + ball.radius > canvas.width - borderMargin) { if (ball.y > goalLineYTop && ball.y < goalLineYBottom) { score.home++; updateScoreboard(); resetPositionsAfterGoal(true); } else { ball.x = canvas.width - borderMargin - ball.radius; ball.vx *= goalPostRestitution; } }
             }
-            function circleCollision(c1, c2) { /* ... (bez zmian) ... */
-                if (!c1 || !c2) return false; const dx = c1.x - c2.x; const dy = c1.y - c2.y; const distance = Math.hypot(dx, dy); const radiiSum = c1.radius + c2.radius; return distance < radiiSum;
-            }
-             function resolveCollision(obj1, obj2) { /* ... (jak poprzednio, z COLLISION_RESTITUTION i boostem) ... */
-                 if (!obj1 || !obj2) return;
-                 const dx = obj2.x - obj1.x; const dy = obj2.y - obj1.y; const distance = Math.hypot(dx, dy); const radiiSum = obj1.radius + obj2.radius; const overlap = radiiSum - distance;
-
-                 if (overlap > 0 && distance > 0.01) {
-                     const nx = dx / distance; const ny = dy / distance;
-                     const moveCorrection = overlap / 2; obj1.x -= nx * moveCorrection; obj1.y -= ny * moveCorrection; obj2.x += nx * moveCorrection; obj2.y += ny * moveCorrection;
-                     const dvx = obj1.vx - obj2.vx; const dvy = obj1.vy - obj2.vy; const dotProduct = dvx * nx + dvy * ny;
-                     if (dotProduct < 0) {
-                          let restitution = (obj1 !== ball && obj2 !== ball) ? PLAYER_COLLISION_RESTITUTION : COLLISION_RESTITUTION;
-                          const mass1 = (obj1 === ball) ? 0.5 : 1.0; const mass2 = (obj2 === ball) ? 0.5 : 1.0; const invMassSum = (1 / mass1) + (1 / mass2);
-                          let impulse = (-(1 + restitution) * dotProduct) / invMassSum;
-                          obj1.vx += (impulse / mass1) * nx; obj1.vy += (impulse / mass1) * ny; obj2.vx -= (impulse / mass2) * nx; obj2.vy -= (impulse / mass2) * ny;
-                          if (obj1 === ball || obj2 === ball) { ball.vx *= BALL_COLLISION_BOOST; ball.vy *= BALL_COLLISION_BOOST; }
-                     }
-                 }
+            function circleCollision(c1, c2) { /* ... (bez zmian) ... */ if (!c1 || !c2) return false; const dx = c1.x - c2.x; const dy = c1.y - c2.y; const distance = Math.hypot(dx, dy); const radiiSum = c1.radius + c2.radius; return distance < radiiSum; }
+            function resolveCollision(obj1, obj2) { /* ... (bez zmian) ... */
+                 if (!obj1 || !obj2) return; const dx = obj2.x - obj1.x; const dy = obj2.y - obj1.y; const distance = Math.hypot(dx, dy); const radiiSum = obj1.radius + obj2.radius; const overlap = radiiSum - distance;
+                 if (overlap > 0 && distance > 0.01) { const nx = dx / distance; const ny = dy / distance; const moveCorrection = overlap / 2; obj1.x -= nx * moveCorrection; obj1.y -= ny * moveCorrection; obj2.x += nx * moveCorrection; obj2.y += ny * moveCorrection; const dvx = obj1.vx - obj2.vx; const dvy = obj1.vy - obj2.vy; const dotProduct = dvx * nx + dvy * ny;
+                 if (dotProduct < 0) { let restitution = (obj1 !== ball && obj2 !== ball) ? PLAYER_COLLISION_RESTITUTION : COLLISION_RESTITUTION; const mass1 = (obj1 === ball) ? 0.5 : 1.0; const mass2 = (obj2 === ball) ? 0.5 : 1.0; const invMassSum = (1 / mass1) + (1 / mass2); let impulse = (-(1 + restitution) * dotProduct) / invMassSum; obj1.vx += (impulse / mass1) * nx; obj1.vy += (impulse / mass1) * ny; obj2.vx -= (impulse / mass2) * nx; obj2.vy -= (impulse / mass2) * ny; if (obj1 === ball || obj2 === ball) { ball.vx *= BALL_COLLISION_BOOST; ball.vy *= BALL_COLLISION_BOOST; } } }
              }
-            function checkCollisions() { /* ... (bez zmian) ... */
-                 if (!ball) return; const allPlayers = [...fieldPlayers, ...fieldPlayersAway, goalkeeper, goalkeeperAway].filter(p => p); const allObjects = [...allPlayers, ball];
-                 for (let i = 0; i < allObjects.length; i++) { for (let j = i + 1; j < allObjects.length; j++) { if (circleCollision(allObjects[i], allObjects[j])) { resolveCollision(allObjects[i], allObjects[j]); } } }
-            }
+            function checkCollisions() { /* ... (bez zmian) ... */ if (!ball) return; const allPlayers = [...fieldPlayers, ...fieldPlayersAway, goalkeeper, goalkeeperAway].filter(p => p); const allObjects = [...allPlayers, ball]; for (let i = 0; i < allObjects.length; i++) { for (let j = i + 1; j < allObjects.length; j++) { if (circleCollision(allObjects[i], allObjects[j])) { resolveCollision(allObjects[i], allObjects[j]); } } } }
 
-             // --- SZTUCZNA INTELIGENCJA (AI) ---
+
+            // --- SZTUCZNA INTELIGENCJA (AI) ---
             function aiMove() {
                 if (!ball || !goalkeeperAway || fieldPlayersAway.length === 0 || !canvas) return;
-
                 const defendLineX = canvas.width * 0.65;
-                const borderMargin = 10 * canvasScale;
+                const borderMargin = 10;
 
                 // --- Logika Bramkarza AI ---
                 let targetGkY = ball.y;
-                const goalTopLimit = canvas.height / 2 - (50 * canvasScale) + goalkeeperAway.radius;
-                const goalBottomLimit = canvas.height / 2 + (50 * canvasScale) - goalkeeperAway.radius;
+                const goalTopLimit = canvas.height / 2 - 50 + GOALKEEPER_RADIUS; // Używamy stałej
+                const goalBottomLimit = canvas.height / 2 + 50 - GOALKEEPER_RADIUS;
                 targetGkY = Math.max(goalTopLimit, Math.min(goalBottomLimit, targetGkY));
                 let dyGK = targetGkY - goalkeeperAway.y;
-
-                if (Math.abs(dyGK) > 5 * canvasScale && ball.x > canvas.width * 0.4) {
-                    // Ustawienie prędkości, nie dodawanie impulsu
-                    goalkeeperAway.vy = Math.sign(dyGK) * AI_GOALKEEPER_SPEED * canvasScale;
-                } else {
-                     // Stopniowe hamowanie jeśli nie trzeba się ruszać
-                    goalkeeperAway.vy *= 0.85;
-                }
-                 // Ruch poziomy bramkarza - bardzo prosty
-                 if(ball.x > canvas.width * 0.6 && Math.abs(ball.x - goalkeeperAway.x) > 20 * canvasScale) {
-                     goalkeeperAway.vx = Math.sign(ball.x - goalkeeperAway.x) * AI_GOALKEEPER_SPEED * 0.2 * canvasScale;
-                 } else {
-                     goalkeeperAway.vx *= 0.85;
-                 }
-
+                if (Math.abs(dyGK) > 5 && ball.x > canvas.width * 0.4) {
+                    goalkeeperAway.vy = Math.sign(dyGK) * AI_GOALKEEPER_SPEED;
+                } else { goalkeeperAway.vy *= 0.85; }
+                if(ball.x > canvas.width * 0.6 && Math.abs(ball.x - goalkeeperAway.x) > 20) {
+                     goalkeeperAway.vx = Math.sign(ball.x - goalkeeperAway.x) * AI_GOALKEEPER_SPEED * 0.2;
+                 } else { goalkeeperAway.vx *= 0.85; }
 
                 // --- Logika Zawodników z Pola AI ---
-                let closestPlayerIndex = -1;
-                let minDistSq = Infinity;
+                let closestPlayerIndex = -1; let minDistSq = Infinity;
+                fieldPlayersAway.forEach((player, index) => { if (!player) return; let dx = ball.x - player.x; let dy = ball.y - player.y; let distSq = dx * dx + dy * dy; if (distSq < minDistSq) { minDistSq = distSq; closestPlayerIndex = index; } });
 
-                // Znajdź najbliższego *wolnego* zawodnika AI do piłki
                 fieldPlayersAway.forEach((player, index) => {
                     if (!player) return;
-                     // Sprawdź, czy gracz nie jest już zajęty (np. dopiero co kopnął) - można dodać flagę 'cooldown'
-                     // if (player.cooldown > 0) return;
-                    let dx = ball.x - player.x;
-                    let dy = ball.y - player.y;
-                    let distSq = dx * dx + dy * dy;
-
-                    // Preferuj graczy przed piłką (na połowie przeciwnika) jeśli AI atakuje
-                    if (ball.x < defendLineX) { // Jeśli piłka jest na połowie gracza
-                         distSq *= (player.x < ball.x ? 1.5 : 1); // Lekko preferuj graczy za piłką (do obrony)
-                    } else { // Jeśli piłka jest na połowie AI
-                         distSq *= (player.x > ball.x ? 1.5 : 1); // Lekko preferuj graczy przed piłką (do ataku)
-                    }
-
-
-                    if (distSq < minDistSq) {
-                        minDistSq = distSq;
-                        closestPlayerIndex = index;
-                    }
-                });
-
-
-                // Wykonaj ruch dla każdego zawodnika AI
-                fieldPlayersAway.forEach((player, index) => {
-                    if (!player) return;
-
-                    if (index === closestPlayerIndex && minDistSq < AI_INTERCEPT_RADIUS_SQ * canvasScale * canvasScale ) { // Tylko jeśli jest wystarczająco blisko
-                        // **Aktywny ruch:** Ustawienie prędkości początkowej w kierunku piłki (symulacja kopnięcia)
-                        let dxToBall = ball.x - player.x;
-                        let dyToBall = ball.y - player.y;
-                        let distToBall = Math.hypot(dxToBall, dyToBall);
-
+                    if (index === closestPlayerIndex && minDistSq < AI_INTERCEPT_RADIUS_SQ) {
+                        let dxToBall = ball.x - player.x; let dyToBall = ball.y - player.y; let distToBall = Math.hypot(dxToBall, dyToBall);
                         if (distToBall > 0) {
-                            // Nadaj prędkość początkową
-                            player.vx = (dxToBall / distToBall) * AI_KICK_POWER * canvasScale;
-                            player.vy = (dyToBall / distToBall) * AI_KICK_POWER * canvasScale;
-                             // Opcjonalnie: dodaj flagę cooldown, aby nie kopał ciągle
-                             // player.cooldown = 10; // np. 10 klatek przerwy
-                        } else {
-                             // Jeśli jest na piłce, daj losowy mały ruch
-                             player.vx = (Math.random() - 0.5) * 2 * canvasScale;
-                             player.vy = (Math.random() - 0.5) * 2 * canvasScale;
-                        }
-
+                            player.vx = (dxToBall / distToBall) * AI_KICK_POWER; // Nadaj prędkość początkową
+                            player.vy = (dyToBall / distToBall) * AI_KICK_POWER;
+                        } else { player.vx = (Math.random() - 0.5) * 2; player.vy = (Math.random() - 0.5) * 2; } // Losowy ruch gdy na piłce
                     } else {
-                        // **Pasywny ruch:** Powrót na pozycję obronną lub utrzymanie pozycji
-                        // Celuj w swoją domyślną strefę
-                         let targetX = defendLineX + (canvas.width - defendLineX) * Math.random() * 0.5; // Gdzieś na swojej połowie
-                         let targetY = borderMargin + (canvas.height - 2*borderMargin) * Math.random(); // Losowa wysokość
-
-                         let dxToTarget = targetX - player.x;
-                         let dyToTarget = targetY - player.y;
-                         let distToTarget = Math.hypot(dxToTarget, dyToTarget);
-
-                         // Jeśli jest daleko od celu, ruszaj powoli
-                         if (distToTarget > 50 * canvasScale) {
-                             player.vx += (dxToTarget / distToTarget) * AI_PASSIVE_MOVE_SPEED * 0.1 * canvasScale; // Bardzo mały impuls, aby dryfował
-                             player.vy += (dyToTarget / distToTarget) * AI_PASSIVE_MOVE_SPEED * 0.1 * canvasScale;
-                             // Ogranicz prędkość dryfowania
-                              let currentSpeed = Math.hypot(player.vx, player.vy);
-                              if (currentSpeed > AI_PASSIVE_MOVE_SPEED * canvasScale) {
-                                  player.vx = (player.vx / currentSpeed) * AI_PASSIVE_MOVE_SPEED * canvasScale;
-                                  player.vy = (player.vy / currentSpeed) * AI_PASSIVE_MOVE_SPEED * canvasScale;
-                              }
-                         } else {
-                              // Blisko celu, hamuj
-                              player.vx *= 0.9;
-                              player.vy *= 0.9;
-                         }
+                        // Pasywny ruch: dryfowanie lub hamowanie
+                         player.vx *= 0.9; // Pasywni gracze głównie hamują
+                         player.vy *= 0.9;
+                         // Można dodać bardzo delikatne dryfowanie do pozycji obronnej, ale najpierw upewnijmy się, że kopnięcie działa
                     }
-                      // Zmniejsz cooldown jeśli istnieje
-                      // if (player.cooldown > 0) player.cooldown--;
                 });
             }
 
@@ -662,78 +327,100 @@
                 requestAnimationFrame(gameLoop);
             }
 
-            // --- OBSŁUGA MYSZY (PRZECIĄGANIE) ---
-            function canvasMouseDown(e) { /* ... Dodano skalowanie promienia ... */
-                 if (!canvas) return; const rect = canvas.getBoundingClientRect(); const mx = e.clientX - rect.left; const my = e.clientY - rect.top;
-                 for (let i = 0; i < fieldPlayers.length; i++) { const p = fieldPlayers[i]; if (p && Math.hypot(mx - p.x, my - p.y) < p.radius + (5 * canvasScale)) { draggingPlayerIndex = i; isDragging = true; dragStart = { x: p.x, y: p.y }; dragCurrent = { x: mx, y: my }; canvas.style.cursor = 'grabbing'; return; } }
-                 if (goalkeeper && Math.hypot(mx - goalkeeper.x, my - goalkeeper.y) < goalkeeper.radius + (5 * canvasScale)) { draggingPlayerIndex = -1; isDragging = true; dragStart = { x: goalkeeper.x, y: goalkeeper.y }; dragCurrent = { x: mx, y: my }; canvas.style.cursor = 'grabbing'; return; }
+            // --- OBSŁUGA MYSZY (PRZECIĄGANIE) - POPRAWIONA ---
+            function getMousePos(canvas, evt) {
+                if (!canvas) return { x: 0, y: 0 };
+                const rect = canvas.getBoundingClientRect();
+                // Przelicz koordynaty kliknięcia (evt.clientX/Y) na koordynaty wewnętrzne canvasa (800x500)
+                const scaleX = canvas.width / rect.width; // Stosunek rozdzielczości wewn. do wyświetlanej
+                const scaleY = canvas.height / rect.height;
+                return {
+                    x: (evt.clientX - rect.left) * scaleX,
+                    y: (evt.clientY - rect.top) * scaleY
+                };
             }
-            function canvasMouseMove(e) { /* ... (bez zmian) ... */
-                 if (!isDragging || !canvas) return; const rect = canvas.getBoundingClientRect(); dragCurrent.x = e.clientX - rect.left; dragCurrent.y = e.clientY - rect.top;
-            }
-            function canvasMouseUp(e) { /* ... Dodano skalowanie siły ... */
-                 if (!isDragging || draggingPlayerIndex === null || !canvas) return;
-                 const dx = dragStart.x - dragCurrent.x; const dy = dragStart.y - dragCurrent.y; let pullLength = Math.hypot(dx, dy); let pullScale = Math.min(1, pullLength / (MAX_PULL_LENGTH * canvasScale)); // Skalowana długość max
-                 const baseImpulse = pullLength * DRAG_IMPULSE_SCALE * pullScale * canvasScale; // Skalujemy też siłę
-                 const impulseX = (dx / (pullLength || 1)) * baseImpulse; const impulseY = (dy / (pullLength || 1)) * baseImpulse;
 
-                 if (draggingPlayerIndex >= 0 && fieldPlayers[draggingPlayerIndex]) { fieldPlayers[draggingPlayerIndex].vx = impulseX; fieldPlayers[draggingPlayerIndex].vy = impulseY; }
-                 else if (draggingPlayerIndex === -1 && goalkeeper) { goalkeeper.vx = impulseX * 0.7; goalkeeper.vy = impulseY * 0.7; } // Bramkarz słabiej
+            function canvasMouseDown(e) {
+                 if (!canvas) return;
+                 const pos = getMousePos(canvas, e);
+                 // Sprawdź kliknięcie na zawodników pola (używając stałych promieni)
+                 for (let i = 0; i < fieldPlayers.length; i++) {
+                     const p = fieldPlayers[i];
+                     if (p && Math.hypot(pos.x - p.x, pos.y - p.y) < PLAYER_RADIUS + 5) { // +5 pixel tolerance
+                         draggingPlayerIndex = i;
+                         isDragging = true;
+                         dragStartCanvas = { x: p.x, y: p.y }; // Zapisz pozycję gracza
+                         dragCurrentCanvas = pos; // Zapisz pozycję myszy
+                         canvas.style.cursor = 'grabbing';
+                         return;
+                     }
+                 }
+                 // Sprawdź kliknięcie na bramkarza
+                 if (goalkeeper && Math.hypot(pos.x - goalkeeper.x, pos.y - goalkeeper.y) < GOALKEEPER_RADIUS + 5) {
+                    draggingPlayerIndex = -1;
+                    isDragging = true;
+                    dragStartCanvas = { x: goalkeeper.x, y: goalkeeper.y };
+                    dragCurrentCanvas = pos;
+                    canvas.style.cursor = 'grabbing';
+                    return;
+                 }
+            }
+            function canvasMouseMove(e) {
+                 if (!isDragging || !canvas) return;
+                 dragCurrentCanvas = getMousePos(canvas, e); // Aktualizuj pozycję myszy w koordynatach canvasa
+            }
+            function canvasMouseUp(e) {
+                 if (!isDragging || draggingPlayerIndex === null || !canvas) return;
+
+                 // Oblicz wektor naciągu w koordynatach canvasa
+                 const dx = dragStartCanvas.x - dragCurrentCanvas.x;
+                 const dy = dragStartCanvas.y - dragCurrentCanvas.y;
+                 let pullLength = Math.hypot(dx, dy);
+                 let pullScale = Math.min(1, pullLength / MAX_PULL_LENGTH); // Skalowanie siły naciągu
+
+                 // Oblicz impuls
+                 const baseImpulse = pullLength * DRAG_IMPULSE_SCALE * pullScale;
+                 const impulseX = (dx / (pullLength || 1)) * baseImpulse;
+                 const impulseY = (dy / (pullLength || 1)) * baseImpulse;
+
+                 // Zastosuj impuls do gracza
+                 if (draggingPlayerIndex >= 0 && fieldPlayers[draggingPlayerIndex]) {
+                     fieldPlayers[draggingPlayerIndex].vx = impulseX;
+                     fieldPlayers[draggingPlayerIndex].vy = impulseY;
+                 } else if (draggingPlayerIndex === -1 && goalkeeper) {
+                      goalkeeper.vx = impulseX * 0.7; // Bramkarz słabiej
+                      goalkeeper.vy = impulseY * 0.7;
+                 }
 
                  isDragging = false; draggingPlayerIndex = null; canvas.style.cursor = 'grab';
                  aiMove(); // Wywołaj ruch AI
             }
-             function canvasMouseLeave(e) { /* ... (bez zmian) ... */
-                 if (isDragging) { isDragging = false; draggingPlayerIndex = null; if (canvas) canvas.style.cursor = 'grab'; }
-             }
-             function addCanvasEvents() { /* ... (bez zmian) ... */
-                  if (!canvas) return; canvas.addEventListener("mousedown", canvasMouseDown); canvas.addEventListener("mousemove", canvasMouseMove); canvas.addEventListener("mouseup", canvasMouseUp); canvas.addEventListener("mouseleave", canvasMouseLeave);
-             }
+             function canvasMouseLeave(e) { /* ... (bez zmian) ... */ if (isDragging) { isDragging = false; draggingPlayerIndex = null; if (canvas) canvas.style.cursor = 'grab'; } }
+             function addCanvasEvents() { if (!canvas) return; canvas.addEventListener("mousedown", canvasMouseDown); canvas.addEventListener("mousemove", canvasMouseMove); canvas.addEventListener("mouseup", canvasMouseUp); canvas.addEventListener("mouseleave", canvasMouseLeave); }
+
 
             // --- WYBÓR DRUŻYN ---
-            function populateTeamSelections() { /* ... (bez zmian) ... */
-                 const homeContainer = document.getElementById("homeTeamContainer"); const awayContainer = document.getElementById("awayTeamContainer"); if (!homeContainer || !awayContainer) return; homeContainer.innerHTML = ""; awayContainer.innerHTML = ""; selectedHomeTeam = null; selectedAwayTeam = null;
-                 Object.keys(teamsData).forEach(league => {
-                     const leagueData = teamsData[league];
-                     const createLeagueSection = (targetContainer, isHome) => {
-                         let leagueDiv = document.createElement("div"); leagueDiv.className = "league-section"; let leagueHeader = document.createElement("div"); leagueHeader.className = "league-header"; let leagueLogo = document.createElement("img"); leagueLogo.src = leagueData.leagueLogo; leagueLogo.alt = league; let leagueName = document.createElement("span"); leagueName.innerText = league; leagueHeader.appendChild(leagueLogo); leagueHeader.appendChild(leagueName); leagueDiv.appendChild(leagueHeader);
-                         let teamInnerContainer = document.createElement("div"); teamInnerContainer.style.display = "flex"; teamInnerContainer.style.gap = "15px";
-                         leagueData.teams.forEach(team => {
-                             let teamDiv = document.createElement("div"); teamDiv.className = "team-option"; teamDiv.dataset.team = team.name; teamDiv.innerHTML = `<img src="${team.logo}" alt="${team.name}" /><p>${team.name}</p>`;
-                             teamDiv.addEventListener("click", function () { Array.from(targetContainer.querySelectorAll('.team-option.selected')).forEach(el => el.classList.remove("selected")); this.classList.add("selected"); if (isHome) selectedHomeTeam = team.name; else selectedAwayTeam = team.name; });
-                             teamInnerContainer.appendChild(teamDiv);
-                         }); leagueDiv.appendChild(teamInnerContainer); targetContainer.appendChild(leagueDiv);
-                     }; createLeagueSection(homeContainer, true); createLeagueSection(awayContainer, false);
-                 });
-            }
+            function populateTeamSelections() { /* ... (bez zmian) ... */ const homeContainer = document.getElementById("homeTeamContainer"); const awayContainer = document.getElementById("awayTeamContainer"); if (!homeContainer || !awayContainer) return; homeContainer.innerHTML = ""; awayContainer.innerHTML = ""; selectedHomeTeam = null; selectedAwayTeam = null; Object.keys(teamsData).forEach(league => { const leagueData = teamsData[league]; const createLeagueSection = (targetContainer, isHome) => { let leagueDiv = document.createElement("div"); leagueDiv.className = "league-section"; let leagueHeader = document.createElement("div"); leagueHeader.className = "league-header"; let leagueLogo = document.createElement("img"); leagueLogo.src = leagueData.leagueLogo; leagueLogo.alt = league; let leagueName = document.createElement("span"); leagueName.innerText = league; leagueHeader.appendChild(leagueLogo); leagueHeader.appendChild(leagueName); leagueDiv.appendChild(leagueHeader); let teamInnerContainer = document.createElement("div"); teamInnerContainer.style.display = "flex"; teamInnerContainer.style.gap = "15px"; leagueData.teams.forEach(team => { let teamDiv = document.createElement("div"); teamDiv.className = "team-option"; teamDiv.dataset.team = team.name; teamDiv.innerHTML = `<img src="${team.logo}" alt="${team.name}" /><p>${team.name}</p>`; teamDiv.addEventListener("click", function () { Array.from(targetContainer.querySelectorAll('.team-option.selected')).forEach(el => el.classList.remove("selected")); this.classList.add("selected"); if (isHome) selectedHomeTeam = team.name; else selectedAwayTeam = team.name; }); teamInnerContainer.appendChild(teamDiv); }); leagueDiv.appendChild(teamInnerContainer); targetContainer.appendChild(leagueDiv); }; createLeagueSection(homeContainer, true); createLeagueSection(awayContainer, false); }); }
 
             // --- FUNKCJE USTAWIEŃ (Rozmiar czcionki) ---
             const fontSizeOptions = document.querySelectorAll('.fontSizeOption');
-            function applyFontSize(size) { /* ... (bez zmian) ... */
-                 if (!['small', 'medium', 'large'].includes(size)) { size = 'medium'; } document.body.classList.remove('font-size-small', 'font-size-medium', 'font-size-large'); document.body.classList.add(`font-size-${size}`); localStorage.setItem('gameFontSize', size); fontSizeOptions.forEach(button => { if (button) { button.classList.remove('active-size'); if (button.dataset.size === size) { button.classList.add('active-size'); } } }); console.log("Zastosowano rozmiar czcionki:", size);
-            }
-            function loadFontSize() { /* ... (bez zmian) ... */
-                 const savedSize = localStorage.getItem('gameFontSize') || 'medium'; applyFontSize(savedSize);
-            }
+            function applyFontSize(size) { /* ... (bez zmian) ... */ if (!['small', 'medium', 'large'].includes(size)) { size = 'medium'; } document.body.classList.remove('font-size-small', 'font-size-medium', 'font-size-large'); document.body.classList.add(`font-size-${size}`); localStorage.setItem('gameFontSize', size); fontSizeOptions.forEach(button => { if (button) { button.classList.remove('active-size'); if (button.dataset.size === size) { button.classList.add('active-size'); } } }); console.log("Zastosowano rozmiar czcionki:", size); }
+            function loadFontSize() { /* ... (bez zmian) ... */ const savedSize = localStorage.getItem('gameFontSize') || 'medium'; applyFontSize(savedSize); }
 
              // --- FUNKCJE POMOCNICZE MODALI ---
-             function openModal(modalElement) { /* ... (bez zmian) ... */
-                 if(modalElement) modalElement.classList.remove('hidden');
-             }
-              function closeModal(modalElement) { /* ... (bez zmian) ... */
-                 if(modalElement) modalElement.classList.add('hidden');
-             }
+             function openModal(modalElement) { /* ... (bez zmian) ... */ if(modalElement) modalElement.classList.remove('hidden'); }
+             function closeModal(modalElement) { /* ... (bez zmian) ... */ if(modalElement) modalElement.classList.add('hidden'); }
 
             // --- SKALOWANIE CANVAS ---
             function resizeCanvas() {
                 if (!canvas) return;
-                const gameScreenDiv = document.getElementById('gameScreen');
-                if (!gameScreenDiv) return;
+                const gameContainer = canvas.parentElement; // Zakładamy, że canvas jest w kontenerze #gameScreen
+                if (!gameContainer) return;
 
-                const availableWidth = gameScreenDiv.clientWidth * 0.95; // 95% szerokości kontenera
-                const availableHeight = window.innerHeight * 0.7; // 70% wysokości okna (zostawia miejsce na UI)
+                const availableWidth = gameContainer.clientWidth * 0.98; // Zostaw mały margines
+                const availableHeight = window.innerHeight * 0.8; // Zostaw miejsce na UI
 
-                const aspectRatio = 800 / 500; // Bazowe proporcje
+                const aspectRatio = 800 / 500; // Bazowe proporcje wewnętrzne
 
                 let newWidth = availableWidth;
                 let newHeight = newWidth / aspectRatio;
@@ -743,46 +430,26 @@
                     newWidth = newHeight * aspectRatio;
                 }
 
-                canvas.width = 800; // Ustawiamy bazową rozdzielczość wewnętrzną
+                // Ustaw stałą rozdzielczość wewnętrzną
+                canvas.width = 800;
                 canvas.height = 500;
-                canvas.style.width = `${newWidth}px`; // Ustawiamy rozmiar wyświetlania CSS
+                // Ustaw rozmiar wyświetlania CSS
+                canvas.style.width = `${newWidth}px`;
                 canvas.style.height = `${newHeight}px`;
 
-                canvasScale = newWidth / 800; // Obliczamy skalę do użycia w fizyce/rysowaniu
-
-                 // Po zmianie rozmiaru canvasa, jeśli gra jest aktywna, przerysuj i zaktualizuj promienie obiektów
-                 if(gameAnimating) {
-                     // Trzeba by zaktualizować promienie wszystkich obiektów i przeliczyć pozycje,
-                     // ale prościej jest po prostu reinicjować grę przy resize, jeśli to akceptowalne
-                     // initGame(); // To może być denerwujące, jeśli resetuje grę w trakcie
-                     // Lub zaktualizuj tylko promienie:
-                      updateObjectScales();
-                 }
+                // Nie potrzebujemy już canvasScale w logice gry
             }
-             function updateObjectScales() {
-                 if (!canvas) return;
-                 const scaledPlayerRadius = PLAYER_RADIUS * canvasScale;
-                 const scaledGkRadius = GOALKEEPER_RADIUS * canvasScale;
-                 if(ball) ball.radius = BALL_RADIUS * canvasScale;
-                 fieldPlayers.forEach(p => { if(p) p.radius = scaledPlayerRadius; });
-                 fieldPlayersAway.forEach(p => { if(p) p.radius = scaledPlayerRadius; });
-                 if(goalkeeper) goalkeeper.radius = scaledGkRadius;
-                 if(goalkeeperAway) goalkeeperAway.radius = scaledGkRadius;
-             }
-
 
             // --- GŁÓWNA INICJALIZACJA (DOMContentLoaded) ---
             document.addEventListener("DOMContentLoaded", () => {
-                loadFontSize(); // Wczytaj ustawienia
+                loadFontSize();
+                window.addEventListener('resize', resizeCanvas); // Zmiana rozmiaru okna -> zmiana rozmiaru canvas
 
-                // Skalowanie canvasa przy zmianie rozmiaru okna
-                window.addEventListener('resize', resizeCanvas);
-
-                // Przypisanie Event Listenerów
+                // Event Listenery
                 const startMatchBtn = document.getElementById("startMatchBtn");
                 const startMatchFromSelectBtn = document.getElementById("startMatchFromSelectBtn");
                 const backToStartBtn = document.getElementById("backToStartBtn");
-                const backToMenuFromSelect = document.getElementById("backToMenuFromSelect"); // Przycisk powrotu z wyboru drużyn
+                const backToMenuFromSelect = document.getElementById("backToMenuFromSelect");
                 const btnPlayerDB = document.getElementById("btnPlayerDB");
                 const btnLanguage = document.getElementById("btnLanguage");
                 const btnSettings = document.getElementById("btnSettings");
@@ -792,35 +459,26 @@
                 const addPlayerForm = document.getElementById("addPlayerForm");
                 const langOptions = document.querySelectorAll(".langOption");
 
+                // Nawigacja
                 if (startMatchBtn) startMatchBtn.addEventListener("click", () => { closeModal(startScreen); openModal(teamSelectScreen); populateTeamSelections(); });
-                if (backToMenuFromSelect) backToMenuFromSelect.addEventListener("click", () => { closeModal(teamSelectScreen); openModal(startScreen); }); // Powrót z wyboru
-
-                if (startMatchFromSelectBtn) startMatchFromSelectBtn.addEventListener("click", () => {
-                     if (!selectedHomeTeam || !selectedAwayTeam) { alert("Proszę wybrać obie drużyny!"); return; }
-                     if (selectedHomeTeam === selectedAwayTeam) { alert("Drużyny muszą być różne!"); return; }
-                     closeModal(teamSelectScreen); openModal(gameScreen);
-                     initGame(); // Init po pokazaniu ekranu gry, aby resizeCanvas zadziałał poprawnie
-                     addCanvasEvents(); startTimer(); gameAnimating = true; requestAnimationFrame(gameLoop);
-                });
+                if (backToMenuFromSelect) backToMenuFromSelect.addEventListener("click", () => { closeModal(teamSelectScreen); openModal(startScreen); });
+                if (startMatchFromSelectBtn) startMatchFromSelectBtn.addEventListener("click", () => { if (!selectedHomeTeam || !selectedAwayTeam) { alert("Proszę wybrać obie drużyny!"); return; } if (selectedHomeTeam === selectedAwayTeam) { alert("Drużyny muszą być różne!"); return; } closeModal(teamSelectScreen); openModal(gameScreen); initGame(); addCanvasEvents(); startTimer(); gameAnimating = true; requestAnimationFrame(gameLoop); });
                 if (backToStartBtn) backToStartBtn.addEventListener("click", () => { gameAnimating = false; stopTimer(); closeModal(gameScreen); openModal(startScreen); resetGameFull(); });
 
+                // Modale
                 if(btnPlayerDB) btnPlayerDB.addEventListener("click", () => openModal(playerDBModal));
                 if(btnLanguage) btnLanguage.addEventListener("click", () => openModal(languageModal));
-                if(btnSettings) btnSettings.addEventListener("click", () => {
-                     openModal(settingsModal); const currentSize = localStorage.getItem('gameFontSize') || 'medium';
-                     fontSizeOptions.forEach(button => { if(button) button.classList.toggle('active-size', button.dataset.size === currentSize); });
-                });
-
+                if(btnSettings) btnSettings.addEventListener("click", () => { openModal(settingsModal); const currentSize = localStorage.getItem('gameFontSize') || 'medium'; fontSizeOptions.forEach(button => { if(button) button.classList.toggle('active-size', button.dataset.size === currentSize); }); });
                 if(closePlayerDBBtn) closePlayerDBBtn.addEventListener("click", () => closeModal(playerDBModal));
                 if(closeLanguageModalBtn) closeLanguageModalBtn.addEventListener("click", () => closeModal(languageModal));
                 if(closeSettingsModalBtn) closeSettingsModalBtn.addEventListener("click", () => closeModal(settingsModal));
-
                 fontSizeOptions.forEach(button => { if(button) button.addEventListener('click', () => applyFontSize(button.dataset.size)); });
 
+                // Inne
                 if(addPlayerForm) addPlayerForm.addEventListener("submit", (e) => { /* ... (logika dodawania gracza) ... */ e.preventDefault(); const name = document.getElementById("playerName")?.value; const team = document.getElementById("playerTeam")?.value; const rating = document.getElementById("playerRating")?.value; if(name && team && rating){ console.log("Dodawanie gracza:", { name, team, rating }); const playerListDiv = document.getElementById("playerList"); if(playerListDiv){ const newPlayerEntry = document.createElement('p'); newPlayerEntry.textContent = `${name} (${team}) - Ocena: ${rating}`; playerListDiv.appendChild(newPlayerEntry); } e.target.reset(); } else { console.warn("Formularz dodawania gracza: brakuje danych"); } });
                 langOptions.forEach(button => { if(button) button.addEventListener("click", () => { const lang = button.dataset.lang; console.log("Zmieniono język na:", lang); /* logika */ closeModal(languageModal); }); });
 
-                console.log("MiniSoccer v3 gotowe!");
+                console.log("MiniSoccer v4 - Drag Fix ready!");
             });
 
         })();
