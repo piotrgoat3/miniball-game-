@@ -57,22 +57,15 @@
  #scoreboard { font-size: calc(var(--font-size-scoreboard) * 0.9); font-weight: bold; margin: 0; }
  #matchTimer { font-size: calc(var(--font-size-timer) * 0.9); margin-top: 2px; color: #eee; }
 
- /* === ZMIANA: Przywrócenie wyglądu canvasa === */
+ /* === Canvas przezroczysty === */
  canvas {
-     background-color: #2A9D8F; /* Przywrócenie koloru murawy */
-     /* background-color: transparent; */ /* USUNIĘTE */
-     border: 3px solid #fff; /* Przywrócenie białego obramowania */
-     border-radius: 10px;
-     display: block;
-     margin: 0 auto; /* Wyśrodkowanie canvasa */
-     box-shadow: 0px 6px 12px rgba(0,0,0,0.3); /* Opcjonalny cień */
+     background-color: transparent; /* Tło przezroczyste */
+     /* border: 3px solid #fff; */ /* Usunięte obramowanie */
+     border-radius: 10px; display: block; margin: 0 auto;
      cursor: grab;
-     max-width: 90%; /* Ograniczenie szerokości, aby nie rozciągał się za bardzo */
-     max-height: calc(100vh - 150px); /* Ograniczenie wysokości */
-     /* Utrzymanie proporcji 640x400 */
+     max-width: 96%; max-height: calc(100vh - 130px);
      aspect-ratio: 640 / 400;
-     width: auto; /* Szerokość dopasuje się do max-width lub aspect-ratio */
-     height: auto; /* Wysokość dopasuje się do max-height lub aspect-ratio */
+     width: auto; height: auto;
  }
  canvas:active { cursor: grabbing; }
  #backToStartBtn { font-size: var(--font-size-small-button); padding: 8px 16px; margin-top: 10px; cursor: pointer; background: rgba(200, 80, 80, 0.9); border: none; border-radius: 8px; transition: background 0.3s; box-shadow: 0px 3px 6px rgba(0,0,0,0.2); color: white; }
