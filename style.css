@@ -1,85 +1,96 @@
-/* Import czcionki Nunito */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+/* --- STYLE CSS --- */
+ :root { /* Domyślne rozmiary */ --font-size-h1: 56px; --font-size-h2: 40px; --font-size-h3: 28px; --font-size-button: 20px; --font-size-button-padding: 15px 30px; --font-size-small-button: 18px; --font-size-small-button-padding: 10px 20px; --font-size-team-option: 1rem; --font-size-scoreboard: 28px; --font-size-timer: 20px; }
+ body {
+     font-family: "Nunito", sans-serif;
+     /* === ZMIANA: Usunięto statyczne tło Anfield, dodano domyślny kolor === */
+     background-color: #1a1a1a; /* Domyślne ciemne tło dla menu */
+     /* background: url("anfield_top_down.jpg") no-repeat center center fixed; */ /* USUNIĘTE */
+     background-size: cover;
+     background-position: center center;
+     background-attachment: fixed;
+     margin: 0; padding: 0; text-align: center; color: #fff; font-size: var(--font-size-team-option); transition: font-size 0.3s ease; overflow: hidden;
+ }
+ /* === ZMIANA: Przyciemnienie overlay trochę mocniejsze dla lepszego kontrastu na domyślnym tle === */
+ body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); /* Slightly darker overlay */ z-index: -1; }
+ .hidden { display: none !important; }
+ body.font-size-small { --font-size-h1: 48px; --font-size-h2: 34px; --font-size-h3: 24px; --font-size-button: 18px; --font-size-button-padding: 12px 25px; --font-size-small-button: 16px; --font-size-small-button-padding: 8px 16px; --font-size-team-option: 0.9rem; --font-size-scoreboard: 24px; --font-size-timer: 18px; }
+ body.font-size-medium {}
+ body.font-size-large { --font-size-h1: 64px; --font-size-h2: 46px; --font-size-h3: 32px; --font-size-button: 22px; --font-size-button-padding: 18px 35px; --font-size-small-button: 20px; --font-size-small-button-padding: 12px 25px; --font-size-team-option: 1.1rem; --font-size-scoreboard: 32px; --font-size-timer: 22px; }
+ #startScreen { padding: 40px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; box-sizing: border-box; }
+ #startScreen h1 { font-size: var(--font-size-h1); margin-bottom: 30px; text-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+ #startScreen button { font-size: var(--font-size-button); padding: var(--font-size-button-padding); margin: 10px; border: none; border-radius: 10px; background-color: rgba(255,255,255,0.85); cursor: pointer; color: #333; box-shadow: 0px 4px 8px rgba(0,0,0,0.2); transition: all 0.3s ease; min-width: 200px; }
+ #startScreen button:hover { background-color: #fff; transform: scale(1.05); box-shadow: 0px 5px 15px rgba(0,0,0,0.3); }
+ .start-options { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center;}
+ .start-options button { font-size: var(--font-size-small-button); padding: var(--font-size-small-button-padding); background-color: rgba(255,255,255,0.7); min-width: 150px; }
+ .start-options button:hover { background-color: #eee; }
+ #teamSelectScreen { padding: 30px 15px; box-sizing: border-box; max-height: 100vh; overflow-y: auto;}
+ #teamSelectScreen h2 { font-size: var(--font-size-h2); margin-bottom: 15px; text-shadow: 1px 1px 4px rgba(0,0,0,0.3); }
+ .team-section { margin: 20px auto; max-width: 90%; text-align: left; }
+ .team-section h3 { font-size: var(--font-size-h3); margin-bottom: 10px; padding-left: 10px; }
+ .team-container { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px; scrollbar-width: thin; scrollbar-color: #ffd700 rgba(0,0,0,0.2); min-height: 160px; }
+ .team-container::-webkit-scrollbar { height: 10px; background: rgba(0,0,0,0.1); border-radius: 5px; }
+ .team-container::-webkit-scrollbar-thumb { background: #ffd700; border-radius: 5px; border: 2px solid rgba(0,0,0,0.1); }
+ .team-option { cursor: pointer; text-align: center; border: 3px solid rgba(255,255,255,0.5); border-radius: 12px; width: 130px; padding: 10px; transition: all 0.2s ease; flex: 0 0 auto; font-size: calc(var(--font-size-team-option) * 0.9); background-color: rgba(0,0,0, 0.2); display: flex; flex-direction: column; justify-content: space-between; }
+ .team-option p { margin: 5px 0 0 0; word-wrap: break-word; }
+ .team-option.selected { border-color: #ffd700; transform: scale(1.08); background-color: rgba(255,255,255,0.2); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+ .team-option img { width: 70px; height: 70px; display: block; margin: 0 auto 8px; object-fit: contain; }
+ .league-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-left: 10px; }
+ .league-header img { width: 25px; height: 25px; }
+ #goToStadiumSelectBtn { /* Changed ID */ font-size: var(--font-size-button); padding: var(--font-size-button-padding); margin-top: 25px; cursor: pointer; background-color: rgba(60, 150, 220, 0.9); /* Blueish color for "Next" */ border: none; border-radius: 12px; transition: all 0.3s ease; box-shadow: 0px 4px 8px rgba(0,0,0,0.2); color: white; }
+ #goToStadiumSelectBtn:hover { background-color: rgba(50, 130, 200, 1); transform: scale(1.05); box-shadow: 0px 5px 15px rgba(0,0,0,0.3); }
 
-/* Globalne style */
-body {
-  font-family: 'Nunito', sans-serif;
-  background-color: #e8f5e9;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-}
+ /* === NEW STYLES for Stadium Selection === */
+ #stadiumSelectScreen { padding: 30px 15px; box-sizing: border-box; max-height: 100vh; overflow-y: auto; text-align: center; }
+ #stadiumSelectScreen h2 { font-size: var(--font-size-h2); margin-bottom: 20px; text-shadow: 1px 1px 4px rgba(0,0,0,0.3); }
+ .stadium-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 10px; margin-bottom: 25px; }
+ .stadium-option { cursor: pointer; text-align: center; border: 3px solid rgba(255,255,255,0.5); border-radius: 12px; width: 250px; /* Wider option */ padding: 15px; transition: all 0.2s ease; background-color: rgba(0,0,0, 0.3); display: flex; flex-direction: column; align-items: center; }
+ .stadium-option img { width: 100%; height: 140px; /* Fixed height for consistency */ object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+ .stadium-option p { margin: 5px 0 0 0; font-size: calc(var(--font-size-team-option) * 1.1); font-weight: bold; }
+ .stadium-option.selected { border-color: #ffd700; transform: scale(1.05); background-color: rgba(255,255,255,0.2); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+ #startMatchFromStadiumBtn { font-size: var(--font-size-button); padding: var(--font-size-button-padding); margin-top: 10px; cursor: pointer; background-color: rgba(90, 180, 90, 0.9); border: none; border-radius: 12px; transition: all 0.3s ease; box-shadow: 0px 4px 8px rgba(0,0,0,0.2); color: white; }
+ #startMatchFromStadiumBtn:hover:not(:disabled) { background-color: rgba(70, 160, 70, 1); transform: scale(1.05); }
+ #startMatchFromStadiumBtn:disabled { background-color: #aaaaaa; cursor: not-allowed; opacity: 0.7; }
+ .button-group { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+ .close-btn { /* General style for back/close buttons */ font-size: var(--font-size-small-button); padding: var(--font-size-small-button-padding); background: #dc3545; border: none; border-radius: 8px; transition: background 0.3s; box-shadow: 0px 3px 6px rgba(0,0,0,0.2); cursor: pointer; color: white; min-width: 120px; }
+ .close-btn:hover { background: #c82333; }
+/* === END OF NEW STYLES === */
 
-/* Układy ekranów */
-#startScreen,
-#gameScreen {
-  padding: 20px;
-}
-
-/* Klasa ukrywająca elementy */
-.hidden {
-  display: none !important;
-}
-
-/* Ekran startowy */
-#startScreen h1 {
-  font-size: 48px;
-  margin-bottom: 20px;
-}
-#startScreen button {
-  font-size: 20px;
-  padding: 12px 24px;
-  margin: 10px;
-  cursor: pointer;
-}
-.start-options {
-  margin-top: 20px;
-}
-
-/* Ekran gry */
-#scoreboardContainer {
-  margin-bottom: 10px;
-}
-#scoreboard {
-  font-size: 26px;
-  font-weight: bold;
-  margin: 0;
-  padding: 0;
-}
-canvas {
-  background-color: green;
-  border: 4px solid #fff;
-  display: block;
-  margin: 0 auto;
-}
-
-/* Modale – baza zawodników oraz wybór języka */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 20;
-}
-.modal-content {
-  background: #fff;
-  padding: 20px;
-  width: 90%;
-  max-width: 500px;
-  border-radius: 8px;
-}
-
-/* Formularze – inputy i przyciski */
-input,
-button {
-  font-size: 16px;
-  margin: 5px 0;
-  padding: 8px;
-  width: 100%;
-  box-sizing: border-box;
-}
+ #gameScreen { padding: 10px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; height: 100vh; }
+ #scoreboardContainer { margin-bottom: 8px; background: rgba(0,0,0,0.5); padding: 4px 12px; border-radius: 8px; }
+ #scoreboard { font-size: calc(var(--font-size-scoreboard) * 0.9); font-weight: bold; margin: 0; }
+ #matchTimer { font-size: calc(var(--font-size-timer) * 0.9); margin-top: 2px; color: #eee; }
+ canvas {
+     /* === ZMIANA: Domyślny kolor tła canvas (może być nadpisany przez drawField) === */
+     background-color: #2A9D8F;
+     border: 3px solid #fff; border-radius: 10px; display: block; margin: 0 auto; box-shadow: 0px 6px 12px rgba(0,0,0,0.3); cursor: grab;
+     max-width: 96%; max-height: calc(100vh - 130px);
+     /* === ZMIANA: Aktualizacja aspect-ratio do nowych wymiarów (640/400 = 8/5) === */
+     aspect-ratio: 640 / 400;
+     width: auto; height: auto;
+ }
+ canvas:active { cursor: grabbing; }
+ #backToStartBtn { font-size: var(--font-size-small-button); padding: 8px 16px; margin-top: 10px; cursor: pointer; background: rgba(200, 80, 80, 0.9); border: none; border-radius: 8px; transition: background 0.3s; box-shadow: 0px 3px 6px rgba(0,0,0,0.2); color: white; }
+ #backToStartBtn:hover { background: rgba(180, 60, 60, 1); }
+ .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; animation: fadeIn 0.3s ease-out; }
+ @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+ .modal-content { background: #f8f9fa; padding: 25px; width: 90%; max-width: 450px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); color: #343a40; max-height: 80vh; overflow-y: auto; }
+ .modal-content h2 { margin-top: 0; font-size: calc(var(--font-size-h3) * 1.1); color: #007bff; }
+ .modal-content h3 { font-size: calc(var(--font-size-h3) * 0.9); color: #6c757d; margin-top: 15px;}
+ .modal-content p { font-size: var(--font-size-team-option); line-height: 1.5; }
+ .modal-content button { font-size: var(--font-size-small-button); padding: 10px 18px; background: #007bff; border: none; border-radius: 6px; margin-top: 10px; margin-right: 8px; transition: background 0.3s, transform 0.2s; box-shadow: 0px 2px 5px rgba(0,0,0,0.15); cursor: pointer; color: white; }
+ .modal-content button:hover { background: #0056b3; transform: translateY(-1px); }
+ .modal-content button.close-btn { background: #dc3545; } /* Ensure modal close buttons use this style */
+ .modal-content button.close-btn:hover { background: #c82333; }
+ .modal-content button.active-size { background: #28a745; box-shadow: inset 0px 2px 4px rgba(0,0,0,0.2); }
+ .modal-content button.active-size:hover { background: #218838; }
+ input, select { border: 1px solid #ced4da; border-radius: 6px; padding: 10px; margin: 8px 0; width: calc(100% - 22px); box-sizing: border-box; font-size: var(--font-size-team-option); background-color: #fff; }
+ input:focus, select:focus { border-color: #80bdff; outline: 0; box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }
+ #playerList { max-height: 250px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #007bff #e9ecef; margin-bottom: 15px; border: 1px solid #dee2e6; padding: 10px; border-radius: 6px; background-color: #fff; }
+ #playerList::-webkit-scrollbar { width: 8px; }
+ #playerList::-webkit-scrollbar-thumb { background: #007bff; border-radius: 5px; }
+ #playerList::-webkit-scrollbar-track { background: #e9ecef; }
+ #addPlayerForm { margin-top: 15px; }
+ #addPlayerForm button { margin-top: 10px; margin-right: 0; background-color: #28a745; }
+ #addPlayerForm button:hover { background-color: #218838; }
+ .font-size-options { margin-top: 15px; margin-bottom: 20px; text-align: center;}
+ .font-size-options button { margin: 5px; }
