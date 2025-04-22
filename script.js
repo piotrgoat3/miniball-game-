@@ -14,7 +14,7 @@
     let selectedHomeTeam = null, selectedAwayTeam = null;
     let selectedStadium = null;
 
-    // Stałe fizyki i gry (pozostajemy przy wymiarach 640x400)
+    // Stałe fizyki i gry (dostosowane do mniejszego boiska)
     const PLAYER_RADIUS = 15;
     const GOALKEEPER_RADIUS = 17;
     const BALL_RADIUS = 7;
@@ -47,7 +47,7 @@
      function startTimer() { if (matchTimerInterval) stopTimer(); matchTime = MATCH_DURATION; updateTimerDisplay(); matchTimerInterval = setInterval(() => { matchTime--; updateTimerDisplay(); if (matchTime <= 0) { gameOver(); } }, 1000); }
      function stopTimer() { clearInterval(matchTimerInterval); matchTimerInterval = null; }
      function gameOver() { stopTimer(); gameAnimating = false; const homeName = selectedHomeTeam || "Gospodarze"; const awayName = selectedAwayTeam || "Goście"; alert("Koniec meczu! Wynik: " + homeName + " " + score.home + " : " + score.away + " " + awayName); closeModal(gameScreen); openModal(startScreen); resetGameFull(); }
-     function resetGameFull() { if(canvas) { const ctx = canvas.getContext('2d'); ctx.clearRect(0,0, canvas.width, canvas.height); } selectedHomeTeam = null; selectedAwayTeam = null; selectedStadium = null; score = {home: 0, away: 0}; fieldPlayers = []; fieldPlayersAway = []; goalkeeper = null; goalkeeperAway = null; ball = null; document.body.style.backgroundImage = ''; }
+     function resetGameFull() { if(canvas) { const ctx = canvas.getContext('2d'); ctx.clearRect(0,0, canvas.width, canvas.height); } selectedHomeTeam = null; selectedAwayTeam = null; selectedStadium = null; score = {home: 0, away: 0}; fieldPlayers = []; fieldPlayersAway = []; goalkeeper = null; goalkeeperAway = null; ball = null; document.body.style.backgroundImage = ''; } // Reset tła
      function updateScoreboard() { const scoreboardElement = document.getElementById("scoreboard"); if(scoreboardElement) { const homeName = selectedHomeTeam || "Dom"; const awayName = selectedAwayTeam || "Gość"; scoreboardElement.innerText = `${homeName} ${score.home} : ${score.away} ${awayName}`; } }
 
     // --- BAZA DANYCH KLUBÓW ---
@@ -58,90 +58,53 @@
     const stadiumsData = [
         {
             name: "Anfield",
+            // === PAMIĘTAJ: Wstaw tutaj poprawną nazwę pliku z Twojego repozytorium! ===
             image: "46e2051f-681e-49d9-b519-7f2d7d297d72.png"
         }
     ];
 
     // --- INICJALIZACJA GRY ---
-     function initGame() {
-         canvas = document.getElementById("gameCanvas");
-         if (!canvas) { console.error("Nie znaleziono elementu canvas!"); return; }
-         ctx = canvas.getContext("2d");
-         // Ustawienie wymiarów renderowania canvasa (obszar gry)
-         canvas.width = 640;
-         canvas.height = 400;
-         resizeCanvas(); // Dostosuj CSS do wymiarów renderowania
-         ball = { x: canvas.width / 2, y: canvas.height / 2, radius: BALL_RADIUS, vx: 0, vy: 0, color: "white" };
-         let homeColor = getTeamColor(selectedHomeTeam);
-         let awayColor = getTeamColor(selectedAwayTeam);
-         const gkColor = '#CCCCCC';
-         fieldPlayers = [ { x: canvas.width * 0.20, y: canvas.height * 0.25, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor }, { x: canvas.width * 0.20, y: canvas.height * 0.75, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor }, { x: canvas.width * 0.35, y: canvas.height * 0.40, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor }, { x: canvas.width * 0.35, y: canvas.height * 0.60, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor } ];
-         fieldPlayersAway = [ { x: canvas.width * 0.80, y: canvas.height * 0.25, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor }, { x: canvas.width * 0.80, y: canvas.height * 0.75, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor }, { x: canvas.width * 0.65, y: canvas.height * 0.40, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor }, { x: canvas.width * 0.65, y: canvas.height * 0.60, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor } ];
-         goalkeeper = { x: 40, y: canvas.height/2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: gkColor };
-         goalkeeperAway = { x: canvas.width - 40, y: canvas.height/2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: gkColor };
-         score.home = 0; score.away = 0;
-         updateScoreboard();
-         console.log(`Match started: ${selectedHomeTeam} vs ${selectedAwayTeam} at ${selectedStadium || 'Default Stadium'}`);
-     }
+     function initGame() { /* ... (bez zmian) ... */ canvas = document.getElementById("gameCanvas"); if (!canvas) { console.error("Nie znaleziono elementu canvas!"); return; } ctx = canvas.getContext("2d"); canvas.width = 640; canvas.height = 400; resizeCanvas(); ball = { x: canvas.width / 2, y: canvas.height / 2, radius: BALL_RADIUS, vx: 0, vy: 0, color: "white" }; let homeColor = getTeamColor(selectedHomeTeam); let awayColor = getTeamColor(selectedAwayTeam); const gkColor = '#CCCCCC'; fieldPlayers = [ { x: canvas.width * 0.20, y: canvas.height * 0.25, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor }, { x: canvas.width * 0.20, y: canvas.height * 0.75, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor }, { x: canvas.width * 0.35, y: canvas.height * 0.40, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor }, { x: canvas.width * 0.35, y: canvas.height * 0.60, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: homeColor } ]; fieldPlayersAway = [ { x: canvas.width * 0.80, y: canvas.height * 0.25, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor }, { x: canvas.width * 0.80, y: canvas.height * 0.75, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor }, { x: canvas.width * 0.65, y: canvas.height * 0.40, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor }, { x: canvas.width * 0.65, y: canvas.height * 0.60, radius: PLAYER_RADIUS, vx: 0, vy: 0, color: awayColor } ]; goalkeeper = { x: 40, y: canvas.height/2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: gkColor }; goalkeeperAway = { x: canvas.width - 40, y: canvas.height/2, radius: GOALKEEPER_RADIUS, vx: 0, vy: 0, color: gkColor }; score.home = 0; score.away = 0; updateScoreboard(); console.log(`Match started: ${selectedHomeTeam} vs ${selectedAwayTeam} at ${selectedStadium || 'Default Stadium'}`); }
      function resetPositionsAfterGoal(homeJustScored) { /* ... (bez zmian) ... */ }
 
 
     // --- FUNKCJE RYSOWANIA ---
 
-     // === ZMIANA: Przywrócenie rysowania boiska na canvasie ===
+     // === ZMIANA: Funkcja drawField znów jest pusta ===
      function drawField() {
          if (!ctx) return;
-         const lineWidth = 2;
-         const goalLineWidth = 4;
-         const midCircleRadius = 50;
-         const centerDotRadius = 4;
-         const penaltyBoxWidth = 90;
-         const penaltyBoxHeight = 160;
-         const goalAreaWidth = 30;
-         const goalAreaHeight = 60;
-         const goalWidth = 8;
-         const goalHeight = 40;
-
-         // Rysowanie tła murawy na canvasie
-         ctx.fillStyle = "#2A9D8F";
-         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-         // Rysowanie linii
-         ctx.strokeStyle = "rgba(255, 255, 255, 0.7)";
-         ctx.lineWidth = lineWidth;
-         ctx.strokeRect(goalWidth, goalWidth, canvas.width - 2 * goalWidth, canvas.height - 2 * goalWidth);
-         ctx.beginPath();
-         ctx.moveTo(canvas.width/2, goalWidth);
-         ctx.lineTo(canvas.width/2, canvas.height - goalWidth);
-         ctx.stroke();
-         ctx.beginPath();
-         ctx.arc(canvas.width/2, canvas.height/2, midCircleRadius, 0, Math.PI * 2);
-         ctx.stroke();
-         ctx.beginPath();
-         ctx.arc(canvas.width/2, canvas.height/2, centerDotRadius, 0, Math.PI * 2);
-         ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-         ctx.fill();
-         ctx.strokeRect(goalWidth, canvas.height/2 - penaltyBoxHeight/2, penaltyBoxWidth, penaltyBoxHeight);
-         ctx.strokeRect(canvas.width - goalWidth - penaltyBoxWidth, canvas.height/2 - penaltyBoxHeight/2, penaltyBoxWidth, penaltyBoxHeight);
-         ctx.strokeRect(goalWidth, canvas.height/2 - goalAreaHeight/2, goalAreaWidth, goalAreaHeight);
-         ctx.strokeRect(canvas.width - goalWidth - goalAreaWidth, canvas.height/2 - goalAreaHeight/2, goalAreaWidth, goalAreaHeight);
-
-         // Rysowanie bramek
-         ctx.lineWidth = goalLineWidth;
-         ctx.strokeStyle = "#FFFFFF";
-         ctx.beginPath();
-         ctx.moveTo(0, canvas.height/2 - goalHeight); ctx.lineTo(goalWidth, canvas.height/2 - goalHeight);
-         ctx.moveTo(0, canvas.height/2 + goalHeight); ctx.lineTo(goalWidth, canvas.height/2 + goalHeight);
-         ctx.moveTo(goalWidth, canvas.height/2 - goalHeight); ctx.lineTo(goalWidth, canvas.height/2 + goalHeight);
-         ctx.stroke();
-         ctx.beginPath();
-         ctx.moveTo(canvas.width, canvas.height/2 - goalHeight); ctx.lineTo(canvas.width - goalWidth, canvas.height/2 - goalHeight);
-         ctx.moveTo(canvas.width, canvas.height/2 + goalHeight); ctx.lineTo(canvas.width - goalWidth, canvas.height/2 + goalHeight);
-         ctx.moveTo(canvas.width - goalWidth, canvas.height/2 - goalHeight); ctx.lineTo(canvas.width - goalWidth, canvas.height/2 + goalHeight);
-         ctx.stroke();
+         // Celowo puste - nie rysujemy boiska na canvasie
      }
 
-     function drawGameObjects() { /* ... (bez zmian) ... */ }
+     function drawGameObjects() {
+         if (!ctx || !ball) return;
+         const drawPlayer = (player) => {
+             if (!player) return;
+             ctx.beginPath();
+             ctx.arc(player.x, player.y, player.radius, 0, Math.PI*2);
+             ctx.fillStyle = player.color;
+             ctx.fill();
+             ctx.strokeStyle = "#333";
+             ctx.lineWidth = 1.5;
+             ctx.stroke();
+             ctx.closePath();
+         };
+         fieldPlayers.forEach(drawPlayer);
+         fieldPlayersAway.forEach(drawPlayer);
+         drawPlayer(goalkeeper);
+         drawPlayer(goalkeeperAway);
+         ctx.beginPath();
+         ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+         ctx.fillStyle = ball.color;
+         ctx.fill();
+         ctx.strokeStyle = "black";
+         ctx.lineWidth = 1;
+         ctx.stroke();
+         ctx.closePath();
+         if (isDragging && draggingPlayerIndex !== null) {
+             drawPullLine();
+         }
+     }
      function drawPullLine() { /* ... (bez zmian) ... */ }
      function drawArrowhead(context, fromx, fromy, tox, toy, headLength) { /* ... (bez zmian) ... */ }
 
@@ -162,15 +125,14 @@
     // --- PĘTLA GŁÓWNA GRY ---
     function gameLoop() {
          if (!gameAnimating || !ctx) return;
-         ctx.clearRect(0, 0, canvas.width, canvas.height); // Czyści canvas
+         ctx.clearRect(0, 0, canvas.width, canvas.height); // Czyści przezroczysty canvas
 
-         // === ZMIANA: Rysujemy boisko NA canvasie ===
-         drawField();
+         // drawField(); // NIE WYWOŁUJEMY TEJ FUNKCJI
 
          updatePositions();
          checkCollisions();
          aiMove();
-         drawGameObjects(); // Rysuje graczy, piłkę itp. na boisku narysowanym na canvasie
+         drawGameObjects(); // Rysuje tylko graczy, piłkę i linię przeciągania
          requestAnimationFrame(gameLoop);
      }
 
@@ -211,12 +173,32 @@
          // Button References (Bez zmian)
          const startMatchBtn = document.getElementById("startMatchBtn"); const goToStadiumSelectBtn = document.getElementById("goToStadiumSelectBtn"); const startMatchFromStadiumBtn = document.getElementById("startMatchFromStadiumBtn"); const backToStartBtn = document.getElementById("backToStartBtn"); const backToMenuFromSelect = document.getElementById("backToMenuFromSelect"); const backToTeamSelectBtn = document.getElementById("backToTeamSelectBtn"); const btnPlayerDB = document.getElementById("btnPlayerDB"); const btnLanguage = document.getElementById("btnLanguage"); const btnSettings = document.getElementById("btnSettings"); const closePlayerDBBtn = document.getElementById("closePlayerDBBtn"); const closeLanguageModalBtn = document.getElementById("closeLanguageModalBtn"); const closeSettingsModalBtn = document.getElementById("closeSettingsModalBtn"); const addPlayerForm = document.getElementById("addPlayerForm"); const langOptions = document.querySelectorAll(".langOption");
 
-         // Navigation Listeners (Bez zmian - logika tła body nadal działa)
+         // Navigation Listeners
          if (startMatchBtn) startMatchBtn.addEventListener("click", () => { closeModal(startScreen); openModal(teamSelectScreen); populateTeamSelections(); });
          if (backToMenuFromSelect) backToMenuFromSelect.addEventListener("click", () => { closeModal(teamSelectScreen); openModal(startScreen); });
          if (goToStadiumSelectBtn) goToStadiumSelectBtn.addEventListener("click", () => { if (!selectedHomeTeam || !selectedAwayTeam) { alert("Proszę wybrać obie drużyny!"); return; } if (selectedHomeTeam === selectedAwayTeam) { alert("Drużyny muszą być różne!"); return; } closeModal(teamSelectScreen); openModal(stadiumSelectScreen); populateStadiumSelection(); });
          if (backToTeamSelectBtn) backToTeamSelectBtn.addEventListener("click", () => { closeModal(stadiumSelectScreen); openModal(teamSelectScreen); });
-         if (startMatchFromStadiumBtn) startMatchFromStadiumBtn.addEventListener("click", () => { if (!selectedStadium) { alert("Proszę wybrać stadion!"); return; } if (selectedStadium === "Anfield") { document.body.style.backgroundImage = "url('46e2051f-681e-49d9-b519-7f2d7d297d72.png')"; document.body.style.backgroundSize = "cover"; document.body.style.backgroundPosition = "center center"; document.body.style.backgroundAttachment = "fixed"; } else { document.body.style.backgroundImage = ''; } closeModal(stadiumSelectScreen); openModal(gameScreen); initGame(); addCanvasEvents(); startTimer(); gameAnimating = true; requestAnimationFrame(gameLoop); });
+
+         if (startMatchFromStadiumBtn) startMatchFromStadiumBtn.addEventListener("click", () => {
+             if (!selectedStadium) { alert("Proszę wybrać stadion!"); return; }
+             if (selectedStadium === "Anfield") {
+                 // === PAMIĘTAJ: Wstaw tutaj poprawną nazwę pliku z Twojego repozytorium! ===
+                 document.body.style.backgroundImage = "url('46e2051f-681e-49d9-b519-7f2d7d297d72.png')";
+                 document.body.style.backgroundSize = "cover";
+                 document.body.style.backgroundPosition = "center center";
+                 document.body.style.backgroundAttachment = "fixed";
+             } else {
+                 document.body.style.backgroundImage = ''; // Usuń tło dla innych stadionów
+             }
+             closeModal(stadiumSelectScreen);
+             openModal(gameScreen);
+             initGame();
+             addCanvasEvents();
+             startTimer();
+             gameAnimating = true;
+             requestAnimationFrame(gameLoop);
+         });
+
          if (backToStartBtn) backToStartBtn.addEventListener("click", () => { gameAnimating = false; stopTimer(); closeModal(gameScreen); openModal(startScreen); document.body.style.backgroundImage = ''; resetGameFull(); });
 
          // Modal Buttons (Bez zmian)
@@ -231,7 +213,7 @@
          // Language Options (Bez zmian)
          langOptions.forEach(button => { if(button) button.addEventListener("click", () => { const lang = button.dataset.lang; console.log("Zmieniono język na:", lang); /* logika */ closeModal(languageModal); }); });
 
-         console.log("MiniSoccer v16 - Canvas widoczny, rysuje boisko, tło stadionu na body");
+         console.log("MiniSoccer v17 - Przywrócono przezroczysty canvas, tło stadionu na body");
      });
 
 })(); // Koniec IIFE
