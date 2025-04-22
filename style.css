@@ -8,7 +8,7 @@
      background-attachment: fixed;
      margin: 0; padding: 0; text-align: center; color: #fff; font-size: var(--font-size-team-option); transition: font-size 0.3s ease; overflow: hidden;
  }
- body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); /* Slightly darker overlay */ z-index: -1; }
+ body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: -1; }
  .hidden { display: none !important; }
  body.font-size-small { --font-size-h1: 48px; --font-size-h2: 34px; --font-size-h3: 24px; --font-size-button: 18px; --font-size-button-padding: 12px 25px; --font-size-small-button: 16px; --font-size-small-button-padding: 8px 16px; --font-size-team-option: 0.9rem; --font-size-scoreboard: 24px; --font-size-timer: 18px; }
  body.font-size-medium {}
@@ -33,45 +33,52 @@
  .team-option img { width: 70px; height: 70px; display: block; margin: 0 auto 8px; object-fit: contain; }
  .league-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-left: 10px; }
  .league-header img { width: 25px; height: 25px; }
- #goToStadiumSelectBtn { /* Changed ID */ font-size: var(--font-size-button); padding: var(--font-size-button-padding); margin-top: 25px; cursor: pointer; background-color: rgba(60, 150, 220, 0.9); /* Blueish color for "Next" */ border: none; border-radius: 12px; transition: all 0.3s ease; box-shadow: 0px 4px 8px rgba(0,0,0,0.2); color: white; }
+ #goToStadiumSelectBtn { font-size: var(--font-size-button); padding: var(--font-size-button-padding); margin-top: 25px; cursor: pointer; background-color: rgba(60, 150, 220, 0.9); border: none; border-radius: 12px; transition: all 0.3s ease; box-shadow: 0px 4px 8px rgba(0,0,0,0.2); color: white; }
  #goToStadiumSelectBtn:hover { background-color: rgba(50, 130, 200, 1); transform: scale(1.05); box-shadow: 0px 5px 15px rgba(0,0,0,0.3); }
 
- /* === NEW STYLES for Stadium Selection === */
+ /* === Stadium Selection === */
  #stadiumSelectScreen { padding: 30px 15px; box-sizing: border-box; max-height: 100vh; overflow-y: auto; text-align: center; }
  #stadiumSelectScreen h2 { font-size: var(--font-size-h2); margin-bottom: 20px; text-shadow: 1px 1px 4px rgba(0,0,0,0.3); }
  .stadium-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 10px; margin-bottom: 25px; }
- .stadium-option { cursor: pointer; text-align: center; border: 3px solid rgba(255,255,255,0.5); border-radius: 12px; width: 250px; /* Wider option */ padding: 15px; transition: all 0.2s ease; background-color: rgba(0,0,0, 0.3); display: flex; flex-direction: column; align-items: center; }
- .stadium-option img { width: 100%; height: 140px; /* Fixed height for consistency */ object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+ .stadium-option { cursor: pointer; text-align: center; border: 3px solid rgba(255,255,255,0.5); border-radius: 12px; width: 250px; padding: 15px; transition: all 0.2s ease; background-color: rgba(0,0,0, 0.3); display: flex; flex-direction: column; align-items: center; }
+ .stadium-option img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
  .stadium-option p { margin: 5px 0 0 0; font-size: calc(var(--font-size-team-option) * 1.1); font-weight: bold; }
  .stadium-option.selected { border-color: #ffd700; transform: scale(1.05); background-color: rgba(255,255,255,0.2); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
  #startMatchFromStadiumBtn { font-size: var(--font-size-button); padding: var(--font-size-button-padding); margin-top: 10px; cursor: pointer; background-color: rgba(90, 180, 90, 0.9); border: none; border-radius: 12px; transition: all 0.3s ease; box-shadow: 0px 4px 8px rgba(0,0,0,0.2); color: white; }
  #startMatchFromStadiumBtn:hover:not(:disabled) { background-color: rgba(70, 160, 70, 1); transform: scale(1.05); }
  #startMatchFromStadiumBtn:disabled { background-color: #aaaaaa; cursor: not-allowed; opacity: 0.7; }
  .button-group { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
- .close-btn { /* General style for back/close buttons */ font-size: var(--font-size-small-button); padding: var(--font-size-small-button-padding); background: #dc3545; border: none; border-radius: 8px; transition: background 0.3s; box-shadow: 0px 3px 6px rgba(0,0,0,0.2); cursor: pointer; color: white; min-width: 120px; }
+ .close-btn { font-size: var(--font-size-small-button); padding: var(--font-size-small-button-padding); background: #dc3545; border: none; border-radius: 8px; transition: background 0.3s; box-shadow: 0px 3px 6px rgba(0,0,0,0.2); cursor: pointer; color: white; min-width: 120px; }
  .close-btn:hover { background: #c82333; }
-/* === END OF NEW STYLES === */
 
+ /* === Game Screen === */
  #gameScreen { padding: 10px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; height: 100vh; }
  #scoreboardContainer { margin-bottom: 8px; background: rgba(0,0,0,0.5); padding: 4px 12px; border-radius: 8px; }
  #scoreboard { font-size: calc(var(--font-size-scoreboard) * 0.9); font-weight: bold; margin: 0; }
  #matchTimer { font-size: calc(var(--font-size-timer) * 0.9); margin-top: 2px; color: #eee; }
 
- /* === ZMIANA: Canvas jest teraz przezroczysty i bez obramowania === */
+ /* === ZMIANA: Przywrócenie wyglądu canvasa === */
  canvas {
-     /* background-color: #2A9D8F; */ /* USUNIĘTE - Tło ma być przezroczyste */
-     background-color: transparent; /* Ustawienie przezroczystego tła */
-     /* border: 3px solid #fff; */ /* USUNIĘTE - Obramowanie nie jest potrzebne */
-     border-radius: 10px; display: block; margin: 0 auto;
-     /* box-shadow: 0px 6px 12px rgba(0,0,0,0.3); */ /* USUNIĘTE - Cień może wyglądać dziwnie */
+     background-color: #2A9D8F; /* Przywrócenie koloru murawy */
+     /* background-color: transparent; */ /* USUNIĘTE */
+     border: 3px solid #fff; /* Przywrócenie białego obramowania */
+     border-radius: 10px;
+     display: block;
+     margin: 0 auto; /* Wyśrodkowanie canvasa */
+     box-shadow: 0px 6px 12px rgba(0,0,0,0.3); /* Opcjonalny cień */
      cursor: grab;
-     max-width: 96%; max-height: calc(100vh - 130px);
+     max-width: 90%; /* Ograniczenie szerokości, aby nie rozciągał się za bardzo */
+     max-height: calc(100vh - 150px); /* Ograniczenie wysokości */
+     /* Utrzymanie proporcji 640x400 */
      aspect-ratio: 640 / 400;
-     width: auto; height: auto;
+     width: auto; /* Szerokość dopasuje się do max-width lub aspect-ratio */
+     height: auto; /* Wysokość dopasuje się do max-height lub aspect-ratio */
  }
  canvas:active { cursor: grabbing; }
  #backToStartBtn { font-size: var(--font-size-small-button); padding: 8px 16px; margin-top: 10px; cursor: pointer; background: rgba(200, 80, 80, 0.9); border: none; border-radius: 8px; transition: background 0.3s; box-shadow: 0px 3px 6px rgba(0,0,0,0.2); color: white; }
  #backToStartBtn:hover { background: rgba(180, 60, 60, 1); }
+
+ /* === Modals === */
  .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; animation: fadeIn 0.3s ease-out; }
  @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
  .modal-content { background: #f8f9fa; padding: 25px; width: 90%; max-width: 450px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); color: #343a40; max-height: 80vh; overflow-y: auto; }
@@ -80,7 +87,7 @@
  .modal-content p { font-size: var(--font-size-team-option); line-height: 1.5; }
  .modal-content button { font-size: var(--font-size-small-button); padding: 10px 18px; background: #007bff; border: none; border-radius: 6px; margin-top: 10px; margin-right: 8px; transition: background 0.3s, transform 0.2s; box-shadow: 0px 2px 5px rgba(0,0,0,0.15); cursor: pointer; color: white; }
  .modal-content button:hover { background: #0056b3; transform: translateY(-1px); }
- .modal-content button.close-btn { background: #dc3545; } /* Ensure modal close buttons use this style */
+ .modal-content button.close-btn { background: #dc3545; }
  .modal-content button.close-btn:hover { background: #c82333; }
  .modal-content button.active-size { background: #28a745; box-shadow: inset 0px 2px 4px rgba(0,0,0,0.2); }
  .modal-content button.active-size:hover { background: #218838; }
