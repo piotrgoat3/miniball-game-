@@ -2,15 +2,12 @@
  :root { /* Domyślne rozmiary */ --font-size-h1: 56px; --font-size-h2: 40px; --font-size-h3: 28px; --font-size-button: 20px; --font-size-button-padding: 15px 30px; --font-size-small-button: 18px; --font-size-small-button-padding: 10px 20px; --font-size-team-option: 1rem; --font-size-scoreboard: 28px; --font-size-timer: 20px; }
  body {
      font-family: "Nunito", sans-serif;
-     /* === ZMIANA: Usunięto statyczne tło Anfield, dodano domyślny kolor === */
      background-color: #1a1a1a; /* Domyślne ciemne tło dla menu */
-     /* background: url("anfield_top_down.jpg") no-repeat center center fixed; */ /* USUNIĘTE */
      background-size: cover;
      background-position: center center;
      background-attachment: fixed;
      margin: 0; padding: 0; text-align: center; color: #fff; font-size: var(--font-size-team-option); transition: font-size 0.3s ease; overflow: hidden;
  }
- /* === ZMIANA: Przyciemnienie overlay trochę mocniejsze dla lepszego kontrastu na domyślnym tle === */
  body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); /* Slightly darker overlay */ z-index: -1; }
  .hidden { display: none !important; }
  body.font-size-small { --font-size-h1: 48px; --font-size-h2: 34px; --font-size-h3: 24px; --font-size-button: 18px; --font-size-button-padding: 12px 25px; --font-size-small-button: 16px; --font-size-small-button-padding: 8px 16px; --font-size-team-option: 0.9rem; --font-size-scoreboard: 24px; --font-size-timer: 18px; }
@@ -59,12 +56,16 @@
  #scoreboardContainer { margin-bottom: 8px; background: rgba(0,0,0,0.5); padding: 4px 12px; border-radius: 8px; }
  #scoreboard { font-size: calc(var(--font-size-scoreboard) * 0.9); font-weight: bold; margin: 0; }
  #matchTimer { font-size: calc(var(--font-size-timer) * 0.9); margin-top: 2px; color: #eee; }
+
+ /* === ZMIANA: Canvas jest teraz przezroczysty i bez obramowania === */
  canvas {
-     /* === ZMIANA: Domyślny kolor tła canvas (może być nadpisany przez drawField) === */
-     background-color: #2A9D8F;
-     border: 3px solid #fff; border-radius: 10px; display: block; margin: 0 auto; box-shadow: 0px 6px 12px rgba(0,0,0,0.3); cursor: grab;
+     /* background-color: #2A9D8F; */ /* USUNIĘTE - Tło ma być przezroczyste */
+     background-color: transparent; /* Ustawienie przezroczystego tła */
+     /* border: 3px solid #fff; */ /* USUNIĘTE - Obramowanie nie jest potrzebne */
+     border-radius: 10px; display: block; margin: 0 auto;
+     /* box-shadow: 0px 6px 12px rgba(0,0,0,0.3); */ /* USUNIĘTE - Cień może wyglądać dziwnie */
+     cursor: grab;
      max-width: 96%; max-height: calc(100vh - 130px);
-     /* === ZMIANA: Aktualizacja aspect-ratio do nowych wymiarów (640/400 = 8/5) === */
      aspect-ratio: 640 / 400;
      width: auto; height: auto;
  }
