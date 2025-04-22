@@ -58,7 +58,7 @@
     const stadiumsData = [
         {
             name: "Anfield",
-            image: "anfield_top_down.jpg"
+            image: "46e2051f-681e-49d9-b519-7f2d7d297d72.png"
         }
     ];
 
