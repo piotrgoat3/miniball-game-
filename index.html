@@ -1,233 +1,215 @@
-@@ -3,113 +3,160 @@
- <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>MiniSoccer Game</title>
-     <link rel="stylesheet" href="style.css">
-     <title>Mini Soccer Game v4</title>
-     <link rel="stylesheet" href="style.css"> <!-- Link do Twojego pliku CSS -->
-     <style>
-         /* Podstawowe style, aby ekrany działały jako modale (ukryte domyślnie) */
-         /* Prawdopodobnie masz to lepiej zdefiniowane w swoim style.css */
-         .modal {
-             display: none; /* Ukryj domyślnie */
-             position: fixed; /* Lub inne pozycjonowanie dla modali */
-             top: 50%;
-             left: 50%;
-             transform: translate(-50%, -50%);
-             padding: 20px;
-             background-color: white;
-             border: 1px solid #ccc;
-             z-index: 1000; /* Aby były na wierzchu */
-         }
-         .modal.active {
-             display: block; /* Pokaż aktywny modal */
-         }
-         #gameScreen { /* Ekran gry może nie być modalem, ale musi być ukryty na start */
-             display: none;
-         }
-          body.game-active-background {
-             /* Styl tła dla aktywnej gry (np. obraz stadionu) */
-             /* Twój JS ustawia to dynamicznie przez style.backgroundImage */
-             background-size: cover;
-             background-position: center center;
-             background-repeat: no-repeat;
-             background-attachment: fixed;
-         }
-         .start-screen-background {
-              /* Możesz tu zdefiniować domyślne tło startowe, jeśli chcesz */
-             /* background-image: url('sciezka/do/tla_startowego.jpg'); */
-             background-color: #333; /* Przykładowy kolor tła */
-         }
- 
-         /* --- Style dla canvas (ważne dla responsywności) --- */
-         #gameContainer {
-             width: 100%;
-             max-width: 800px; /* Możesz dostosować maksymalną szerokość */
-             margin: 20px auto; /* Wyśrodkowanie */
-             position: relative; /* Potrzebne dla niektórych stylów canvas */
-         }
- 
-         #gameCanvas {
-             display: block; /* Usuwa domyślny margines pod canvas */
-             width: 100%; /* Canvas wypełni kontener */
-             height: auto; /* Wysokość dostosuje się do proporcji */
-             background-color: #5a8a5a; /* Domyślny kolor tła boiska */
-             max-width: 100%;
-             aspect-ratio: 640 / 400; /* Zachowuje proporcje 640x400 */
-         }
- 
-         /* Styl dla linii przeciągania (może być w style.css) */
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Soccer Game v4</title> <!-- Tylko jeden title -->
+    <link rel="stylesheet" href="style.css"> <!-- Tylko jeden link do CSS -->
+    <style>
+        /* --- Minimalne style dla działania modali i canvas --- */
+        /* Przenieś je i rozbuduj w swoim style.css */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #f0f0f0; /* Domyślne tło */
+            color: #333;
+        }
+
+        .modal {
+            display: none; /* Ukryj domyślnie */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 300px;
+            max-width: 90%;
+            padding: 25px;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .modal.active {
+            display: block; /* Pokaż aktywny modal */
+        }
+
+        /* Ekran gry specjalnie - nie jest modalem, ale ukryty na start */
+        #gameScreen {
+            display: none;
+            padding: 10px;
+            text-align: center;
+        }
+
+        body.game-active-background {
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .start-screen-background {
+            /* Tło dla ekranu startowego ustawiane przez JS */
+            background-color: #e0e0e0; /* Przykładowy kolor tła startowego */
+        }
+
+        #gameContainer {
+            width: 100%;
+            max-width: 800px; /* Maksymalna szerokość wizualna canvas */
+            margin: 15px auto;
+            position: relative;
+        }
+
+        #gameCanvas {
+            display: block;
+            width: 100%; /* Wypełni kontener */
+            height: auto; /* Auto wysokość dla zachowania proporcji */
+            background-color: #4a7c4a; /* Ciemniejsza zieleń boiska */
+            max-width: 100%;
+            aspect-ratio: 640 / 400; /* Zachowaj proporcje logiczne */
+            border: 2px solid white; /* Ramka boiska */
+        }
+
          #gameCanvas:active {
-              cursor: grabbing;
+             cursor: grabbing;
          }
- 
-     </style>
- </head>
- <body>
- 
-     <!-- Ekran Startowy -->
-     <div id="startScreen" class="modal">
-         <h1>MiniSoccer</h1>
-         <button id="startMatchBtn">Szybki Mecz</button>
-         <button id="btnPlayerDB">Baza Graczy (Demo)</button>
-         <button id="btnLanguage">Język (Demo)</button>
-     <div id="startScreen" class="modal active start-screen-background">
-         <h1>Mini Soccer</h1>
-         <button id="startMatchBtn">Rozpocznij Mecz</button>
-         <button id="btnSettings">Ustawienia</button>
-         <button id="btnPlayerDB">Baza Graczy (Placeholder)</button>
-         <button id="btnLanguage">Język (Placeholder)</button>
-     </div>
- 
-     <!-- Ekran Wyboru Drużyn -->
-     <div id="teamSelectScreen" class="modal hidden">
-     <div id="teamSelectScreen" class="modal">
-         <h2>Wybierz Drużyny</h2>
-         <div style="display: flex; justify-content: space-around;">
-             <div>
-                 <h3>Gospodarze</h3>
-                 <div id="homeTeamContainer">
-                     <!-- Opcje drużyn zostaną wstawione przez JS -->
-                 </div>
-             </div>
-             <div>
-                 <h3>Goście</h3>
-                 <div id="awayTeamContainer">
-                     <!-- Opcje drużyn zostaną wstawione przez JS -->
-                 </div>
-             </div>
-         <div>
-             <label for="homeTeamSelect">Gospodarze:</label>
-             <select id="homeTeamSelect">
-                 <option value="">-- Wybierz --</option>
-                 <!-- Opcje drużyn zostaną dodane przez JS -->
-             </select>
-         </div>
-         <div>
-             <label for="awayTeamSelect">Goście:</label>
-             <select id="awayTeamSelect">
-                 <option value="">-- Wybierz --</option>
-                 <!-- Opcje drużyn zostaną dodane przez JS -->
-             </select>
-         </div>
-         <button id="goToStadiumSelectBtn">Dalej: Wybierz Stadion</button>
-         <button id="backToMenuFromSelect">Powrót do Menu</button>
-         <button id="goToStadiumSelectBtn">Wybierz Stadion</button>
-         <button id="backToMenuFromSelect">Wróć do Menu</button>
-     </div>
- 
-     <!-- Ekran Wyboru Stadionu -->
-     <div id="stadiumSelectScreen" class="modal hidden">
-     <div id="stadiumSelectScreen" class="modal">
-         <h2>Wybierz Stadion</h2>
-         <div id="stadiumContainer">
-             <!-- Opcje stadionów zostaną wstawione przez JS -->
-         <div id="stadiumSelectionContainer">
-             <!-- Stadiony zostaną dodane przez JS -->
-         </div>
-         <button id="startMatchFromStadiumBtn" disabled>Rozpocznij Mecz!</button>
-         <button id="backToTeamSelectBtn">Powrót do Wyboru Drużyn</button>
-         <button id="startMatchFromStadiumBtn">Rozpocznij Mecz!</button>
-         <button id="backToTeamSelectBtn">Wróć do Wyboru Drużyn</button>
-     </div>
- 
-     <!-- Ekran Gry -->
-     <div id="gameScreen" class="hidden">
-         <div id="gameContainer">
-             <!-- Nakładka UI (Wynik, Czas) -->
-             <div id="uiOverlay">
-                 <div id="scoreboard">Gospodarz 0 : 0 Gość</div>
-                 <div id="matchTimer">Czas: 3:00</div>
-             </div>
-             <!-- Obszar Gry -->
-             <canvas id="gameCanvas" width="640" height="400">
-                 Twoja przeglądarka nie obsługuje elementu Canvas.
-             </canvas>
-     <div id="gameScreen"> <!-- Ten div może nie potrzebować klasy 'modal', jeśli nie jest modalem -->
-         <div id="scoreboard">Wynik: Dom 0 : 0 Gość</div>
-         <div id="matchTimer">Czas: 3:00</div>
-         <div id="gameContainer"> <!-- Dodano kontener dla canvas -->
-              <canvas id="gameCanvas" width="640" height="400"></canvas>
-         </div>
-          <button id="backToStartBtn">Powrót do Menu</button>
-         <button id="backToStartBtn">Wyjdź do Menu</button>
-     </div>
- 
-     <!-- Modal: Baza Graczy (Demo) -->
-     <div id="playerDBModal" class="modal hidden">
-         <h2>Baza Danych Graczy (Demo)</h2>
-     <!-- Modal Ustawień -->
-     <div id="settingsModal" class="modal">
-         <h2>Ustawienia</h2>
-         <div>
-             <p>Rozmiar czcionki:</p>
-             <button class="fontSizeOption" data-size="small">Mała</button>
-             <button class="fontSizeOption" data-size="medium">Średnia</button>
-             <button class="fontSizeOption" data-size="large">Duża</button>
-         </div>
-         <button id="closeSettingsModalBtn">Zamknij</button>
-     </div>
- 
-     <!-- Modal Bazy Graczy (Placeholder) -->
-     <div id="playerDBModal" class="modal">
-         <h2>Baza Graczy (Placeholder)</h2>
-         <p>Tutaj będzie można dodawać/zarządzać graczami.</p>
-         <form id="addPlayerForm">
-             <input type="text" id="playerName" placeholder="Imię gracza" required>
-             <input type="text" id="playerTeam" placeholder="Drużyna" required>
-             <input type="number" id="playerRating" placeholder="Ocena (1-99)" min="1" max="99" required>
-             <button type="submit">Dodaj Gracza</button>
-             <!-- Przykładowe pola -->
-             <input type="text" placeholder="Imię gracza">
-             <button type="submit">Dodaj</button>
-         </form>
-         <h3>Lista Graczy:</h3>
-         <div id="playerList">
-             <!-- Lista graczy (dodawani dynamicznie) -->
-         </div>
-         <button id="closePlayerDBBtn">Zamknij</button>
-     </div>
- 
-     <!-- Modal: Język (Demo) -->
-     <div id="languageModal" class="modal hidden">
-         <h2>Wybierz Język (Demo)</h2>
-     <!-- Modal Języka (Placeholder) -->
-     <div id="languageModal" class="modal">
-         <h2>Wybierz Język (Placeholder)</h2>
-         <button class="langOption" data-lang="pl">Polski</button>
-         <button class="langOption" data-lang="en">English</button>
-         <button id="closeLanguageModalBtn">Zamknij</button>
-     </div>
- 
-     <!-- Modal: Ustawienia -->
-     <div id="settingsModal" class="modal hidden">
-         <h2>Ustawienia</h2>
-         <p>Rozmiar Czcionki Interfejsu:</p>
-         <div>
-             <button class="fontSizeOption" data-size="small">Mała</button>
-             <button class="fontSizeOption" data-size="medium">Średnia</button>
-             <button class="fontSizeOption" data-size="large">Duża</button>
-         </div>
-         <br>
-         <button id="closeSettingsModalBtn">Zamknij</button>
-     </div>
- 
-     <!-- Element Audio dla Muzyki w Tle -->
-     <!-- WAŻNE: ZASTĄP 'path/to/your/music.mp3' POPRAWNĄ ŚCIEŻKĄ! -->
-     <!-- Element Audio dla muzyki w tle -->
-     <audio id="backgroundMusic" loop>
-       <source src="ambient-classical-guitar-144998.mp3" type="audio/mpeg">
-       <!-- <source src="ścieżka/do/muzyki.ogg" type="audio/ogg"> -->
-       <source src="funky-da-funk-148872.mp3" type="audio/mpeg">
-       <!-- Możesz dodać inne formaty jak .ogg dla lepszej kompatybilności -->
-       <!-- <source src="funky-da-funk-148872.ogg" type="audio/ogg"> -->
-       Twoja przeglądarka nie obsługuje elementu audio.
-     </audio>
- 
-     <!-- Link do skryptu JS (na końcu body) -->
-     <!-- Twój skrypt JS - WAŻNE: umieszczony na końcu body -->
-     <script src="script.js"></script>
- 
- </body>
- </html>
+
+         button {
+             padding: 10px 15px;
+             margin: 5px;
+             cursor: pointer;
+             border: none;
+             background-color: #5cacee;
+             color: white;
+             border-radius: 4px;
+             transition: background-color 0.2s ease;
+         }
+         button:hover {
+             background-color: #4a8bc1;
+         }
+         select {
+             padding: 8px;
+             margin: 5px;
+         }
+         label {
+             margin-right: 5px;
+         }
+         h1, h2 {
+             color: #333;
+         }
+         #scoreboard, #matchTimer {
+             font-size: 1.1em;
+             font-weight: bold;
+             margin-bottom: 10px;
+             color: #eee; /* Kolor tekstu na ciemnym tle gry */
+             text-shadow: 1px 1px 2px black;
+         }
+         #gameScreen button { /* Przyciski na ekranie gry mogą mieć inny styl */
+            background-color: #d9534f;
+         }
+          #gameScreen button:hover {
+             background-color: #c9302c;
+          }
+
+    </style>
+</head>
+<body>
+
+    <!-- Ekran Startowy -->
+    <div id="startScreen" class="modal active start-screen-background"> <!-- Tylko jedna wersja -->
+        <h1>Mini Soccer</h1>
+        <button id="startMatchBtn">Rozpocznij Mecz</button>
+        <button id="btnSettings">Ustawienia</button>
+        <button id="btnPlayerDB">Baza Graczy (Placeholder)</button>
+        <button id="btnLanguage">Język (Placeholder)</button>
+    </div>
+
+    <!-- Ekran Wyboru Drużyn -->
+    <div id="teamSelectScreen" class="modal"> <!-- Tylko jedna wersja -->
+        <h2>Wybierz Drużyny</h2>
+        <div>
+            <label for="homeTeamSelect">Gospodarze:</label>
+            <select id="homeTeamSelect">
+                <option value="">-- Wybierz --</option>
+                <!-- Opcje drużyn zostaną dodane przez JS -->
+            </select>
+        </div>
+        <div>
+            <label for="awayTeamSelect">Goście:</label>
+            <select id="awayTeamSelect">
+                <option value="">-- Wybierz --</option>
+                <!-- Opcje drużyn zostaną dodane przez JS -->
+            </select>
+        </div>
+        <button id="goToStadiumSelectBtn">Wybierz Stadion</button>
+        <button id="backToMenuFromSelect">Wróć do Menu</button>
+    </div>
+
+    <!-- Ekran Wyboru Stadionu -->
+    <div id="stadiumSelectScreen" class="modal"> <!-- Tylko jedna wersja -->
+        <h2>Wybierz Stadion</h2>
+        <div id="stadiumSelectionContainer">
+            <!-- Stadiony zostaną dodane przez JS -->
+        </div>
+        <button id="startMatchFromStadiumBtn">Rozpocznij Mecz!</button>
+        <button id="backToTeamSelectBtn">Wróć do Wyboru Drużyn</button>
+    </div>
+
+    <!-- Ekran Gry -->
+    <div id="gameScreen"> <!-- Tylko jedna wersja -->
+        <div id="scoreboard">Wynik: Dom 0 : 0 Gość</div>
+        <div id="matchTimer">Czas: 3:00</div>
+        <div id="gameContainer">
+             <canvas id="gameCanvas" width="640" height="400"></canvas>
+        </div>
+        <button id="backToStartBtn">Wyjdź do Menu</button>
+    </div>
+
+    <!-- Modal Ustawień -->
+    <div id="settingsModal" class="modal"> <!-- Tylko jedna wersja -->
+        <h2>Ustawienia</h2>
+        <div>
+            <p>Rozmiar czcionki:</p>
+            <button class="fontSizeOption" data-size="small">Mała</button>
+            <button class="fontSizeOption" data-size="medium">Średnia</button>
+            <button class="fontSizeOption" data-size="large">Duża</button>
+        </div>
+        <button id="closeSettingsModalBtn">Zamknij</button>
+    </div>
+
+    <!-- Modal Bazy Graczy (Placeholder) -->
+    <div id="playerDBModal" class="modal"> <!-- Tylko jedna wersja -->
+        <h2>Baza Graczy (Placeholder)</h2>
+        <p>Tutaj będzie można dodawać/zarządzać graczami.</p>
+        <form id="addPlayerForm">
+             <!-- Uproszczone pola placeholder -->
+            <input type="text" placeholder="Imię gracza" disabled>
+            <button type="submit" disabled>Dodaj</button>
+        </form>
+        <button id="closePlayerDBBtn">Zamknij</button>
+    </div>
+
+    <!-- Modal Języka (Placeholder) -->
+    <div id="languageModal" class="modal"> <!-- Tylko jedna wersja -->
+        <h2>Wybierz Język (Placeholder)</h2>
+         <p>Funkcjonalność do zaimplementowania.</p>
+        <button class="langOption" data-lang="pl">Polski</button>
+        <button class="langOption" data-lang="en">English</button>
+        <button id="closeLanguageModalBtn">Zamknij</button>
+    </div>
+
+    <!-- Element Audio dla muzyki w tle -->
+    <audio id="backgroundMusic" loop>
+      <!-- Zachowaj jedno źródło, które na pewno masz -->
+      <source src="funky-da-funk-148872.mp3" type="audio/mpeg">
+      <!-- Możesz dodać inne formaty jak .ogg dla lepszej kompatybilności jeśli masz plik .ogg -->
+      <!-- <source src="funky-da-funk-148872.ogg" type="audio/ogg"> -->
+      Twoja przeglądarka nie obsługuje elementu audio.
+    </audio>
+
+    <!-- Skrypt JS na końcu body -->
+    <script src="script.js"></script>
+
+</body>
+</html>
