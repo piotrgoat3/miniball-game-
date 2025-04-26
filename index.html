@@ -1,54 +1,115 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MiniSoccer - Szybki Mecz</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
-        rel="stylesheet"
-    />
-    <!-- Link do zewnętrznego pliku CSS -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniSoccer Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="font-size-medium">
-    <!-- EKRANY HTML -->
-     <div id="startScreen"><h1>MiniSoccer ⚽</h1><button id="startMatchBtn">SZYBKI MECZ</button><div class="start-options"><button id="btnPlayerDB">Baza zawodników</button><button id="btnLanguage">Język</button><button id="btnSettings">Ustawienia</button></div></div>
+<body>
 
-     <div id="teamSelectScreen" class="hidden">
-         <h2>Wybierz Drużyny</h2>
-         <div class="team-section" id="homeTeamSection"><h3>Drużyna Domowa</h3><div id="homeTeamContainer" class="team-container"></div></div>
-         <div class="team-section" id="awayTeamSection"><h3>Drużyna Gościa</h3><div id="awayTeamContainer" class="team-container"></div></div>
-         <div class="button-group"> <!-- Group buttons -->
-            <button id="backToMenuFromSelect" class="close-btn">Powrót</button>
-            <button id="goToStadiumSelectBtn">Dalej</button> <!-- Changed ID and text -->
-         </div>
-     </div>
-
-     <!-- === NEW Stadium Selection Screen === -->
-     <div id="stadiumSelectScreen" class="hidden">
-         <h2>Wybierz Stadion</h2>
-         <div id="stadiumContainer" class="stadium-container">
-             <!-- Stadium options will be loaded here by JS -->
-         </div>
-         <div class="button-group"> <!-- Group buttons -->
-            <button id="backToTeamSelectBtn" class="close-btn">Powrót</button>
-            <button id="startMatchFromStadiumBtn" disabled>Rozpocznij Mecz</button> <!-- Disabled initially -->
-         </div>
-     </div>
-     <!-- === END OF NEW SCREEN === -->
-
-     <div id="gameScreen" class="hidden">
-        <div id="scoreboardContainer"><h2 id="scoreboard">— : —</h2><h3 id="matchTimer">Czas: 3:00</h3></div>
-        <!-- === ZMIANA: Atrybuty width/height canvas są teraz ustawiane w initGame() === -->
-        <canvas id="gameCanvas"></canvas>
-        <button id="backToStartBtn">Powrót do Menu</button>
+    <!-- Ekran Startowy -->
+    <div id="startScreen" class="modal">
+        <h1>MiniSoccer</h1>
+        <button id="startMatchBtn">Szybki Mecz</button>
+        <button id="btnPlayerDB">Baza Graczy (Demo)</button>
+        <button id="btnLanguage">Język (Demo)</button>
+        <button id="btnSettings">Ustawienia</button>
     </div>
-     <div id="playerDBModal" class="modal hidden"><div class="modal-content"><h2>Baza zawodników</h2><div id="playerList"></div><h3>Dodaj zawodnika</h3><form id="addPlayerForm"><input type="text" id="playerName" placeholder="Imię i nazwisko" required /><input type="text" id="playerTeam" placeholder="Drużyna" required /><input type="number" id="playerRating" placeholder="Ocena (1-100)" required min="1" max="100" /><button type="submit">Dodaj</button></form><button id="closePlayerDBBtn" class="close-btn">Zamknij</button></div></div>
-     <div id="languageModal" class="modal hidden"><div class="modal-content"><h2>Wybór języka</h2><p>Wybierz język interfejsu:</p><button class="langOption" data-lang="pl">Polski</button><button class="langOption" data-lang="en">English</button><button id="closeLanguageModalBtn" class="close-btn">Zamknij</button></div></div>
-     <div id="settingsModal" class="modal hidden"><div class="modal-content"><h2>Ustawienia</h2><div class="font-size-options"><h3>Rozmiar czcionki</h3><button class="fontSizeOption" data-size="small">Mała</button><button class="fontSizeOption" data-size="medium">Średnia</button><button class="fontSizeOption" data-size="large">Duża</button></div><hr><button id="closeSettingsModalBtn" class="close-btn">Zamknij</button></div></div>
 
-    <!-- Link do zewnętrznego pliku JavaScript -->
+    <!-- Ekran Wyboru Drużyn -->
+    <div id="teamSelectScreen" class="modal hidden">
+        <h2>Wybierz Drużyny</h2>
+        <div style="display: flex; justify-content: space-around;">
+            <div>
+                <h3>Gospodarze</h3>
+                <div id="homeTeamContainer">
+                    <!-- Opcje drużyn zostaną wstawione przez JS -->
+                </div>
+            </div>
+            <div>
+                <h3>Goście</h3>
+                <div id="awayTeamContainer">
+                    <!-- Opcje drużyn zostaną wstawione przez JS -->
+                </div>
+            </div>
+        </div>
+        <button id="goToStadiumSelectBtn">Dalej: Wybierz Stadion</button>
+        <button id="backToMenuFromSelect">Powrót do Menu</button>
+    </div>
+
+    <!-- Ekran Wyboru Stadionu -->
+    <div id="stadiumSelectScreen" class="modal hidden">
+        <h2>Wybierz Stadion</h2>
+        <div id="stadiumContainer">
+            <!-- Opcje stadionów zostaną wstawione przez JS -->
+        </div>
+        <button id="startMatchFromStadiumBtn" disabled>Rozpocznij Mecz!</button>
+        <button id="backToTeamSelectBtn">Powrót do Wyboru Drużyn</button>
+    </div>
+
+    <!-- Ekran Gry -->
+    <div id="gameScreen" class="hidden">
+        <div id="gameContainer">
+            <!-- Nakładka UI (Wynik, Czas) -->
+            <div id="uiOverlay">
+                <div id="scoreboard">Gospodarz 0 : 0 Gość</div>
+                <div id="matchTimer">Czas: 3:00</div>
+            </div>
+            <!-- Obszar Gry -->
+            <canvas id="gameCanvas" width="640" height="400">
+                Twoja przeglądarka nie obsługuje elementu Canvas.
+            </canvas>
+        </div>
+         <button id="backToStartBtn">Powrót do Menu</button>
+    </div>
+
+    <!-- Modal: Baza Graczy (Demo) -->
+    <div id="playerDBModal" class="modal hidden">
+        <h2>Baza Danych Graczy (Demo)</h2>
+        <form id="addPlayerForm">
+            <input type="text" id="playerName" placeholder="Imię gracza" required>
+            <input type="text" id="playerTeam" placeholder="Drużyna" required>
+            <input type="number" id="playerRating" placeholder="Ocena (1-99)" min="1" max="99" required>
+            <button type="submit">Dodaj Gracza</button>
+        </form>
+        <h3>Lista Graczy:</h3>
+        <div id="playerList">
+            <!-- Lista graczy (dodawani dynamicznie) -->
+        </div>
+        <button id="closePlayerDBBtn">Zamknij</button>
+    </div>
+
+    <!-- Modal: Język (Demo) -->
+    <div id="languageModal" class="modal hidden">
+        <h2>Wybierz Język (Demo)</h2>
+        <button class="langOption" data-lang="pl">Polski</button>
+        <button class="langOption" data-lang="en">English</button>
+        <button id="closeLanguageModalBtn">Zamknij</button>
+    </div>
+
+    <!-- Modal: Ustawienia -->
+    <div id="settingsModal" class="modal hidden">
+        <h2>Ustawienia</h2>
+        <p>Rozmiar Czcionki Interfejsu:</p>
+        <div>
+            <button class="fontSizeOption" data-size="small">Mała</button>
+            <button class="fontSizeOption" data-size="medium">Średnia</button>
+            <button class="fontSizeOption" data-size="large">Duża</button>
+        </div>
+        <br>
+        <button id="closeSettingsModalBtn">Zamknij</button>
+    </div>
+
+    <!-- Element Audio dla Muzyki w Tle -->
+    <!-- WAŻNE: ZASTĄP 'path/to/your/music.mp3' POPRAWNĄ ŚCIEŻKĄ! -->
+    <audio id="backgroundMusic" loop>
+      <source src="ambient-classical-guitar-144998.mp3" type="audio/mpeg">
+      <!-- <source src="ścieżka/do/muzyki.ogg" type="audio/ogg"> -->
+      Twoja przeglądarka nie obsługuje elementu audio.
+    </audio>
+
+    <!-- Link do skryptu JS (na końcu body) -->
     <script src="script.js"></script>
 </body>
 </html>
