@@ -1,97 +1,150 @@
-/* --- STYLE CSS --- */
- :root { /* Domyślne rozmiary */ --font-size-h1: 56px; --font-size-h2: 40px; --font-size-h3: 28px; --font-size-button: 20px; --font-size-button-padding: 15px 30px; --font-size-small-button: 18px; --font-size-small-button-padding: 10px 20px; --font-size-team-option: 1rem; --font-size-scoreboard: 28px; --font-size-timer: 20px; }
- body {
-     font-family: "Nunito", sans-serif;
-     background-color: #1a1a1a; /* Domyślne ciemne tło dla menu */
-     background-size: cover;
-     background-position: center center;
-     background-attachment: fixed;
-     margin: 0; padding: 0; text-align: center; color: #fff; font-size: var(--font-size-team-option); transition: font-size 0.3s ease; overflow: hidden;
- }
- body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: -1; }
- .hidden { display: none !important; }
- body.font-size-small { --font-size-h1: 48px; --font-size-h2: 34px; --font-size-h3: 24px; --font-size-button: 18px; --font-size-button-padding: 12px 25px; --font-size-small-button: 16px; --font-size-small-button-padding: 8px 16px; --font-size-team-option: 0.9rem; --font-size-scoreboard: 24px; --font-size-timer: 18px; }
- body.font-size-medium {}
- body.font-size-large { --font-size-h1: 64px; --font-size-h2: 46px; --font-size-h3: 32px; --font-size-button: 22px; --font-size-button-padding: 18px 35px; --font-size-small-button: 20px; --font-size-small-button-padding: 12px 25px; --font-size-team-option: 1.1rem; --font-size-scoreboard: 32px; --font-size-timer: 22px; }
- #startScreen { padding: 40px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; box-sizing: border-box; }
- #startScreen h1 { font-size: var(--font-size-h1); margin-bottom: 30px; text-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
- #startScreen button { font-size: var(--font-size-button); padding: var(--font-size-button-padding); margin: 10px; border: none; border-radius: 10px; background-color: rgba(255,255,255,0.85); cursor: pointer; color: #333; box-shadow: 0px 4px 8px rgba(0,0,0,0.2); transition: all 0.3s ease; min-width: 200px; }
- #startScreen button:hover { background-color: #fff; transform: scale(1.05); box-shadow: 0px 5px 15px rgba(0,0,0,0.3); }
- .start-options { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center;}
- .start-options button { font-size: var(--font-size-small-button); padding: var(--font-size-small-button-padding); background-color: rgba(255,255,255,0.7); min-width: 150px; }
- .start-options button:hover { background-color: #eee; }
- #teamSelectScreen { padding: 30px 15px; box-sizing: border-box; max-height: 100vh; overflow-y: auto;}
- #teamSelectScreen h2 { font-size: var(--font-size-h2); margin-bottom: 15px; text-shadow: 1px 1px 4px rgba(0,0,0,0.3); }
- .team-section { margin: 20px auto; max-width: 90%; text-align: left; }
- .team-section h3 { font-size: var(--font-size-h3); margin-bottom: 10px; padding-left: 10px; }
- .team-container { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px; scrollbar-width: thin; scrollbar-color: #ffd700 rgba(0,0,0,0.2); min-height: 160px; }
- .team-container::-webkit-scrollbar { height: 10px; background: rgba(0,0,0,0.1); border-radius: 5px; }
- .team-container::-webkit-scrollbar-thumb { background: #ffd700; border-radius: 5px; border: 2px solid rgba(0,0,0,0.1); }
- .team-option { cursor: pointer; text-align: center; border: 3px solid rgba(255,255,255,0.5); border-radius: 12px; width: 130px; padding: 10px; transition: all 0.2s ease; flex: 0 0 auto; font-size: calc(var(--font-size-team-option) * 0.9); background-color: rgba(0,0,0, 0.2); display: flex; flex-direction: column; justify-content: space-between; }
- .team-option p { margin: 5px 0 0 0; word-wrap: break-word; }
- .team-option.selected { border-color: #ffd700; transform: scale(1.08); background-color: rgba(255,255,255,0.2); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
- .team-option img { width: 70px; height: 70px; display: block; margin: 0 auto 8px; object-fit: contain; }
- .league-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-left: 10px; }
- .league-header img { width: 25px; height: 25px; }
- #goToStadiumSelectBtn { font-size: var(--font-size-button); padding: var(--font-size-button-padding); margin-top: 25px; cursor: pointer; background-color: rgba(60, 150, 220, 0.9); border: none; border-radius: 12px; transition: all 0.3s ease; box-shadow: 0px 4px 8px rgba(0,0,0,0.2); color: white; }
- #goToStadiumSelectBtn:hover { background-color: rgba(50, 130, 200, 1); transform: scale(1.05); box-shadow: 0px 5px 15px rgba(0,0,0,0.3); }
+/* Reset i podstawowe style */
+body {
+    font-family: sans-serif;
+    margin: 0;
+    overflow: hidden; /* Zapobiega paskom przewijania od tła */
+    background-color: #f0f0f0; /* Domyślne tło, gdy nic innego nie jest ustawione */
+    transition: filter 0.5s ease-in-out; /* Płynne przejście dla filtra jasności */
+}
 
- /* === Stadium Selection === */
- #stadiumSelectScreen { padding: 30px 15px; box-sizing: border-box; max-height: 100vh; overflow-y: auto; text-align: center; }
- #stadiumSelectScreen h2 { font-size: var(--font-size-h2); margin-bottom: 20px; text-shadow: 1px 1px 4px rgba(0,0,0,0.3); }
- .stadium-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 10px; margin-bottom: 25px; }
- .stadium-option { cursor: pointer; text-align: center; border: 3px solid rgba(255,255,255,0.5); border-radius: 12px; width: 250px; padding: 15px; transition: all 0.2s ease; background-color: rgba(0,0,0, 0.3); display: flex; flex-direction: column; align-items: center; }
- .stadium-option img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
- .stadium-option p { margin: 5px 0 0 0; font-size: calc(var(--font-size-team-option) * 1.1); font-weight: bold; }
- .stadium-option.selected { border-color: #ffd700; transform: scale(1.05); background-color: rgba(255,255,255,0.2); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
- #startMatchFromStadiumBtn { font-size: var(--font-size-button); padding: var(--font-size-button-padding); margin-top: 10px; cursor: pointer; background-color: rgba(90, 180, 90, 0.9); border: none; border-radius: 12px; transition: all 0.3s ease; box-shadow: 0px 4px 8px rgba(0,0,0,0.2); color: white; }
- #startMatchFromStadiumBtn:hover:not(:disabled) { background-color: rgba(70, 160, 70, 1); transform: scale(1.05); }
- #startMatchFromStadiumBtn:disabled { background-color: #aaaaaa; cursor: not-allowed; opacity: 0.7; }
- .button-group { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
- .close-btn { font-size: var(--font-size-small-button); padding: var(--font-size-small-button-padding); background: #dc3545; border: none; border-radius: 8px; transition: background 0.3s; box-shadow: 0px 3px 6px rgba(0,0,0,0.2); cursor: pointer; color: white; min-width: 120px; }
- .close-btn:hover { background: #c82333; }
+button {
+    padding: 8px 15px;
+    margin: 5px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #e7e7e7;
+}
+button:hover {
+    background-color: #d7d7d7;
+}
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
 
- /* === Game Screen === */
- #gameScreen { padding: 10px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; height: 100vh; }
- #scoreboardContainer { margin-bottom: 8px; background: rgba(0,0,0,0.5); padding: 4px 12px; border-radius: 8px; }
- #scoreboard { font-size: calc(var(--font-size-scoreboard) * 0.9); font-weight: bold; margin: 0; }
- #matchTimer { font-size: calc(var(--font-size-timer) * 0.9); margin-top: 2px; color: #eee; }
+/* Klasa ukrywająca elementy */
+.hidden {
+    display: none !important; /* Użyj !important, aby nadpisać inne style display */
+}
 
- /* === Canvas przezroczysty === */
- canvas {
-     background-color: transparent; /* Tło przezroczyste */
-     /* border: 3px solid #fff; */ /* Usunięte obramowanie */
-     border-radius: 10px; display: block; margin: 0 auto;
-     cursor: grab;
-     max-width: 96%; max-height: calc(100vh - 130px);
-     aspect-ratio: 640 / 400;
-     width: auto; height: auto;
- }
- canvas:active { cursor: grabbing; }
- #backToStartBtn { font-size: var(--font-size-small-button); padding: 8px 16px; margin-top: 10px; cursor: pointer; background: rgba(200, 80, 80, 0.9); border: none; border-radius: 8px; transition: background 0.3s; box-shadow: 0px 3px 6px rgba(0,0,0,0.2); color: white; }
- #backToStartBtn:hover { background: rgba(180, 60, 60, 1); }
+/* Styl dla tła menu głównego */
+.start-screen-background {
+  background-image: url('https://t3.ftcdn.net/jpg/00/86/56/12/360_F_86561234_8HJdzg2iBlPap18K38mbyetKfdw1oNrm.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
 
- /* === Modals === */
- .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; animation: fadeIn 0.3s ease-out; }
- @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
- .modal-content { background: #f8f9fa; padding: 25px; width: 90%; max-width: 450px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); color: #343a40; max-height: 80vh; overflow-y: auto; }
- .modal-content h2 { margin-top: 0; font-size: calc(var(--font-size-h3) * 1.1); color: #007bff; }
- .modal-content h3 { font-size: calc(var(--font-size-h3) * 0.9); color: #6c757d; margin-top: 15px;}
- .modal-content p { font-size: var(--font-size-team-option); line-height: 1.5; }
- .modal-content button { font-size: var(--font-size-small-button); padding: 10px 18px; background: #007bff; border: none; border-radius: 6px; margin-top: 10px; margin-right: 8px; transition: background 0.3s, transform 0.2s; box-shadow: 0px 2px 5px rgba(0,0,0,0.15); cursor: pointer; color: white; }
- .modal-content button:hover { background: #0056b3; transform: translateY(-1px); }
- .modal-content button.close-btn { background: #dc3545; }
- .modal-content button.close-btn:hover { background: #c82333; }
- .modal-content button.active-size { background: #28a745; box-shadow: inset 0px 2px 4px rgba(0,0,0,0.2); }
- .modal-content button.active-size:hover { background: #218838; }
- input, select { border: 1px solid #ced4da; border-radius: 6px; padding: 10px; margin: 8px 0; width: calc(100% - 22px); box-sizing: border-box; font-size: var(--font-size-team-option); background-color: #fff; }
- input:focus, select:focus { border-color: #80bdff; outline: 0; box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }
- #playerList { max-height: 250px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #007bff #e9ecef; margin-bottom: 15px; border: 1px solid #dee2e6; padding: 10px; border-radius: 6px; background-color: #fff; }
- #playerList::-webkit-scrollbar { width: 8px; }
- #playerList::-webkit-scrollbar-thumb { background: #007bff; border-radius: 5px; }
- #playerList::-webkit-scrollbar-track { background: #e9ecef; }
- #addPlayerForm { margin-top: 15px; }
- #addPlayerForm button { margin-top: 10px; margin-right: 0; background-color: #28a745; }
- #addPlayerForm button:hover { background-color: #218838; }
- .font-size-options { margin-top: 15px; margin-bottom: 20px; text-align: center;}
- .font-size-options button { margin: 5px; }
+/* Filtr jasności dla tła stadionu podczas meczu */
+body.game-active-background {
+    filter: brightness(180%) contrast(110%); /* Bardzo jasne trybuny */
+}
+
+/* Style dla okien (modal) i ekranów */
+.modal {
+    position: absolute; /* Pozycjonowanie na środku */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 700px; /* Maksymalna szerokość dla czytelności */
+    max-height: 90vh; /* Maksymalna wysokość */
+    overflow-y: auto; /* Przewijanie, jeśli zawartość się nie mieści */
+    padding: 25px;
+    border: 1px solid #ccc;
+    background-color: rgba(255, 255, 255, 0.92); /* Lekko przezroczyste tło */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    text-align: center;
+    z-index: 100; /* Aby były na wierzchu */
+}
+
+/* Ekran gry - specjalne pozycjonowanie */
+#gameScreen {
+    position: static; /* Reset pozycjonowania z .modal */
+    transform: none;
+    width: 100%;
+    height: 100vh; /* Pełna wysokość okna */
+    max-width: none;
+    max-height: none;
+    padding: 0;
+    margin: 0;
+    overflow: hidden; /* Ukryj ew. paski przewijania */
+    display: flex; /* Użyj flexbox do centrowania */
+    flex-direction: column;
+    justify-content: center; /* Wyśrodkuj zawartość pionowo */
+    align-items: center; /* Wyśrodkuj zawartość poziomo */
+    background-color: transparent; /* Tło gry pochodzi z body */
+    border: none;
+    box-shadow: none;
+    z-index: 1; /* Pod spodem modali */
+}
+#gameScreen button#backToStartBtn {
+    position: absolute; /* Przycisk powrotu na dole */
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20; /* Nad canvasem */
+}
+
+#gameContainer {
+    position: relative; /* Dla pozycjonowania UI */
+    display: inline-block; /* Aby dopasować się do canvas */
+}
+
+/* Nakładka UI w grze */
+#uiOverlay {
+    position: absolute;
+    top: 5px; /* Trochę niżej */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10; /* Nad canvasem */
+    display: flex;
+    gap: 20px; /* Odstęp między wynikiem a czasem */
+}
+#scoreboard, #matchTimer {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.65); /* Ciemniejsze tło dla czytelności */
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-shadow: 1px 1px 2px black; /* Cień dla tekstu */
+}
+
+/* Canvas */
+canvas {
+    border: 2px solid rgba(0, 0, 0, 0.7); /* Wyraźniejsza ramka boiska */
+    display: block; /* Usuwa domyślny margines pod canvasem */
+    /* Rozmiar ustawiany przez JS w style.width/height */
+}
+
+/* Wybór drużyn/stadionów */
+.league-section { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+.league-header { font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; }
+.team-option, .stadium-option { cursor: pointer; padding: 5px; border: 1px solid transparent; border-radius: 4px; display: flex; flex-direction: column; align-items: center; transition: background-color 0.2s, border-color 0.2s; text-align: center; background-color: #fff; /* Dodaj tło dla opcji */ box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.team-option img { width: 40px; height: 40px; object-fit: contain; }
+.team-option p { font-size: 0.7em; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 50px; }
+.team-option { width: 60px; }
+.stadium-option img { width: 80px; height: 50px; object-fit: cover; margin-bottom: 5px; }
+.stadium-option p { font-size: 0.8em; }
+.stadium-option { width: 100px; }
+.team-option.selected, .stadium-option.selected { border-color: #007bff; background-color: rgba(0, 123, 255, 0.1); box-shadow: 0 0 5px rgba(0,123,255,0.4); }
+#stadiumContainer { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; padding: 10px 0; }
+#homeTeamContainer, #awayTeamContainer { margin-bottom: 20px; padding: 10px; background-color: #f8f8f8; border-radius: 5px; }
+
+/* Ustawienia - rozmiar czcionki */
+.font-size-small { font-size: 0.8rem; }
+.font-size-medium { font-size: 1rem; }
+.font-size-large { font-size: 1.2rem; }
+.active-size {
+    border: 2px solid #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    background-color: #cce5ff;
+}
+
+/* Baza graczy - formularz */
+#addPlayerForm { margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+#addPlayerForm input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+#playerList p { background-color: #eee; padding: 5px; margin: 3px 0; border-radius: 3px; }
