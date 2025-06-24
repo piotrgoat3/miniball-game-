@@ -1,0 +1,14 @@
+# Mini Ball Game
+
+Prosta gra zręcznościowa typu "mini ball" stworzona w JavaScript z użyciem biblioteki p5.js. Gracz steruje piłką, która porusza się po platformach, skacze i unika przeszkód. Gra zawiera podstawową fizykę, taką jak grawitacja, pęd i kolizje.
+
+## Funkcjonalności
+- Sterowanie piłką za pomocą strzałek (lewo/prawo) i spacji (skok).
+- Platformy, na których piłka może lądować.
+- Realistyczna fizyka (grawitacja, kolizje).
+- Ograniczenia ekranu, aby piłka nie wypadła poza obszar gry.
+
+## Jak uruchomić grę
+1. Pobierz lub sklonuj to repozytorium:
+   ```bash
+   git clone https://github.com/TWOJ_USERNAME/mini-ball-game.git
