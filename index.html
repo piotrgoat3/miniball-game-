@@ -1,108 +1,12 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Soccer Game v5</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Usunięto style inline, zakładając, że są w style.css -->
+    <title>Mini Ball Game</title>
 </head>
 <body>
-
-    <!-- Ekran Startowy (ID: startScreen) -->
-    <div id="startScreen" class="modal active start-screen-background">
-        <h1>Mini Soccer</h1>
-        <button id="startMatchBtn">Rozpocznij Mecz</button>
-        <button id="btnSettings">Ustawienia</button>
-        <button id="btnPlayerDB">Baza Graczy (Placeholder)</button>
-        <button id="btnLanguage">Język (Placeholder)</button>
-    </div>
-
-    <!-- Ekran Wyboru Drużyn (ID: teamSelectScreen, homeTeamSelect, awayTeamSelect) -->
-    <div id="teamSelectScreen" class="modal">
-        <h2>Wybierz Drużyny</h2>
-        <div>
-            <label for="homeTeamSelect">Gospodarze:</label>
-            <select id="homeTeamSelect">
-                <option value="">-- Wybierz --</option>
-                <!-- Opcje drużyn zostaną dodane przez JS -->
-            </select>
-        </div>
-        <div>
-            <label for="awayTeamSelect">Goście:</label>
-            <select id="awayTeamSelect">
-                <option value="">-- Wybierz --</option>
-                <!-- Opcje drużyn zostaną dodane przez JS -->
-            </select>
-        </div>
-        <button id="goToStadiumSelectBtn">Wybierz Stadion</button>
-        <button id="backToMenuFromSelect">Wróć do Menu</button>
-    </div>
-
-    <!-- Ekran Wyboru Stadionu (ID: stadiumSelectScreen, stadiumSelectionContainer) -->
-    <div id="stadiumSelectScreen" class="modal">
-        <h2>Wybierz Stadion</h2>
-        <div id="stadiumSelectionContainer">
-            <!-- Stadiony zostaną dodane przez JS -->
-        </div>
-        <button id="startMatchFromStadiumBtn">Rozpocznij Mecz!</button>
-        <button id="backToTeamSelectBtn">Wróć do Wyboru Drużyn</button>
-    </div>
-
-    <!-- Ekran Gry (ID: gameScreen, gameCanvas, scoreboard, matchTimer) -->
-    <div id="gameScreen">
-        <!-- Nakładka UI przeniesiona do gameContainer dla lepszego pozycjonowania względem canvas -->
-        <div id="gameContainer">
-             <div id="uiOverlay"> <!-- Dodana nakładka (jeśli używana w CSS) -->
-                <div id="scoreboard">Wynik: Dom 0 : 0 Gość</div>
-                <div id="matchTimer">Czas: 3:00</div>
-             </div>
-             <canvas id="gameCanvas" width="640" height="400"></canvas>
-        </div>
-        <button id="backToStartBtn">Wyjdź do Menu</button>
-    </div>
-
-    <!-- Modal Ustawień (ID: settingsModal) -->
-    <div id="settingsModal" class="modal">
-        <h2>Ustawienia</h2>
-        <div>
-            <p>Rozmiar czcionki:</p>
-            <button class="fontSizeOption" data-size="small">Mała</button>
-            <button class="fontSizeOption" data-size="medium">Średnia</button>
-            <button class="fontSizeOption" data-size="large">Duża</button>
-        </div>
-        <button id="closeSettingsModalBtn">Zamknij</button>
-    </div>
-
-    <!-- Modal Bazy Graczy (Placeholder) (ID: playerDBModal) -->
-    <div id="playerDBModal" class="modal">
-        <h2>Baza Graczy (Placeholder)</h2>
-        <p>Funkcjonalność do zaimplementowania.</p>
-        <form id="addPlayerForm">
-            <input type="text" placeholder="Imię gracza" disabled>
-            <button type="submit" disabled>Dodaj</button>
-        </form>
-        <button id="closePlayerDBBtn">Zamknij</button>
-    </div>
-
-    <!-- Modal Języka (Placeholder) (ID: languageModal) -->
-    <div id="languageModal" class="modal">
-        <h2>Wybierz Język (Placeholder)</h2>
-         <p>Funkcjonalność do zaimplementowania.</p>
-        <button class="langOption" data-lang="pl">Polski</button>
-        <button class="langOption" data-lang="en">English</button>
-        <button id="closeLanguageModalBtn">Zamknij</button>
-    </div>
-
-    <!-- Element Audio dla muzyki w tle (ID: backgroundMusic) -->
-    <audio id="backgroundMusic" loop>
-      <source src="funky-da-funk-148872.mp3" type="audio/mpeg">
-      <!-- Upewnij się, że ten plik istnieje w tym samym folderze co index.html -->
-      Twoja przeglądarka nie obsługuje elementu audio.
-    </audio>
-
-    <!-- Skrypt JS na końcu body -->
-    <script src="script.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <script src="sketch.js"></script>
 </body>
 </html>
